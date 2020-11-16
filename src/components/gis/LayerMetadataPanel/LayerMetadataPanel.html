@@ -1,0 +1,44 @@
+<div class="LayerMetadataPanel">
+
+
+
+    <table class="Table">
+        <tr>
+            <th>Titel:</th>
+            <td><strong>{{layer.get('title')}}</strong></td>
+        </tr>
+
+        <tr>
+            <th>Beschreibung:</th>
+            <td v-html="abstract"></td>
+        </tr>
+        <tr>
+            <th>Quelle:</th>
+            <td v-html="source"></td>
+        </tr>
+        <tr>
+            <th>Quelle (URL):</th>
+            <td v-html="source_url"></td>
+        </tr>
+        <tr>
+            <th>Lizenz:</th>
+            <td v-html="license"></td>
+        </tr>
+
+    </table>
+	
+	<div style="line-height: 2em;">&nbsp;</div>
+	
+	<div>
+		&#10142; <a target="_blank" :href="'https://daten.digitale-mrn.de/dataset/' + layer.get('id')">Diesen Layer im Datenkatalog öffnen.</a>
+	</div>
+
+
+    <div v-if="ckanApiUrl == undefined" style="margin-top:10px;border-radius:4px;border:1px solid #f00;padding:4px 6px">
+
+        Metadaten konnten nicht geladen werden.<br />Die CKAN-URL ist nicht konfiguriert!
+
+    </div>
+
+
+</div>

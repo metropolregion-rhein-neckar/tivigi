@@ -1,0 +1,9 @@
+<div class="FullscreenPopup" v-show="show">
+
+    <div class="FullscreenPopup__Content">
+        <slot />
+    </div>
+    <button class="FullscreenPopup__CloseButton" @click="onCloseButtonClick" alt="Schließen" title="Schließen">
+        « Zurück zum Statistikmonitor
+    </button>
+</div>

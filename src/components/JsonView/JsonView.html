@@ -1,0 +1,19 @@
+<div class="JsonView" :class="dynamicClass" v-on="$listeners">
+
+    <span @click="onLabelClick" class="JsonView__Label">{{label}}</span>:
+
+    {{charOpenElement(data)}}<template v-if="isObject(data)">
+
+        <template v-if="!collapsed">
+            <ul>
+                <li v-for="[key,value] in Object.entries(data)">
+                    <JsonView :data="value" :label="key" />
+                </li>
+            </ul>
+        </template>
+        <span v-else class="JsonView__Expander" @click="collapsed = !collapsed">...</span>
+    </template>
+
+    <span v-else class="JsonView__Value">{{data}}</span>{{charCloseElement(data)}}
+
+</div>

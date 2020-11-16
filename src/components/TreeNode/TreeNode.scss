@@ -1,0 +1,49 @@
+div.TreeNode {
+    user-select: none;
+
+    // ATTENTION: 
+    // A right-side padding is required to prevent a horizontal 
+    // scrollbar in Firefox if entries become very wide. 
+    // 1 px is enough though.
+    padding-right:10px;
+
+    .Collapsible__Header > button > span {
+        color: #000;
+        font-weight: normal;
+        font-size: 1em;
+    }
+
+    ul.TreeNode__Children {
+        list-style: none;
+        margin: 0;
+        margin-top: 4px;
+        padding: 0;
+    }
+
+    
+    > label {
+        display: flex;
+        //white-space: nowrap;
+        align-items: center;
+
+        padding: 2px 0;
+
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;            
+        }
+
+        > input {
+            margin-right: 5px;
+        }
+    }
+}
+
+
+div.TreeNode--filter-match {
+    > div.Collapsible > .Collapsible__Header > button > span,
+    > label > span {
+        background-color: #0df;            
+    }
+}

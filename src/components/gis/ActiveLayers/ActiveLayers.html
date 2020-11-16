@@ -1,0 +1,27 @@
+<div class="ActiveLayers">
+
+    <template v-if="map == undefined">
+        <h3>Keine Karteninstanz verknüpft</h3>
+        <p>
+            Mit dieser Komponente ist keine OpenLayers-Karteninstanz verknüpft oder die verknüpfte Karteninstanz
+            wurde noch nicht initialisiert.
+        </p>
+    </template>
+    
+    <template v-else>
+        <template v-if="getLayers().length == 0">
+            <h3>Keine Kartenebenen aktiv</h3>
+            <p>
+                Fügen Sie eine Ebene zur Karte hinzu.
+            </p>
+        </template>
+
+        <template v-else>
+            <!-- TODO: 2 Is layer ID a good key here? -->
+
+            <div v-for="(layer,index) in getLayers()" :key="layer.get('id')">
+                <LayerControlPanel :buttonsConfig="buttonsConfig" :menuConfig="menuConfig" :map="map" :ckanApiUrl="ckanApiUrl" :layer="layer" style="border-bottom:2px dotted #ccc;padding:2px 0px;" @showAttributesTableButtonClick="onShowAttributesTableButtonClick(layer)" />
+            </div>
+        </template>
+    </template>
+</div>

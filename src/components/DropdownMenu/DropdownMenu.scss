@@ -1,0 +1,13 @@
+div.DropdownMenu {
+    > .DropdownMenu__Button {
+        padding-right: 30px;
+        background-image: url(/tivigi/img/arrow_down.svg);
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: auto 1em;
+    }
+
+    > div.PopupMenu {
+        margin-left: -4px;
+    }
+}

@@ -1,0 +1,23 @@
+div.Superinput {    
+    display: inline-flex;
+    align-items: center;
+    
+    input[type=text] {
+               
+        background-color: transparent;
+        border: none;        
+    }
+
+    input[type=image] {
+        background-color: transparent;
+        padding:4px;
+        padding-right:6px;
+        
+        
+        width:24px;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}

@@ -1,0 +1,16 @@
+<div class="ListView">
+
+    <template v-if="items.length == 0">
+
+        <em>Im aktuellen Kartenausschnitt gibt es keine Einträge.</em>        
+    </template>
+
+    <template v-if="items.length > limit">
+
+        <em>Mehr als {{limit}} Einträge im aktuellen Kartenausschnitt. Zoomen Sie weiter hinein.</em>
+        
+
+    </template>
+    <component v-else v-for="item in items" v-bind:is="view" :item="item" />
+
+</div>

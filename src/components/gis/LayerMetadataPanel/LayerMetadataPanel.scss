@@ -1,0 +1,21 @@
+div.LayerInfoPanel {
+
+    // ATTENTION: Explicit setting of position:relative is required to prevent the popup menu from
+    /// appearing at an incorrect position if the LayerInfoPanel is placed in a Draggable/FloatingWindow 
+    // and the view is scrolled down.
+    position: relative;
+
+    > div.MiniToolbar {
+        > .Superbutton {
+            > .Superbutton__Label {
+                display:none;
+            }
+        }
+    }
+
+    > div.PopupMenu {
+        position: absolute;
+        
+        right: 34px;
+    }
+}

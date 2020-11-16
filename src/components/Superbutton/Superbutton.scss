@@ -1,0 +1,14 @@
+.Superbutton {
+    user-select: none;
+    display: inline-flex;
+    align-items: center;    
+    transition: 0.4s;
+
+    > img.Superbutton__Icon {
+        height: 18px;
+    }
+
+    > * {
+        margin:4px;
+    }
+}

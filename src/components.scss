@@ -1,0 +1,312 @@
+@mixin flex-center-hv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+//############### BEGIN General fixes ################
+* {
+    box-sizing: border-box;
+}
+//############### END General fixes ################
+
+//################ BEGIN Classless rules ################
+
+button {
+    cursor: pointer;
+
+    &:disabled {
+        cursor: default;
+    }
+}
+
+select {
+    max-width: 280px !important;
+}
+//################ END Classless rules ################
+
+.floating {
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+}
+
+//###################### BEGIN Cursor classes ######################
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-ew-resize {
+    cursor: ew-resize;
+}
+
+.cursor-ns-resize {
+    cursor: ns-resize;
+}
+
+.cursor-nw-resize {
+    cursor: nw-resize;
+}
+
+.cursor-ne-resize {
+    cursor: ne-resize;
+}
+
+.cursor-sw-resize {
+    cursor: sw-resize;
+}
+
+.cursor-se-resize {
+    cursor: se-resize;
+}
+//###################### END Cursor classes ######################
+
+//################## BEGIN Various input element styles ####################
+*.Input {
+    border: 1px solid #b0b0b0;
+    border-radius: 4px;
+}
+
+input.Input[type="text"],
+div.Input {
+    background-color: #fff;
+}
+//################## END Various input element styles ####################
+
+//############### BEGIN Focus styling ###################
+html.focus-no-outline {
+    * {
+        &:focus {
+            outline: none;
+        }
+
+        &::-moz-focus-inner {
+            border: 0;
+        }
+    }
+}
+
+html.focus-outline {
+    * {
+        &:focus {
+            transition: 0s;
+            outline: 2px dashed #000;
+            z-index: 1;
+        }
+    }
+}
+//############### END Focus styling ###################
+
+//##################### BEGIN button ######################
+$button_bgcolor_checked: #09c;
+$button_bgcolor_unchecked: #ddd;
+
+.Button {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 3px 4px;
+
+    background-color: $button_bgcolor_unchecked;
+    user-select: none;
+
+    font-size: 1em;
+
+    &:disabled {
+        cursor: default;
+    }
+
+    &:hover {
+        background-color: #c0c0c0;
+    }
+
+    &.minimized {
+        > .Button__Label {
+            display: none;
+        }
+    }
+
+    &.Button--active {
+        background-color: $button_bgcolor_checked;
+        color: #fff;
+
+        &:hover {
+            background-color: lighten($button_bgcolor_checked, 5%);
+        }
+    }
+}
+
+//##################### END button ######################
+
+//################# BEGIN Card component ################
+.Card {
+    flex-grow: 1;
+    overflow: auto;
+    position: relative; // THIS IS IMPORTANT!
+    line-height: 1.4em;
+    background-color: #fff;
+    border: none;
+    border-radius: 4px;
+
+    // This should be the same as div.FloatingWindow__Socket padding:
+    margin: 3px;
+}
+//################# END Card component ################
+
+//################### BEGIN Flex components ###############
+.Flex--center-hv {
+    @include flex-center-hv;
+}
+
+.Flex--row {
+    // Same as col:
+    display: flex;
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+
+    // Different from col:
+    flex-direction: row;
+}
+
+.Flex--col {
+    // Same as row:
+    display: flex;
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+
+    // Different from row:
+    flex-direction: column;
+}
+//################### END Flex components ###############
+
+.StoryMapOverlay {
+    @include flex-center-hv;
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+    font-size: 60px;
+    font-weight: bold;
+    color: #333;
+    letter-spacing: 0.05em;
+}
+
+//###################### BEGIN InputGroup ########################
+.InputGroup {
+    display: flex;
+    flex-wrap: wrap;
+
+    > * {
+        &:not(:last-child) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-right-width: 0px;
+        }
+        &:not(:first-child) {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    }
+}
+//###################### END InputGroup ########################
+
+//################# BEGIN MiniToolbar component ###############
+
+$minitoolbar_button_bgcolor_hover: #ccc;
+$minitoolbar_button_bgcolor_active: #ccc;
+
+.MiniToolbar {
+    display: flex;
+    align-items: center;
+    user-select: none;
+
+    > button {
+        border: none;
+        background-color: transparent;
+        transition: 0.4s;
+
+        padding: 6px;
+        border-radius: 50%;
+
+        &:hover {
+            background-color: $minitoolbar_button_bgcolor_hover;
+        }
+
+        > * {
+            height: 20px;
+            width: 20px;
+            margin: 0px;
+            display: block;
+        }
+
+        &:disabled {
+            filter: grayscale(100%) invert(70%);
+
+            &:hover {
+                background-color: transparent;
+            }
+        }
+
+        &.Button--active {
+            background-color: $minitoolbar_button_bgcolor_active;
+
+            &:hover {
+                background-color: $minitoolbar_button_bgcolor_hover;
+            }
+        }
+    }
+}
+//################# END MiniToolbar component ###############
+
+//################## BEGIN Table component ###################
+.Table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    a {
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+    }
+
+    th {
+        vertical-align: top;
+    }
+
+    th,
+    td {
+        padding: 4px 5px;
+
+        text-align: left;
+
+        > svg {
+            display: block;
+        }
+
+        &.numeric {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        &:last-child {
+            padding-right: 0;
+        }
+
+        &:first-child {
+            padding-left: 0;
+        }
+    }
+
+    tr {
+        border-bottom: 1px solid #ccc;
+    }
+
+    /*
+    tr:last-child {
+        border-bottom: none;
+    }
+    */
+}
+//################## END Table component ###################

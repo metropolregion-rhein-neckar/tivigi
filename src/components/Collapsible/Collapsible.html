@@ -1,0 +1,18 @@
+<div :class="dynamicClass">
+
+    <div class="Collapsible__Header">
+        <button  @click="onCollapseButtonClick">
+            <!--
+            NOTE: We still need the span because we don't want to include 
+            the arrow icon in the area highlighted by the filter.
+        -->
+            <span>{{title}}</span>
+        </button>
+        <div>
+            <slot name="header"></slot>
+        </div>
+    </div>
+    <div v-show="!pCollapsed" class="Collapsible__Content">
+        <slot />
+    </div>
+</div>

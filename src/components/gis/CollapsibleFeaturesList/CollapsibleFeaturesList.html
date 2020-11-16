@@ -1,0 +1,12 @@
+<div class="CollapsibleFeaturesList">
+    <template v-for="entry in featuresList.entries">
+
+        <h2>{{entry.layer.get('title')}}</h2>
+
+        <template v-for="(feature,index) in entry.features">
+            <Collapsible :title="getFeatureLabel(feature, entry.layer, 'Objekt ' + (index+1))" :collapsed="featuresList.numFeatures() != 1" :exclusive="true">
+                <PropertyGridWithSlideshow :value="feature.getProperties()" :fieldsConfig="entry.layer.get('propertyLabels')" :fieldsBlacklist="['geometry']" />
+            </Collapsible>
+        </template>
+    </template>
+</div>

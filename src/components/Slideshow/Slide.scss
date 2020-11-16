@@ -1,0 +1,25 @@
+div.Slide {
+    display: none;
+   
+    height: 100%; // Important!    
+
+    flex-direction: column;
+
+    justify-content: center;    
+
+    > div.Slide__Inner {
+        max-width: 100%; // Important!
+        max-height: 100%; // Important!
+
+        > * {
+            max-width: 100%;
+            max-height: 100%;
+            margin: auto;
+            display: block;
+        }
+    }
+}
+
+div.Slide--active {
+    display: flex;
+}

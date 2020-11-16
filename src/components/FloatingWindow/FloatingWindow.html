@@ -1,0 +1,28 @@
+<div :class="dynamicClass_socket">
+
+    <!-- 
+    ATTENTION: v-show must be added to the panel element and *not* the socket.
+    When the panel is floating/undocked, the socket is not its parent element.
+    Instead, it's the document body. This means that v-show=false on the socket would
+    have no effect on undocked panels.
+    -->
+    
+    <div :class="dynamicClass_slot" v-show="show" ref="panel" @mousedown="onPanelMouseDown" @focus="onFocus" @focusout="onFocusOut" @touchstart="onTouchStart">    
+        <div>
+            <div class="FloatingWindow__Header drag-handle MiniToolbar">
+                <div class="FloatingWindow__Header__Text">{{title}}</div>
+
+                <!-- NOTE: The class 'FloatingWindow__DockButton' is required to animate the button! -->
+                <Superbutton v-if="dockButton" class="FloatingWindow__DockButton" icon="tivigi/img/pin.svg" @click="pdocked = !pdocked" :title="dockButtonLabel" />
+                <Superbutton v-if="fullscreenButton && !pdocked && !mobile" icon="tivigi/img/maximize2.svg" v-model="fullscreen" :set="true" :unset="false" :title="fullscreenButtonLabel" />
+                <Superbutton v-if="closeButton" icon="tivigi/img/remove.svg" @click="onCloseButtonClick" :title="closeButtonLabel" />
+
+            </div>
+
+            <div class="FloatingWindow__Body">
+                <slot />
+            </div>
+        </div>
+
+    </div>
+</div>

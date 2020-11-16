@@ -1,0 +1,36 @@
+div.LocationInput {
+    > button {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px;
+
+        > img {
+            height: 1.1em;
+            
+        }
+
+        > div.LocationInput__LonLat {
+            margin-left:4px;
+        }
+    }
+}
+
+// ATTENTION:
+// Stying rules for div.LocationInput__Overlay MUST NOT be defined as a child of div.LocationInput
+// since OpenLayers detaches the element from its original position in the template HTML and moves
+// it to a different location in the DOM!
+
+div.LocationInput__Overlay {
+    user-select: none;
+
+    // NOTE: For some strange reason, a border is required to anchor the overlay to the map.
+    // border: 0px solid transparent;
+
+    pointer-events: none; // This is required to forward clicks on the marker to the map!
+    width: 0;
+    height: 0;
+
+    img {
+        position: relative;
+    }
+}

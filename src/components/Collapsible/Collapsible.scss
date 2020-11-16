@@ -1,0 +1,54 @@
+$indent: 19px;
+
+div.Collapsible {
+    margin: 3px 0px;
+
+    > .Collapsible__Header {
+
+        display:flex;
+
+      
+        > button {
+            background-image: url("/tivigi/img/arrow_right.svg");
+            flex:1;
+            
+            :hover {
+                text-decoration: underline;
+            }
+
+            &:disabled :hover {
+                text-decoration: initial;
+            }
+
+            // TODO: 3 Understand why we need to use "!important" here.
+            // Somewhere, "padding-left:0" is applied, but where?
+            padding-left: $indent !important;
+            text-align: left;
+
+            background-repeat: no-repeat;
+            background-position: left;
+            background-size: 0.85em;
+
+            border: none;
+            background-color: transparent;
+
+            font-size: 1em;
+        }
+    }
+
+    &.Collapsible--uncollapsed {
+        > .Collapsible__Header > button {
+            background-image: url(/tivigi/img/arrow_down.svg);
+        }
+    }
+
+    &.Collapsible--uncollapsed-override {
+        > .Collapsible__Header > button {
+            background-image: url(/tivigi/img/arrow_down_override.svg);
+        }
+    }
+
+    > div.Collapsible__Content {
+        margin-left: $indent;
+    }
+}

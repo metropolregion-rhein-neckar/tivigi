@@ -1,0 +1,14 @@
+table.MouseCoordinatesTool {
+    background-color: #fff;
+    padding: 0px 8px;
+    border-radius: 1em;
+    border: 1px solid #ddd;
+    user-select: none;
+
+    td {
+        width: 70px;
+    }
+    th {
+        text-align: left;
+    }
+}

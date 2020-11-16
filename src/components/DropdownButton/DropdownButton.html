@@ -1,0 +1,9 @@
+<div class="DropdownButton">
+
+    <div class="DropdownButton InputGroup">
+        <Superbutton :class="dynamicClass" :label="button_label" :icon="button_icon" @click="onShortcutButtonClick" :title="button_title"/>
+        <Superbutton icon="tivigi/img/arrow_down.svg" v-model="show" :set="true" :unset="false" title="Eine alternative Funktion für diese Kombi-Schaltfläche auswählen." />
+    </div>
+
+    <PopupMenu :show.sync="show"><slot /></PopupMenu>
+</div>

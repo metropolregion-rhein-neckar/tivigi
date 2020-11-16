@@ -1,0 +1,14 @@
+<div class="Tree">
+
+    <div class="Tree__Filter" v-if="showFilterInput">
+        <Superinput placeholder="Filter" v-model="filter" />
+    </div>
+
+    <TreeNode v-if="showRootNode" class="Tree__Root" :node="rootNode" :filter="filter" :highlightFilterMatches="highlightFilterMatches" />
+
+    <ul v-else class="Tree__RootChildren">
+        <li v-for="child in rootNode.children">
+            <TreeNode :node="child" :filter="filter" :highlightFilterMatches="highlightFilterMatches" />
+        </li>
+    </ul>
+</div>

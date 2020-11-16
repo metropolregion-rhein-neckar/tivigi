@@ -1,0 +1,23 @@
+
+<div :class="dynamicClass">
+
+    <div v-if="fullscreen" class="Slideshow__Topbar">
+        <button class="Slideshow__Button" @click="onFullscreenButtonClick"><img src="tivigi/img/close.svg" title="Vollbildmodus beenden" /></button>
+    </div>
+
+    <div v-if="slides.length > 1" class="Slideshow__Nav">
+
+        <div class="Slideshow__Nav__Inner">
+            <button class="Slideshow__Button" @click="onPrevButtonClick"><img src="tivigi/img/left.svg" title="Zurück" /></button>
+            <div></div>
+            <button class="Slideshow__Button" @click="onNextButtonClick"><img src="tivigi/img/right.svg" title="Vor" /></button>
+        </div>
+
+    </div>
+
+    <button class="Slideshow__Slides" :style="dynamicStyle" @click="onClick" :title="dynamicTitle">
+        <slot />
+    </button>
+
+</div>
+

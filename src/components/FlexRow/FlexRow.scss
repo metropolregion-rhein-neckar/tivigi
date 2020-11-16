@@ -1,0 +1,33 @@
+//################### BEGIN Flex componenty ###############
+.FlexRow {
+    // NOTE: These are the same as the class 'Flex--row'
+    // which is defined in components.scss
+    display: flex;
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
+    
+    flex-direction: row;
+
+    > * {
+        //border:2px dashed #00f;
+    }
+}
+
+.FlexRow--portrait {
+    /// Override:
+    flex-direction: column !important;    
+    display:block;
+
+    // Addition:
+    // ATTENTION: This must *not* be defined in 'Flex--col'
+    // in components.scss! There are important differences in
+    // the use of these two classes!
+    > * {
+        //height: initial !important;
+        
+        max-width: initial !important;
+        width: initial !important;
+        overflow: auto !important;
+    }
+}

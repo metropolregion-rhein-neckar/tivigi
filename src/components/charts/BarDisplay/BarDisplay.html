@@ -1,0 +1,15 @@
+<svg class="BarDisplay" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+    baseProfile="full">
+
+    <!-- NOTE: This horizontal downscaling is neccessary to prevent the <text> element that displays the numeric value from
+     being pushed behind the right edge of the viewport if the value is the max or too close to the max-->
+
+
+    <rect class="value-bar" :x="barWidthOffset + '%'" :y="0" :width="barWidthPercent + '%'" height="100%" />
+
+
+    <!--
+        <rect class="zero-line" :x="zeroPercent + '%'" :y="0" width="2px" height="100%" />
+    -->
+
+</svg>

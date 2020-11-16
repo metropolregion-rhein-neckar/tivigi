@@ -1,0 +1,26 @@
+<div class="MapPrint">
+
+    <div class="MapPrint__Blocker" v-show="showPrepareMessage"></div>
+
+    <FloatingWindow title="Druckansicht wird vorbereitet" :closeButton="false" :dockButton="false" :fullscreenButton="false" :centerTrigger="centerTrigger" :docked="false" :show="showPrepareMessage" :width="600" :height="450">
+
+        <div style="padding:13px;text-align:center">
+            <h3>Die Druckansicht der Karte wird vorbereitet.</h3>
+            <p>Dies kann einige Sekunden dauern, während denen die Anwendung nicht genutzt werden kann. Bitte haben Sie einen Augenblick Geduld.</p>
+            <p>
+                Nach Abschluss der Vorbereitung wird Ihnen die Druckansicht als PDF-Datei zum Download angeboten.
+            </p>
+
+            <div style="font-weight:bold">
+                Laden der Kartendaten:<br />
+                <MapLoadingProgressBar :map="map" />
+                <br/>
+
+                Erstellung des PDF-Dokuments:<br />
+                <ProgressBar :progress="imageLoadProgress" />
+            </div>
+
+            <Superbutton label="Abbrechen" @click="cancel" style="margin-top:20px;" />
+        </div>
+    </FloatingWindow>
+</div>

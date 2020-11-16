@@ -1,0 +1,33 @@
+div.JsonView {
+    //user-select:none;
+    padding: 1px;
+    font-family: Monospace;
+
+    > ul {
+        // border:1px solid #000;
+        padding-left: 20px;
+        margin: 0;
+
+        > li {
+            list-style: none;
+        }
+    }
+
+    > span.JsonView__Expander {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    > span.JsonView__Label {
+        //text-decoration:underline;
+        cursor: pointer;
+        font-weight: bold;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

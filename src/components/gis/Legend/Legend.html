@@ -1,0 +1,30 @@
+<div class="Legend" v-if="config != undefined">
+
+  <table  v-for="legend in config.Legend">
+    <!--############### BEGIN Rules ############-->
+
+    <tr v-for="rule in legend.rules">
+      <td>
+        <div v-for="symbolizer in rule.symbolizers">
+
+          <div v-if="symbolizer.Line != undefined">
+            <div :style="getLineSymbolizerStyle(symbolizer.Line)" :title="getRuleLabel(rule)"></div>
+          </div>
+
+          <div v-if="symbolizer.Point != undefined">
+            <img :src="symbolizer.Point.url" style="height:1.5em;" :title="getRuleLabel(rule)" />
+          </div>
+
+          <div v-if="symbolizer.Polygon != undefined">
+            <div :style="getPolygonSymbolizerStyle(symbolizer.Polygon)" :title="getRuleLabel(rule)"></div>
+          </div>
+
+        </div>
+      </td>
+      <td v-html="getRuleLabel(rule)"></td>
+    </tr>
+    <!--############### END Rules ############-->
+
+  </table>
+
+</div>

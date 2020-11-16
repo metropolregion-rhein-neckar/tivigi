@@ -1,0 +1,19 @@
+<div class="PropertyGrid">
+    <template v-if="fieldsConfig == undefined">
+        <table class="Table">
+            <tr v-for="kvp in this.entries" v-if="kvp[0] != '' && kvp[0] != undefined && !fieldsBlacklist.includes(kvp[0])">
+                <th>{{kvp[0]}}</th>
+                <td v-html="getValueHtml(kvp[0])"></td>
+            </tr>
+        </table>
+    </template>
+
+    <template v-else>
+        <table class="Table">
+            <tr v-for="kvp in this.entries" v-if="fieldsConfig[kvp[0]] && kvp[0] != '' && kvp[0] != undefined && !fieldsBlacklist.includes(kvp[0])">
+                <th>{{getLabel(kvp[0])}}</th>
+                <td v-html="getValueHtml(kvp[0])"></td>
+            </tr>
+        </table>
+    </template>
+</div>

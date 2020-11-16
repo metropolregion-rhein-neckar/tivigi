@@ -1,0 +1,13 @@
+.olControlScaleLine {
+    background: white;
+    padding: 5px;
+
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=85)";
+
+    /* Netscape */
+    -moz-opacity: 0.85;
+
+    /* Good browsers */
+    opacity: 0.85;
+}

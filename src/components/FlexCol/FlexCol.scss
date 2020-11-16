@@ -1,0 +1,13 @@
+//################### BEGIN Flex componenty ###############
+.FlexCol {
+    // NOTE: These are the same as the class 'Flex--row'
+    // which is defined in components.scss
+    display: flex; 
+    flex-direction: column;
+
+    > * {
+        flex: 1;
+        
+        //min-height:150px;
+    }
+}

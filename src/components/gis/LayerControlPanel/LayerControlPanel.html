@@ -1,0 +1,74 @@
+<div class="LayerInfoPanel">
+
+    <PopupMenu :show.sync="showPopupMenu">
+        <template v-for="entry in menuConfig">
+            <Superbutton v-if="entry == 'attributes' && isVectorLayer" v-model="showAttributesTable" :set="true" :unset="false" icon="tivigi/img/table.svg" label="Attributtabelle" title="Attributtabelle" />
+            <Superbutton v-if="entry == 'info'" v-model="showLayerInfo" :set="true" :unset="false" icon="tivigi/img/info.svg" label="Informationen über diese Ebene" title="Informationen über diese Ebene" />
+            <Superbutton v-if="entry == 'remove' && !layer.get('noremove')" @click="onRemoveLayerButtonClick(layer, $event)" icon="tivigi/img/remove.svg" label="Ebene entfernen" title="Ebene entfernen" />
+            <Superbutton v-if="entry == 'visibility'" @click="toggleVisibility" :icon="visibilityButtonImageUrl" :label="visibilityButtonLabel" :title="visibilityButtonLabel" />
+            <Superbutton v-if="entry == 'fit_extent' && calcExtent(layer) != undefined" @click="zoomToExtent" icon="tivigi/img/maximize.svg" :label="title_zoomToExtent" :title="title_zoomToExtent" />
+        </template>
+    </PopupMenu>
+
+<!--
+
+    <div class="MiniToolbar" style="position:absolute;right:0;">
+
+        <template v-for="entry in buttonsConfig">
+
+
+            <Superbutton v-if="entry == 'attributes' && isVectorLayer" v-model="showAttributesTable" :set="true" :unset="false" icon="tivigi/img/table.svg" label="Attributtabelle" title="Attributtabelle" />
+
+            <Superbutton v-if="entry == 'info'" v-model="showLayerInfo" :set="true" :unset="false" icon="tivigi/img/info.svg" label="Informationen über diese Ebene" title="Informationen über diese Ebene" />
+
+            <Superbutton v-if="entry == 'remove' && !layer.get('noremove')" @click="onRemoveLayerButtonClick(layer, $event)" icon="tivigi/img/remove.svg" label="Ebene entfernen" title="Ebene entfernen" />
+
+            <Superbutton v-if="entry == 'visibility'" @click="toggleVisibility" :icon="visibilityButtonImageUrl" :label="visibilityButtonLabel" :title="visibilityButtonLabel" />
+
+            <Superbutton v-if="entry == 'fit_extent' && calcExtent(layer) != undefined" @click="zoomToExtent" icon="tivigi/img/maximize.svg" :label="title_zoomToExtent" :title="title_zoomToExtent" />
+
+            <Superbutton v-if="entry == 'menu' && menuHasEntries" v-model="showPopupMenu" :set="true" :unset="false" icon="tivigi/img/menu.svg" label="Optionsmenü für diese Ebene öffnen" title="Optionsmenü für diese Ebene öffnen" />
+
+        </template>
+
+    </div>
+-->
+   
+    <Collapsible :title="layer.get('title')" :collapsed="false">
+
+        <template v-slot:header>
+            <div class="MiniToolbar">
+                <template v-for="entry in buttonsConfig">
+                    <Superbutton v-if="entry == 'attributes' && isVectorLayer" v-model="showAttributesTable" :set="true" :unset="false" icon="tivigi/img/table.svg" label="Attributtabelle" title="Attributtabelle" />       
+                    <Superbutton v-if="entry == 'info'" v-model="showLayerInfo" :set="true" :unset="false" icon="tivigi/img/info.svg" label="Informationen über diese Ebene" title="Informationen über diese Ebene" />
+                    <Superbutton v-if="entry == 'remove' && !layer.get('noremove')" @click="onRemoveLayerButtonClick(layer, $event)" icon="tivigi/img/remove.svg" label="Ebene entfernen" title="Ebene entfernen" />
+                    <Superbutton v-if="entry == 'visibility'" @click="toggleVisibility" :icon="visibilityButtonImageUrl" :label="visibilityButtonLabel" :title="visibilityButtonLabel" />
+                    <Superbutton v-if="entry == 'fit_extent' && calcExtent(layer) != undefined" @click="zoomToExtent" icon="tivigi/img/maximize.svg" :label="title_zoomToExtent" :title="title_zoomToExtent" />        
+                    <Superbutton v-if="entry == 'menu' && menuHasEntries" v-model="showPopupMenu" :set="true" :unset="false" icon="tivigi/img/menu.svg" label="Optionsmenü für diese Ebene öffnen" title="Optionsmenü für diese Ebene öffnen" />
+                </template>
+            </div>
+        </template>
+
+        <LayerLegend :layer="layer" style="margin-top:6px;"/>
+
+        <div style="display:flex;align-items: center;height:50px;margin-top:8px;">
+            <Superbutton style="margin-right:8px;" v-if="isVectorLayer" v-model="showAttributesTable" :set="true" :unset="false" icon="tivigi/img/table.svg" label="Datentabelle" title="Datentabelle öffnen" />
+            <StyleSwitcher :layer="layer" />
+        </div>
+
+    </Collapsible>
+
+
+    <!--################## BEGIN Metadata info window ##################-->
+    <FloatingWindow v-if="showLayerInfo" title="Layer-Information" :show.sync="showLayerInfo" :dockButton="false">
+        <LayerMetadataPanel :layer="layer" :ckanApiUrl="ckanApiUrl" style="padding:13px;" />
+    </FloatingWindow>
+    <!--################## END Metadata info window ##################-->
+
+    <!--################## BEGIN Metadata info window ##################-->
+    <FloatingWindow v-if="showAttributesTable" :title="layer.get('title')" :show.sync="showAttributesTable" :dockButton="false">
+        <AttributesTable :layer="layer" :map="map" />
+    </FloatingWindow>
+    <!--################## END Metadata info window ##################-->
+
+</div>

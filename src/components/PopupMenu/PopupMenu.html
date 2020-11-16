@@ -1,0 +1,6 @@
+<Modal class="PopupMenu" :show.sync="pshow">
+    <!-- NOTE: The nested <div> is required to handle the click event properly. -->
+    <div class="Card floating no-minimize" @click="onClick">
+        <slot />
+    </div>
+</Modal>

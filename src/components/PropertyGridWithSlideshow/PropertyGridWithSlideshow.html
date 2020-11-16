@@ -1,0 +1,10 @@
+<div class="PropertyGridWithSlideshow">
+
+    <Slideshow v-if="slideshowImageUrls().length > 0">
+        <Slide v-for="url in slideshowImageUrls()">
+            <img :src="url" />
+        </Slide>
+    </Slideshow>
+
+    <PropertyGrid :value="value" :fieldsConfig="fieldsConfig" :fieldsBlacklist="fieldsBlacklist" :showImages="false" />
+</div>

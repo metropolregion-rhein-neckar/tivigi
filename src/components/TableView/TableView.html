@@ -1,0 +1,30 @@
+<div class="TableView">
+
+    <table>
+
+        <thead>
+            <tr>
+
+                <th v-for="(fc,index) in fieldsConfig" :class="getDynamicColClass(fc)" :title="getHeaderCellTitle(fc)">
+                    <button @click="onHeaderCellClick(index)">
+                        <span>{{fc.label}}</span>
+
+                        <img src="tivigi/img/arrow_down2.svg" :style="getSortIconStyle(index)" />
+                    </button>
+                </th>
+
+            </tr>
+        </thead>
+
+        <tbody ref="tbody">
+
+            <!-- NOTE that mouseover and mouseout are currently disabled through prefixing with an 'a'. -->
+            <tr v-for="(row,index) in pData" :class="getDynamicRowClass(row)" :data-rowindex="index" @click="onRowClick(row)" @mouseover="onRowMouseOver(row)" @amouseout="onRowMouseOut(row)">
+
+                <td v-for="fc2 in fieldsConfig" :class="getDynamicColClass(fc2)" @click="onBodyCellClick(fc2, row)" v-html="formatCell(row, fc2)"></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+</div>

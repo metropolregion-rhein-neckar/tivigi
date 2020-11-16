@@ -1,0 +1,20 @@
+div.Tree {
+  
+    > div.Tree__Filter {
+        padding: 12px;
+        background-color: #eee;
+        position:sticky;
+        top:0;
+    }
+
+    > div.Tree__Root {   
+        padding: 10px;        
+        margin:0;
+    }
+
+    > ul.Tree__RootChildren {   
+        list-style:none;
+        padding:10px 13px;
+        margin:0;
+    }
+}

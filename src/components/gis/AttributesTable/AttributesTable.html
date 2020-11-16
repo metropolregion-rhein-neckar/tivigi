@@ -1,0 +1,12 @@
+<div class="AttributesTable">  
+
+   <TableView :data="data" :fieldsConfig="pFieldsConfig" :selectedCol.sync="pSelectedCol" :hoverRow.sync="hoverFeature" :selectedRow.sync="selectedFeature"/>   
+
+   <!--
+   <TableView2 :data="data" :fieldsConfig="pFieldsConfig" :selectedCol.sync="pSelectedCol" :hoverRow.sync="hoverFeature" :selectedRow.sync="selectedFeature"/>   
+   -->
+ 
+   <FeatureHighlightTool :map="map" :hoverFeature.sync="hoverFeature" :selectedFeature.sync="selectedFeature"/>
+   <FeatureSelectTool    :map="map" :hoverFeature.sync="hoverFeature" :selectedFeature.sync="selectedFeature"/>
+
+</div>

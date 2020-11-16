@@ -1,0 +1,6 @@
+<div class="ProgressBar">
+    <div class="ProgressBar__Percent" v-if="showPercent">
+        <div>{{Math.round(progress * 1000)/10}}%</div>
+    </div>
+    <div class="ProgressBar__Inner" :style="dynamicStyle"></div>
+</div>

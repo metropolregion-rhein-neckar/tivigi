@@ -1,0 +1,7 @@
+<div class="DropdownMenu">
+
+    <Superbutton :class="dynamicClass" :label="label" :icon="icon" v-model="show" :set="true" :unset="false" :title="'Menü \'' + label + '\' aufklappen'" />
+
+    <PopupMenu :show.sync="show"><slot /></PopupMenu>
+   
+</div>

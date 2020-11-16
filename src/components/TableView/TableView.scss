@@ -1,0 +1,63 @@
+div.TableView {
+    user-select:text;
+
+    > table {
+        cursor: default;
+        width: 100%;
+
+        border-collapse: collapse;
+
+     
+        > thead th {
+            background-color: #ddd;
+            text-align: left;
+            position: sticky;
+            top: 0;            
+            
+            height: 1px;
+            
+            // NOTE: A bottom border is only rendered if the table content is scrolled to the top.
+            //border-bottom: 1px solid #c0c0c0;
+
+            button {
+                font-weight: bold;
+                background-color: #ddd;
+                user-select: none;
+                align-items: center;               
+                display: flex;
+                padding: 6px 6px;
+                width: 100%;
+                height:100%;
+                margin: 0;
+                border: 0px transparent;
+
+                &:hover {                    
+                    background-color: #bbb;
+                }
+
+                img {
+                    transition: 0.4s;
+                    height: 0.8em;
+                    margin-left: 6px;
+                }
+            }
+        }
+
+        > tbody {
+            > tr {
+               
+                &.TableView__HoverRow {
+                    background-color: #eee;
+                }
+
+                &.TableView__SelectedRow {
+                    background-color: #6be;
+                }
+
+                > td {
+                    padding: 4px 6px;
+                }
+            }
+        }
+    }
+}

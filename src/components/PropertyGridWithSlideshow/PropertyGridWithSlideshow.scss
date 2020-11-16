@@ -1,0 +1,14 @@
+div.PropertyGridWithSlideshow {
+    position:relative;
+
+    
+    > div.Slideshow--non-fullscreen {
+        margin:10px 0px;        
+        height:200px;
+       // border:1px solid #ddd;
+        background-color:#eee;
+        border-radius:6px;
+        
+  
+    }
+}

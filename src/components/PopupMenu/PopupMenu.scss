@@ -1,0 +1,23 @@
+div.PopupMenu {
+    position: absolute;
+    z-index: 10000;
+
+    > div {
+        padding: 2px;
+      
+        > .Superbutton {
+            display: flex;
+            width: 100%;
+
+            &:not(:last-child) {
+                border-bottom-left-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+                border-bottom-width: 0;
+            }
+            &:not(:first-child) {
+                border-top-right-radius: 0 !important;
+                border-top-left-radius: 0 !important;
+            }
+        }
+    }
+}

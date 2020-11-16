@@ -1,0 +1,14 @@
+<div :class="dynamicClass" v-if="show && node">
+
+    <Collapsible v-if="node.children.length > 0" :collapsed="collapsed" :title="node.label">
+        <ul class="TreeNode__Children">
+            <TreeNode v-for="child in node.children" :node="child" :filter="filter" :highlightFilterMatches="highlightFilterMatches" :showOverride="match_node_only || showOverride" />
+        </ul>
+    </Collapsible>
+
+    <label v-else>
+        <input v-if="node.control != ''" :type="node.control" :checked="node.checked" @click="node.checked = !node.checked" />
+        <span :style="node.labelStyle" @click="onLabelClick">{{node.label}}</span>
+    </label>
+
+</div>

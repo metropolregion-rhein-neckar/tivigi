@@ -1,0 +1,29 @@
+
+svg.BarDisplay {
+   // border:1px solid #000;    
+    height:16px;
+
+    rect.background {
+        display:none
+    }
+    rect.value-bar {
+        fill:#bbb;
+    }
+
+    rect.zero-line {
+        fill:#999;
+    }
+
+    text {        
+        dominant-baseline:central;
+    }
+   
+}
+
+.compare-mrn {
+    svg.BarDisplay {
+        rect.value-bar {
+            fill:#f00;
+        }
+    }
+}

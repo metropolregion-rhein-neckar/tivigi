@@ -1,0 +1,7 @@
+<div class="StyleSwitcher">
+    <label v-if="attributes.length > 1">Darstellung:
+        <select v-model="attribute" >
+            <option v-for="a in attributes" :selected="a == attribute" :value="a">{{getPropertyLabel(a)}}</option>
+        </select>
+    </label>
+</div>

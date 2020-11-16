@@ -1,0 +1,27 @@
+
+// ATTENTION:
+// The styling for MapPrint__PrepareMessage must be located outside of the div.MapPrint
+// because since it is a Draggable, it is removed from its original position in the DOM
+// and re-attached to the <body> element. Thus, CSS rules that depend on the element hierarchy
+// don't apply any more!
+    
+div.MapPrint__Blocker {
+    position:fixed;
+    left:0;
+    top:0;
+    width:100vw;
+    height:100vh;
+    background-color:rgba(0,0,0,0.1);
+}
+
+div.MapPrint__PrepareMessage {
+   
+    padding:20px !important;
+    text-align:center;
+    background-color:#fff;
+    z-index:1;
+
+    div.ProgressBar {
+        background-color:#eee;
+    }
+}

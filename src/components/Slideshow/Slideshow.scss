@@ -1,0 +1,80 @@
+div.Slideshow {
+    position: relative; // Require to make sure that percentual size definitions of children work correctly!
+
+    user-select: none;
+
+    > .Slideshow__Slides {
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        border: none;
+        display: block;
+    }
+}
+
+div.Slideshow--fullscreen {
+    margin: 0;
+    //background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.8);
+    //background-color: #fff;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index:1000;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
+div.Slideshow__Nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    //border: 2px solid #ff0;
+    z-index: 2;
+}
+
+div.Slideshow__Nav__Inner {
+    display: flex;
+    flex-direction: row;
+    //border:1px solid #00f;
+
+    //height:100%;
+
+    > div {
+        flex: 1;
+    }
+}
+
+.Slideshow__Topbar {
+    position: absolute;
+
+    pointer-events: all;
+    width: 100%;
+    text-align: center;
+}
+
+.Slideshow__Button {
+    pointer-events: all;
+    opacity: 0.6;
+
+    &:hover {
+        opacity: 1;
+    }
+
+    transition: 0.5s;
+    margin: 15px;
+    background-color: transparent;
+    border: none;
+    > * {
+        display: block;
+        width: 45px;
+        height: 45px;
+    }
+    padding: 0;
+    z-index: 1;
+}

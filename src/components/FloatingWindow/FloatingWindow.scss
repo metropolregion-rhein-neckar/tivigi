@@ -1,0 +1,116 @@
+$borderRadius: 4px;
+
+div.FloatingWindow__Socket {
+    // This should be the same as 'margin' of the 'Card' component
+    padding: 3px;
+    overflow: auto; // important!
+}
+
+div.FloatingWindow__Socket--hidden {
+    display: none !important;
+}
+
+div.FloatingWindow {
+    height: 100%; // Important!
+
+    user-select: none;
+
+    &:focus > div > div.FloatingWindow__Header {
+        background-color: #0be;
+        color: #fff;
+    }
+
+    > div {
+        height: 100%; // Important!
+
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        border-radius: $borderRadius;
+
+        > div.FloatingWindow__Body {
+            background-color: #fff;
+            flex: 1;
+            overflow: auto; // important!
+
+            // NOTE: The bottom of the body needs a border-radius too! Without it,
+            // the bottom corners won't be curved if the body fills out the entire height of the window!
+            border-bottom-right-radius: $borderRadius;
+            border-bottom-left-radius: $borderRadius;
+        }
+
+        > div.FloatingWindow__Header {
+            border-top-right-radius: $borderRadius;
+            border-top-left-radius: $borderRadius;
+
+            background-color: #ddd;
+            user-select: none;
+            display: flex;
+            align-items: center;
+
+            color: #444;
+
+            font-weight: bold;
+            padding: 4px 8px;
+
+            button {
+                &:hover {
+                    background-color: #f6f6f6;
+                }
+            }
+
+            button.Button--active {
+                background-color: #f0f0f0;
+
+                &:hover {
+                    background-color: #f0f0f0;
+                }
+            }
+
+            > div.FloatingWindow__Header__Text {
+                flex: 1;
+                padding:4px 0px;
+            }
+        }
+    }
+}
+
+div.FloatingWindow--fullscreen {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+
+    > div {
+        > div.FloatingWindow__Header {
+            button.FloatingWindow__DockButton {
+                &.FloatingWindow__DockButton {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+    }
+}
+
+div.FloatingWindow--undocked {
+    position: fixed;
+
+    // This is the resize handle:
+    padding: 7px;
+
+    > div {
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+
+        > div.FloatingWindow__Header {
+            cursor: move;
+
+            button.FloatingWindow__DockButton {
+                &.FloatingWindow__DockButton {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+    }
+}
