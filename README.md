@@ -38,8 +38,7 @@
     - 7.6.) [The DataMapLayer component](#76-the-datamaplayer-component)
       - 7.6.1.) [The layerDef attribute and the layer definitions object structure](#761-the-layerdef-attribute-and-the-layer-definitions-object-structure)
       - 7.6.2.) [The layerID attribute](#762-the-layerid-attribute)
-    - 7.7.) [The `<Data>` component with `name="homeExtent`](#77-the-data-component-with-namehomeextent)
-    - 7.8.) [Wrap-up](#78-wrap-up)
+    - 7.7.) [The `<Data>` component with `name="homeExtent"`](#77-the-data-component-with-namehomeextent)
   - 8.) [Tutorial Step 2: Adding another layer and a layerdefs file](#8-tutorial-step-2-adding-another-layer-and-a-layerdefs-file)
     - 8.1.) [The `<DataJsonFetch>` component](#81-the-datajsonfetch-component)
     - 8.2.) [The second layer, and how it is different from the first](#82-the-second-layer-and-how-it-is-different-from-the-first)
@@ -124,10 +123,10 @@ This allows Vue.js-based applications to be extended with new UI parts "on the f
 
 We have written a beginner tutorial which guides you through the process of creating your first simple Tivigi project. The tutorial is accompanied by a set of example applications, available on GitHub. The examples represent the states of progress of the tutorial at the end of each tutorial step. We recommend to work through the tutorial from the beginning. However, if you run into problems and want to check your code for correctness, or simply want to see how specific things are done, you can always look at the more advanced examples.
 
-
 You can find the example applications here:
 
-TODO Add URLs
+https://github.com/metropolregion-rhein-neckar/tivigi
+
 
 Note that Tivigi itself is a separate npm package. In order to work with the example projects, you do not need to clone the Tivigi repository separately. npm will automatically fetch Tivigi from GitHub as part of its dependency resolve process when you run *npm install*.
 
@@ -149,7 +148,6 @@ As a *minimum*, you should bring with you the following skills:
 
 - Basic understanding of TypeScript, Vue.js and OpenLayers
 - Basic understanding of npm, WebPack and the Node.js-based web front end development ecosystem in general
-
 
 
 ## 5.3. About single-page JavaScript applications
@@ -204,6 +202,10 @@ You can find instructions for how to install these tools on the web. For Ubuntu 
 
 
 ### 5.7.2. Cloning the GitHub repository
+
+Open a terminal window, move your working directory to the location where you want to put the example projects, and enter the following command:
+
+`git clone https://github.com/metropolregion-rhein-neckar/tivigi`
 
 
 ### 5.7.3. Downloading the dependencies with npm
@@ -308,7 +310,7 @@ When a map is initially added to an application, it is empty. A map needs map la
 
 ### 7.6.1. The layerDef attribute and the layer definitions object structure
 
-The attribute `layerDef` expects a JavaScript object of a specific structure, called a *layer definitions object*, to be passed to it. Layer definitions objects support a large number of properties which are documented separately. 
+The attribute `layerDef` expects a JavaScript object of a specific structure, called a *layer definitions object*, to be passed to it. Layer definitions objects support a large number of properties which will be documented documented separately. 
 
 For now, you only need to understand that the JSON structure passed as the `layerDef` attribute defines the world map layer which is displayed on the map. In a typical more complex application, you would not hard-code layer definitions in a template, as it is done here for reasons of simplicity. Instead, layer definitions are typically provided as a separate JSON file and dynamically loaded into an application at run time. You will learn how to do this later in this tutorial.
 
@@ -316,16 +318,11 @@ For now, you only need to understand that the JSON structure passed as the `laye
 
 You probably noticed that the `layerId` attribute appears as a key on the root level of the layer definitions object. The `layerId` attribute tells the `<DataMapLayer>` component which individual layer definition from the layer definitions object it should use. In this case, the layer definitions object contains only one layer definition, specified with the key "osm". However, layer definition objects can generally contain an unlimited number of different layer definitions. A typical Tivigi application uses at least one layer definitions file in which most or all of the map layers used in the application are defined.
 
-## 7.7. The `<Data>` component with `name="homeExtent`
+## 7.7. The `<Data>` component with `name="homeExtent"`
 
 This is a generic data component, i.e. it can hold any type of JavaScript object and does not have a special constructor and special attributes to inititalize it. It simply puts the variable psased to the `:value` attribute into the `local` container. In this case, the value is the initial extent of the map, i.e. the region of the world the map panel should show when the app is started. 
 
 In this case, the object is an OpenLayers map extent array that covers the Rhine-Neckar Metropolitan Area. If you look at the `<MapPanel>` element, you see that it has an attribute named `:initialExtent` to which the object `local.homeExtent` is passed. This tells the <MapPanel> to set itself to the given map extent when it is instantiated.
-
-
-## 7.8. Wrap-up
-
-That's it. You should now have a rough understanding of how this first minimal example, and Tivigi applications in general, work. In the next tutorial step, we will begin to modify the code and add a second layer.
 
 
 # 8. Tutorial Step 2: Adding another layer and a layerdefs file
@@ -337,6 +334,7 @@ Now move your command line working directory to `example02/` and run `npm instal
 You should see a similar picture as with the first example, but with an additional map layer that shows the 15 districts of the Rhine-Neckar Metropolitan Area. The districts layer is rendered semi-transparent so that the OSM background map shows through.
 
 Now open the file `example02/src/App/App.html` in your editor and look at it. The most visible difference to the first example is that the layer definition JSON that was the value of the `<DataMapLayer>`'s `layerDef` attribute is gone. It is replaced by `local.layerDef`. What is `local.layerDef` and where does it come from? If you look further, you'll notice that it defined by a newly added component: `<DataJsonFetch name="layerdef" url="layerdefs.json" />`. 
+
 
 ## 8.1. The `<DataJsonFetch>` component
 `<DataJsonFetch>` is a component that requests a JSON resource from and URL in the background, parses the JSON once it is loaded and puts the result under the specified name into the `local` container. Vue.js reactivity "magic" ensures that the other components are automatically informed when the data is available, and update themselves. The file behind the URL configured in the `<DataJsonFetch>` component has the same structure as the hard-coded layer definition JSON in example 01, only with the addition of a second layer.
