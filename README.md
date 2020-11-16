@@ -294,7 +294,7 @@ The "container variable" `local` only exists to prevent accidential overwriting 
 We see three custom HTML elements, respectively Vue.js components, in the template code of the first example: `<Data>`,`<DataMap>`, `<DataMapLayer>` and `<MapPanel>`.
 
 ## 7.3. About "data components" in general
-In Tivigi, components with names that begin with "Data" have *no visual representation*. They are called "data components". Their templates are empty, they don't display anything and do not support direct user interaction. Data components are *not a native Vue.js feature or concept*. There is no technical difference to "normal" components at all (other than the lack of a template). The concept of data components as a distinct type of component in Tivigi was defined by us and solely fulfills the purpose of providing a better understanding of a component's role.
+In Tivigi, components with names that begin with "Data" have *no visual representation*. They are called "data components". Their templates are empty, they don't display anything and do not support direct user interaction. Data components are *not a native Vue.js feature or concept*. There is no technical difference to "normal" components at all (other than the lack of a template). The concept of data components was defined by us and solely fulfills the purpose of providing a better understanding of a component's role.
 
 ## 7.4. The DataMap component
 
