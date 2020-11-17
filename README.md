@@ -220,7 +220,7 @@ You can find instructions for how to install these tools on the web. For Ubuntu 
 
 Open a terminal window, move your working directory to the location where you want to put the example projects, and enter the following command:
 
-`git clone https://github.com/metropolregion-rhein-neckar/tivigi`
+`git clone https://github.com/metropolregion-rhein-neckar/tivigi-tutorial-examples`
 
 
 ### 6.7.3. Downloading the dependencies with npm
