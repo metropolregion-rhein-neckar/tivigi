@@ -9,7 +9,6 @@ import { FeatureLike } from 'ol/Feature';
 
 //################# BEGIN Tivigi imports #################
 import TableView from '../../TableView/TableView'
-import TableView2 from '../../TableView2/TableView2'
 import { FieldConfig } from 'tivigi/src/util/FieldConfig';
 import FeatureHighlightTool from 'tivigi/src/components/gis/FeatureHighlightTool/FeatureHighlightTool'
 import FeatureSelectTool from 'tivigi/src/components/gis/FeatureSelectTool/FeatureSelectTool'
@@ -26,8 +25,7 @@ import WithRender from './AttributesTable.html';
     components: {
         FeatureHighlightTool,
         FeatureSelectTool,
-        TableView,
-        TableView2
+        TableView
     },
 })
 export default class AttributesTable extends Vue {
