@@ -38,7 +38,7 @@
     - 8.5.) [The MapPanel component](#85-the-mappanel-component)
     - 8.6.) [The DataMapLayer component](#86-the-datamaplayer-component)
       - 8.6.1.) [The layerDef attribute and the layer definitions object structure](#861-the-layerdef-attribute-and-the-layer-definitions-object-structure)
-      - 8.6.2.) [The layerID attribute](#862-the-layerid-attribute)
+      - 8.6.2.) [The layerId attribute](#862-the-layerid-attribute)
     - 8.7.) [The `<Data>` component with `name="homeExtent"`](#87-the-data-component-with-namehomeextent)
   - 9.) [Tutorial Step 2: Adding another layer and a layerdefs file](#9-tutorial-step-2-adding-another-layer-and-a-layerdefs-file)
     - 9.1.) [The `<DataJsonFetch>` component](#91-the-datajsonfetch-component)
@@ -140,7 +140,7 @@ We have written a beginner tutorial which guides you through the process of crea
 
 You can find the example applications here:
 
-https://github.com/metropolregion-rhein-neckar/tivigi
+https://github.com/metropolregion-rhein-neckar/tivigi-examples
 
 
 Note that Tivigi itself is a separate npm package. In order to work with the example projects, you do not need to clone the Tivigi repository separately. npm will automatically fetch Tivigi from GitHub as part of its dependency resolve process when you run *npm install*.
@@ -174,15 +174,15 @@ Tivigi is a TypeScript/JavaScript web front end library. It is used to build so 
 Vue.js is a JavaScript library which greatly simplifies the creation of JavaScript single page applications. It provides a foundation to create HTML-, Javascript- and CSS-based user interfaces in a very simple, elegant and consistent way. The main concepts of Vue.js are *components* and *reactivity*. 
 
 ### 6.4.1. What are Vue.js components?
-Each "atomic" block of a Vue.js-based user interface is a component. A component consists of a JavaScript object that contains the component's logic, and a HTML-like mark-up fragment called "template", which defines the component's appearance in the rendered HTML document that represents the application UI.
+Each "atomic" block of a Vue.js-based user interface is a component. A component consists of a JavaScript object that contains the component's logic, and an HTML-like mark-up fragment called "template", which defines the component's appearance in the rendered HTML document that represents the application UI.
 
-The best way to think of Vue.js components is "custom HTML elements". This is really a very precise definition, since components are indeed added to the the templates of other components in the form of HTML elements with the name of the respective component. This is a very powerful concept, since it allows developers to create complex, custom user interfaces with exactly the same principles as they do it with standard HTML since three decades. Other modern JavaScript UI foundation libraries like React and Angular use the same approach, which makes them very similar to Vue.js in many ways.
+The best way to think of Vue.js components is "custom HTML elements". This is really a very precise definition, since components are indeed added to the templates of other components in the form of HTML elements with the name of the respective component. This is a very powerful concept, since it allows developers to create complex, custom user interfaces with exactly the same principles as they do it with standard HTML since three decades. Other modern JavaScript UI foundation libraries like React and Angular use the same approach, which makes them very similar to Vue.js in many ways.
 
 ### 6.4.2. What is Vue.js reactivity?
 
 *Reactivity*, also called "*data binding*" is the second cornerstone of Vue.js. The term refers to the technology implemented by Vue.js internally that can automatically synchronize HTML element attributes with JavaScript expressions like variables and function return values from the component's JavaScript data model. Typically, this happens in the direction from the JavaScript code to the HTML code, but in some cases it works in the other direction too.
 
-An example: If you connect a variable in your JavaScript code with a HTML text input field through reactivity using the Vue.js-specific `v-model` attribute, then whenever the content of the variable is changed by JavaScript code, the input field's content is automatically synchronized, too, and also vice versa: The JavaScript variable is automatically updated with the latest value entered into the HTML input field by the user. 
+An example: If you connect a variable in your JavaScript code with an HTML text input field through reactivity using the Vue.js-specific `v-model` attribute, then whenever the content of the variable is changed by JavaScript code, the input field's content is automatically synchronized, too, and also vice versa: The JavaScript variable is automatically updated with the latest value entered into the HTML input field by the user. 
 
 This powerful feature greatly reduces the amount of "boilerplate" code required to build HTML user interfaces, so that developers can focus on the implementation of actual application logic.
 
@@ -268,7 +268,7 @@ Now, finally, things are getting serious! Let us take a closer look how the thin
 Start the text editor of your choice (we recommend Visual Studio Code for its great TypeScript and general web dev support) and open the file `<project root>/src/components/App/App.html`. As the file name says, it is a piece of HTML-like code that defines the application's UI. All the files within the "App" folder together define a Vue.js component. "App" is the *root component* of the application, which means that it sits at the top of the tree of nested components which typically makes up a Vue.js application. The file `App.html` is the App component's *template file*. Its syntax is based on HTML, but enhanced with some Vue.js-specific extensions, including the possibility to use other Vue.js components as custom HTML elements.
 
 ## 7.2. A side note about the index.html file
-If you know HTML, you probably notice that the markup in the file does not represent a full, valid HTML document. It is just a HTML *fragment*, composed of a `div` element and its children. The rest of what defines a complete valid HTML document resides in the file `<project root>/public/index.html`. The output of the application's *root component* and its nested child components (i.e. the entire Vue.js application) is automatically *injected* into the `index.html` file at run time by Vue.js. The vast majority of development work happens in Vue.js component files, the `index.html` file remains very short and is rarely edited.
+If you know HTML, you probably notice that the markup in the file does not represent a full, valid HTML document. It is just an HTML *fragment*, composed of a `div` element and its children. The rest of what defines a complete valid HTML document resides in the file `<project root>/public/index.html`. The output of the application's *root component* and its nested child components (i.e. the entire Vue.js application) is automatically *injected* into the `index.html` file at run time by Vue.js. The vast majority of development work happens in Vue.js component files, the `index.html` file remains very short and is rarely edited.
 
 ## 7.3. Parts of a Vue.js component
 A Vue.js component typically consists of at least two files: The template (HTML fragment) file that defines the component's markup output, and a JavaScript or TypeScript file that defines the components program logic, i.e. how the component reacts to user input, what data is processes in which way, and so on. Often, a component also has its own SCSS style file, and sometimes additional resources like image files.
@@ -288,7 +288,7 @@ Over the course of these tutorials, the App component's template file (`App.html
 Let's get back to the code. If you haven't done it yet, open the file `<project root>/src/components/App/App.html` in your editor (again), and have a look at it. What we see is a combination of "traditional" HTML elements - actually just the `<div>` that wraps everything else - and custom HTML elements which are backed by Vue.js components: `<Data>`, `<DataMap>`, `<DataMapLayer>` and `<MapPanel>`.
 
 ## 8.1. Reactive HTML attributes
-You see that the aforementioned custom elements have a colon in front of some of their attributes. The colon is Vue.js-specific syntax and specifies that the attribute's value is not the *actual* attribute string constant (as it always is in plain HTML), but should be interpreted as *JavaScript code*. That code is interpreted in the scope of the component's JavaScript/TypeScript object instance defined in the component's TypeScript (.ts) file. In most cases, the code string will just contain a member variable of the object, meaning the the variable's value is passed as the attribute value. But more complex JavaScript expressions like method calls or constant like numbers, boolean symbols ("true"/"false") or "null" are possible too.
+You see that the aforementioned custom elements have a colon in front of some of their attributes. The colon is Vue.js-specific syntax and specifies that the attribute's value is not the *actual* attribute string constant (as it always is in plain HTML), but should be interpreted as *JavaScript code*. That code is interpreted in the scope of the component's JavaScript/TypeScript object instance defined in the component's TypeScript (.ts) file. In most cases, the code string will just contain a member variable of the object, meaning the variable's value is passed as the attribute value. But more complex JavaScript expressions like method calls or constant like numbers, boolean symbols ("true"/"false") or "null" are possible too.
 
 As an example: The expression `<MapPanel :map="local.map"/>` says that the component instance's member variable `this.local.map` (actually the member variable `map` of the component's member variable `local`, i.e. a two levels deep nesting hierarchy) should be passed as the value of the `<MapPanel>` element's `map` attribute. Without the colon, attributes are interpreted as constant strings just like in plain HTML.
 
@@ -300,7 +300,7 @@ To recapitulate:
 
 - `<DataMap name="map" />` creates an OpenLayers Map instance and stores is as a child property of the component instance's `local` property with the property name specified by the `name` attribute.
 
-- Child properties of `local` can be accessed in template code though `local.<property name>`, just like *any* member variable or method of the component can be accessed in template code by their JavaScript expression.
+- Child properties of `local` can be accessed in template code through `local.<property name>`, just like *any* member variable or method of the component can be accessed in template code by their JavaScript expression.
 
 The "container variable" `local` only exists to prevent accidential overwriting of predefined component member variables with user-defined ones. It is not a native feature of Vue.js, but was introduced by us as a convenience feature to support the high degree of declarative programming in Tivigi.
 
@@ -325,11 +325,11 @@ When a map is initially added to an application, it is empty. A map needs map la
 
 ### 8.6.1. The layerDef attribute and the layer definitions object structure
 
-The attribute `layerDef` expects a JavaScript object of a specific structure, called a *layer definitions object*, to be passed to it. Layer definitions objects support a large number of properties which will be documented documented separately. 
+The attribute `layerDef` expects a JavaScript object of a specific structure, called a *layer definitions object*, to be passed to it. Layer definitions objects support a large number of properties which will be documented separately. 
 
 For now, you only need to understand that the JSON structure passed as the `layerDef` attribute defines the world map layer which is displayed on the map. In a typical more complex application, you would not hard-code layer definitions in a template, as it is done here for reasons of simplicity. Instead, layer definitions are typically provided as a separate JSON file and dynamically loaded into an application at run time. You will learn how to do this later in this tutorial.
 
-### 8.6.2. The layerID attribute
+### 8.6.2. The layerId attribute
 
 You probably noticed that the `layerId` attribute appears as a key on the root level of the layer definitions object. The `layerId` attribute tells the `<DataMapLayer>` component which individual layer definition from the layer definitions object it should use. In this case, the layer definitions object contains only one layer definition, specified with the key "osm". However, layer definition objects can generally contain an unlimited number of different layer definitions. A typical Tivigi application uses at least one layer definitions file in which most or all of the map layers used in the application are defined.
 
@@ -352,7 +352,7 @@ Now open the file `example02/src/App/App.html` in your editor and look at it. Th
 
 
 ## 9.1. The `<DataJsonFetch>` component
-`<DataJsonFetch>` is a component that requests a JSON resource from and URL in the background, parses the JSON once it is loaded and puts the result under the specified name into the `local` container. Vue.js reactivity "magic" ensures that the other components are automatically informed when the data is available, and update themselves. The file behind the URL configured in the `<DataJsonFetch>` component has the same structure as the hard-coded layer definition JSON in example 01, only with the addition of a second layer.
+`<DataJsonFetch>` is a component that requests a JSON resource from an URL in the background, parses the JSON once it is loaded and puts the result under the specified name into the `local` container. Vue.js reactivity "magic" ensures that the other components are automatically informed when the data is available, and update themselves. The file behind the URL configured in the `<DataJsonFetch>` component has the same structure as the hard-coded layer definition JSON in example 01, only with the addition of a second layer.
 
 ## 9.2. The second layer, and how it is different from the first
 This second layer is added to the map through another `<DataMapLayer>` which was added to the code. It refers to the same layer definitions object as the first one, only the `:layerId` attribute is different. This second layer contains the Rhine-Neckar Metropolitan Area districts.
@@ -372,7 +372,7 @@ They new components are connected in the following way:  The `<LayerTree>` is th
 
 ## 10.2. The `<Modal>` component
 
-The `<LayerTree>` is wrapped in a `<Modal>` component. Under the hood, the `<Modal>` is a HTML `<div>` that is "upgraded" with the following behaviours:
+The `<LayerTree>` is wrapped in a `<Modal>` component. Under the hood, the `<Modal>` is an HTML `<div>` that is "upgraded" with the following behaviours:
 
 First, user interaction (i.e. mouse clicks or taps) *outside* of the `<Modal>` can be blocked. This is the "classic" meaning of a "modal dialog" in UI terminology. Though, in Tivigi, blocking of outside interaction is optional and disabled in this example.
 
@@ -395,7 +395,7 @@ Adding these features is straightforward. They are implemented as components whi
 
 ## 11.1. The `<ActiveLayers>` component
 
-The `<ActiveLayers>` component displays a list of the layers that are currently added to the map. It also displays legend information for each layer, if available. Finally, it features buttons to trigger various actions for each layer, like e.g. setting the map view to the extent of the layer, or opening the layer's attributes table. The available options depend on the layer type and the configuration of the The `<ActiveLayers>` component. Like for most of the components we have introduced so far, the most important attribute of the The `<ActiveLayers>` component is `:map`, which is used to pass a reference to the OpenLayers map object of which the active layers are shown.
+The `<ActiveLayers>` component displays a list of the layers that are currently added to the map. It also displays legend information for each layer, if available. Finally, it features buttons to trigger various actions for each layer, like e.g. setting the map view to the extent of the layer, or opening the layer's attributes table. The available options depend on the layer type and the configuration of the `<ActiveLayers>` component. Like for most of the components we have introduced so far, the most important attribute of the `<ActiveLayers>` component is `:map`, which is used to pass a reference to the OpenLayers map object of which the active layers are shown.
  
 
 ## 11.2. The `<FeatureInfoTool>` component
