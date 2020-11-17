@@ -351,7 +351,7 @@ Now move your command line working directory to `example02/` and run `npm instal
 
 You should see a similar picture as with the first example, but with an additional map layer that shows the 15 districts of the Rhine-Neckar Metropolitan Area. The districts layer is rendered semi-transparent so that the OSM background map shows through.
 
-Now open the file `example02/src/App/App.html` in your editor and look at it. The most visible difference to the first example is that the layer definition JSON that was the value of the `<DataMapLayer>`'s `layerDef` attribute is gone. It is replaced by `local.layerDef`. What is `local.layerDef` and where does it come from? If you look further, you'll notice that it defined by a newly added component: `<DataJsonFetch name="layerdef" url="layerdefs.json" />`. 
+Now open the file `example02/src/App/App.html` in your editor and look at it. The most visible difference to the first example is that the layer definition JSON that was the value of the `<DataMapLayer>`'s `layerDef` attribute is gone. It is replaced by `local.layerDef`. What is `local.layerDef` and where does it come from? If you look further, you'll notice that it is defined by a newly added component: `<DataJsonFetch name="layerdef" url="layerdefs.json" />`. 
 
 
 ## 9.1. The `<DataJsonFetch>` component
