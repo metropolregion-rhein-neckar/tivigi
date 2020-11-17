@@ -18,10 +18,10 @@
       - 6.4.2.) [What is Vue.js reactivity?](#642-what-is-vuejs-reactivity)
     - 6.5.) [About TypeScript](#65-about-typescript)
     - 6.6.) [About toolchain complexity](#66-about-toolchain-complexity)
-    - 6.7.) [Setting up the first sample project](#67-setting-up-the-first-sample-project)
-      - 6.7.1.) [Installed software prerequisites](#671-installed-software-prerequisites)
+    - 6.7.) [Setting up a development environment](#67-setting-up-a-development-environment)
+      - 6.7.1.) [Software prerequisites to install](#671-software-prerequisites-to-install)
       - 6.7.2.) [Cloning the GitHub repository](#672-cloning-the-github-repository)
-      - 6.7.3.) [Downloading the dependencies with npm](#673-downloading-the-dependencies-with-npm)
+      - 6.7.3.) [Downloading dependencies with npm](#673-downloading-dependencies-with-npm)
     - 6.8.) [A look into the Tivigi source folder](#68-a-look-into-the-tivigi-source-folder)
     - 6.9.) [Running the sample application](#69-running-the-sample-application)
   - 7.) [Diving into the code](#7-diving-into-the-code)
@@ -199,9 +199,10 @@ Gladly, many of these tools actually exist to *simplify* the process. This is a 
 
 But enough scaring. You will see that the actual process of getting your first Tivigi application to run involves just a few simple steps. There will be a lot of "magic" involved and you won't understand everything that is going on, but it still greatly helps to get started.
 
-## 6.7. Setting up the first sample project
 
-### 6.7.1. Installed software prerequisites
+## 6.7. Setting up a development environment
+
+### 6.7.1. Software prerequisites to install
 
 In order to work through this tutorial, you need to have the following tools installed on your computer:
 
@@ -223,9 +224,10 @@ Open a terminal window, move your working directory to the location where you wa
 `git clone https://github.com/metropolregion-rhein-neckar/tivigi-tutorial-examples`
 
 
-### 6.7.3. Downloading the dependencies with npm
 
-Change your command line working directory to the repository folder that you have just cloned from GitHub. Inside, enter the follwing command:
+### 6.7.3. Downloading dependencies with npm
+
+Change your command line working directory to the subfolder `example01_my_first_map/` within the repository folder that you have just cloned from GitHub. Inside, enter the follwing command:
 
 ```npm install```
 
@@ -234,7 +236,7 @@ This will download all JavaScript tools and libraries which are required to buil
 
 ## 6.8. A look into the Tivigi source folder
 
-Now that we have downloaded our project's dependencies, including Tivigi, let's take a quick look at the Tivigi source folder. You wil find it in the subdirectory ```node_modules/tivigi/src/``` of your project folder (generally, all dependencies managed by npm are saved in the ```node_modules``` folder).
+Now that we have downloaded our project's dependencies, including Tivigi, let's take a quick look at the Tivigi source folder. You wil find it in the subdirectory ```node_modules/tivigi/src/``` of the example project folder (generally, all dependencies managed by npm are saved in the ```node_modules``` folder).
 
 The ```tivigi/src/``` folder contains a couple of files and subdirectories of its own:
 
@@ -246,7 +248,7 @@ The ```tivigi/src/``` folder contains a couple of files and subdirectories of it
 
 - The file *components.scss* contains some standard Tivigi style definitions. The suffix "SCSS" means that the file is not standard CSS, but a form of extended CSS (with additional syntax features) that is compiled to normal CSS by the build tools. In addition to *components.scss*, most Tivigi components have their own SCSS style files that define styles which only apply to the respective component. *components.scss* contains "general" style defintions which apply to multiple components, or to standard HTML classes which are not part of a Tivigi Vue.js component.
 
-- The *shim-\*.d.ts* files are required by the TypeScript compiler. The inform the compiler about the existence of various JavaScript modules it would otherwise not know about.
+- The *shims-\*.d.ts* files are required by the TypeScript compiler. The inform the compiler about the existence of various JavaScript modules it would otherwise not know about.
 
 
 ## 6.9. Running the sample application
@@ -258,6 +260,7 @@ Now that we have downloaded the dependencies, our application is ready to run. O
 The application is automatically compiled, and after a couple of seconds (depending on your computer's speed), it is accessible through a web browser at the URL `http://localhost:8080`. Note that 8080 is the default port which is used if it is available. If port 8080 is already occupied by another program, the next higher number (8081) is tried, and so on. In any case, the console output of the web server will tell you on with port it is listening.
 
 If everything went according to plan, you should see an interactive world map in your browser window. The map should show the Rhine-Neckar Metropolitan Area in Germany - Tivigi's birth place :).
+
 
 # 7. Diving into the code
 
@@ -423,17 +426,6 @@ The `<MouseCoordinatesTool>` component displays the geographic coordinates of th
 The `<SetMapExtentTool>` component sets the view of the connected OpenLayers map object (`:map` attribute) to the extent passed as its `:extent` attribute, whenever the value of the variable passed as its `:tigger` attribute (usually a boolean) changes. The `<SetMapExtentTool>` component does not have its own user interface, it is completely controlled through its trigger variable, named `local.mapHomeTrigger` here.
 
 To change the value of `local.mapHomeTrigger`, we have added another `<SuperButton>` component to our toolbar at the top of the page. This `<SuperButton>` has an `@click` event handler defined which negates the value of `local.mapHomeTrigger` (from `false` to `true` an back) each time the button is clicked. This triggers the `<SetMapExtentTool>`'s action.
-
-
-
-
-
-
-
-
-
-
-
 
 
 
