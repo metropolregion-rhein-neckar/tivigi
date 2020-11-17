@@ -340,7 +340,7 @@ You probably noticed that the `layerId` attribute appears as a key on the root l
 
 This is a generic data component, i.e. it can hold any type of JavaScript object and does not have a special constructor and special attributes to inititalize it. It simply puts the variable psased to the `:value` attribute into the `local` container. In this case, the value is the initial extent of the map, i.e. the region of the world the map panel should show when the app is started. 
 
-In this case, the object is an OpenLayers map extent array that covers the Rhine-Neckar Metropolitan Area. If you look at the `<MapPanel>` element, you see that it has an attribute named `:initialExtent` to which the object `local.homeExtent` is passed. This tells the <MapPanel> to set itself to the given map extent when it is instantiated.
+In this case, the object is an OpenLayers map extent array that covers the Rhine-Neckar Metropolitan Area. If you look at the `<MapPanel>` element, you see that it has an attribute named `:initialExtent` to which the object `local.homeExtent` is passed. This tells the `<MapPanel>` to set itself to the given map extent when it is instantiated.
 
 
 # 9. Tutorial Step 2: Adding another layer and a layerdefs file
