@@ -25,7 +25,7 @@ import WithRender from './AttributesTable.html';
     components: {
         FeatureHighlightTool,
         FeatureSelectTool,
-        TableView
+        TableView        
     },
 })
 export default class AttributesTable extends Vue {

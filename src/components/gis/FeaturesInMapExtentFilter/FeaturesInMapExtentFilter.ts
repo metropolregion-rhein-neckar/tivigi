@@ -4,7 +4,8 @@ import * as ol from 'ol/'
 import * as ol_layer from 'ol/layer'
 
 import WithRender from './FeaturesInMapViewFilter.html';
-import { FeatureLike } from 'tivigi/node_modules/@types/ol/Feature';
+import { FeatureLike } from 'ol/Feature';
+
 
 
 @WithRender

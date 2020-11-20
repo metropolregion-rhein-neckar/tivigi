@@ -28,10 +28,7 @@ export default class DataCkanLayersTree extends AbstractData {
 
 
 
-    initialLayersConfig = [
-
-      
-    ]
+    initialLayersConfig : Array<any> = []
 
 
     @Watch('map')

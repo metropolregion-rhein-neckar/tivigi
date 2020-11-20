@@ -9,7 +9,8 @@ import * as ol_source from 'ol/source'
 import * as ol_layer from 'ol/layer'
 
 import WithRender from './FeaturesInPolygonFilter.html';
-import { Extent } from 'tivigi/node_modules/@types/ol/extent';
+import { Extent } from 'ol/extent';
+
 
 
 
