@@ -212,7 +212,7 @@ In order to work through this tutorial, you need to have the following tools ins
 - A text editor suitable for programming. We recommend Visual Studio code for its great TypeScript and general web dev support.
 - Of course, a modern web browser. We recomend Mozilla Firefox, Microsoft Edge, Google Chrome or derived products.
 
-You can find instructions for how to install these tools on the web. For Ubuntu 20.04, it's
+You can find instructions for how to install these tools on the web. On Ubuntu 20.04, you can install *git* and *Node.js* with the following terminal command:
 
 ```sudo apt install git nodejs```.
 
@@ -246,7 +246,9 @@ The ```tivigi/src/``` folder contains a couple of files and subdirectories of it
 
 - The folders *olVectorLayerStyling*, *treeUtil* and *util* contain "helper" functions and classes which are used by the components and directives.
 
-- The file *components.scss* contains some standard Tivigi style definitions. The suffix "SCSS" means that the file is not standard CSS, but a form of extended CSS (with additional syntax features) that is compiled to normal CSS by the build tools. In addition to *components.scss*, most Tivigi components have their own SCSS style files that define styles which only apply to the respective component. *components.scss* contains "general" style defintions which apply to multiple components, or to standard HTML classes which are not part of a Tivigi Vue.js component.
+- The file *components.scss* contains some standard Tivigi style definitions. The suffix "SCSS" means that the file is not standard CSS, but a form of extended CSS (with additional syntax features) that is compiled to normal CSS by the build tools. SCSS is an extension of normal CSS in the same way as TypeScript is an extension of JavaScript: Every valid CSS file is also a valid SCSS file, but SCSS files can have additional elements that are *not* part of the standard CSS specification. 
+
+In addition to *components.scss*, most Tivigi components have their own SCSS style files that define styles which only apply to the respective component. *components.scss* contains "general" style defintions which apply to multiple components, or to standard HTML classes which are not part of a Tivigi Vue.js component.
 
 - The *shims-\*.d.ts* files are required by the TypeScript compiler. The inform the compiler about the existence of various JavaScript modules it would otherwise not know about.
 
