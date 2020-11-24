@@ -57,6 +57,7 @@
     - 12.3.) [The `<SetMapExtentTool>` component](#123-the-setmapextenttool-component)
   - 13.) [Troubleshooting](#13-troubleshooting)
     - 13.1.) [Problem: First setting of previously undefined variables in templates trigger component reload](#131-problem-first-setting-of-previously-undefined-variables-in-templates-trigger-component-reload)
+    - 13.2.) [Problem: `local.<something>` is undefined even though a data component with `name="<something>"` exists](#132-problem-localsomething-is-undefined-even-though-a-data-component-with-namesomething-exists)
 
 # 1. Tivigi Release Announcement
 
@@ -439,5 +440,8 @@ In the "troubleshooting" section, we collect solutions to typical problems that 
 
 ## 13.1. Problem: First setting of previously undefined variables in templates trigger component reload
 
-Solution: Make sure that you define and initialize each variable you use in a template with a `<Data>` component. Otherwise, if a previously undefined variable is set for the first time, a component reload is triggered, which resets the component to it initial state. This can be a very undesired effect in cases where users can change a component's state (e.g. opening/closing/moving child windows), since these changes will be unexpectedly undone.
+Make sure that you define and initialize each variable you use in a template with a `<Data>` component. Otherwise, if a previously undefined variable is set for the first time, a component reload is triggered, which resets the component to it initial state. This can be a very undesired effect in cases where users can change a component's state (e.g. opening/closing/moving child windows), since these changes will be unexpectedly undone.
 
+## 13.2. Problem: `local.<something>` is undefined even though a data component with `name="<something>"` exists
+
+Make sure that the data component is a *direct* child of your template HTML element. Data components *must not be nested* in deeper levels of the template HTML document tree.
