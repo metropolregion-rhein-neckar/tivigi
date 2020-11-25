@@ -5,13 +5,13 @@ import * as ol from 'ol/'
 import * as ol_layer from 'ol/layer'
 import * as ol_source from 'ol/source'
 import * as ol_proj from 'ol/proj'
-import { DragPan, Interaction } from 'ol/interaction';
+import { DragPan, Interaction } from 'ol/interaction'
 
-import RenderEvent from 'ol/render/Event';
-import { getRenderPixel } from 'ol/render';
-import { Coordinate } from 'ol/coordinate';
+import RenderEvent from 'ol/render/Event'
+import { getRenderPixel } from 'ol/render'
+import { Coordinate } from 'ol/coordinate'
 
-import WithRender from './MapExplorerCursor.html';
+import WithRender from './MapExplorerCursor.html'
 
 @WithRender
 @Component({
@@ -123,10 +123,7 @@ export default class MapExplorerCursor extends Vue {
             return
         }
 
-
-
         this.onPositionChange()
-
      
         this.map.addLayer(this.layer)
         this.layer.setVisible(this.enabled)
@@ -136,6 +133,9 @@ export default class MapExplorerCursor extends Vue {
         this.layer.on('prerender', this.onBaseLayerPrerender)
         this.layer.on('postrender', this.onBaseLayerPostrender)
 
+        // TODO: 4 Remove event listener from previous map instance
+        this.map.on("change:target", this.onMapTargetChange)
+
 
         for (let inter of this.map.getInteractions().getArray()) {
             if (inter instanceof DragPan) {
@@ -143,20 +143,6 @@ export default class MapExplorerCursor extends Vue {
                 break
             }
         }
-
-        let target = this.map.getTarget() as HTMLElement
-
-
-        target.addEventListener("mousedown", this.onMouseDown)
-        target.addEventListener("mouseup", this.onMouseUp)
-        target.addEventListener("mousemove", this.onMouseMove)
-
-        target.addEventListener("touchstart", this.onTouchStart)
-        target.addEventListener("touchend", this.onTouchEnd)
-        target.addEventListener("touchmove", this.onTouchMove)   
-        
-        // Emit initial clip extent to parent component:
-        //this.onClipAreaChanged()
     }
 
 
@@ -279,6 +265,39 @@ export default class MapExplorerCursor extends Vue {
 
             ctx.fillText(text, renderPixel[0] + innerCircleRadius + (cr / 2 - textSize.width / 2), renderPixel[1] + 4)
         }
+    }
+
+
+    // NOTE: The type of 'evt' should be 'ObjectEvent', but specifying this causes a build error
+    onMapTargetChange(evt : any) {
+
+        let oldTarget = evt.oldValue
+
+        if (oldTarget instanceof HTMLElement) {
+            oldTarget.removeEventListener("mousedown", this.onMouseDown)
+            oldTarget.removeEventListener("mouseup", this.onMouseUp)
+            oldTarget.removeEventListener("mousemove", this.onMouseMove)
+    
+            oldTarget.removeEventListener("touchstart", this.onTouchStart)
+            oldTarget.removeEventListener("touchend", this.onTouchEnd)
+            oldTarget.removeEventListener("touchmove", this.onTouchMove)   
+        }
+
+        
+        let target = this.map.getTarget() as HTMLElement
+
+        if (target == undefined) {
+            return
+        }
+
+
+        target.addEventListener("mousedown", this.onMouseDown)
+        target.addEventListener("mouseup", this.onMouseUp)
+        target.addEventListener("mousemove", this.onMouseMove)
+
+        target.addEventListener("touchstart", this.onTouchStart)
+        target.addEventListener("touchend", this.onTouchEnd)
+        target.addEventListener("touchmove", this.onTouchMove)           
     }
 
 

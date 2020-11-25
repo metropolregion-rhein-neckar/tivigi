@@ -47,7 +47,8 @@ export default class MyLocationTool extends Vue {
     }
 
 
-    onGeolocationSuccess(position: Position) {
+    // NOTE: The type of 'position' should be 'Position', but specifying this causes a build error
+    onGeolocationSuccess(position: any) {
 
         this.map.getView().setCenter(ol_proj.transform([position.coords.longitude, position.coords.latitude], 'EPSG:4326', this.map.getView().getProjection()))
         this.map.getView().setZoom(this.zoom)
@@ -58,7 +59,8 @@ export default class MyLocationTool extends Vue {
     }
 
 
-    onGeolocationError(error: PositionError) {
+    // NOTE: The type of 'error' should be 'PositionError', but specifying this causes a build error
+    onGeolocationError(error: any) {
         alert("Ihr Standort konnte nicht ermittelt werden.")
 
         this.$emit("locationerror", error)

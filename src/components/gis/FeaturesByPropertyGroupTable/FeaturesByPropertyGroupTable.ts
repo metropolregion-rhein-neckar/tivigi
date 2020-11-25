@@ -13,8 +13,6 @@ import WithRender from './FeaturesByPropertyGroupTable.html';
 })
 export default class FeaturesByPropertyGroupTable extends Vue {
 
-    @Prop()
-    layer!: ol_layer.Vector
 
     @Prop()
     property!: string

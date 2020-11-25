@@ -1,0 +1,23 @@
+
+a.ListItem {
+    color: #444;
+    font-weight: bold;
+
+    span {
+        color: #000;
+        font-size: 0.8em;
+    }
+
+    margin: 2px;
+
+    text-decoration: none;
+    display: block;
+    padding: 6px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #ccc;
+
+    &:hover {
+        background-color: #eee;
+    }
+}

@@ -1,4 +1,4 @@
-<div class="ListView">
+<div class="List">
 
     <template v-if="items.length == 0">
 
@@ -8,9 +8,13 @@
     <template v-if="items.length > limit">
 
         <em>Mehr als {{limit}} Einträge im aktuellen Kartenausschnitt. Zoomen Sie weiter hinein.</em>
-        
-
+    
     </template>
-    <component v-else v-for="item in items" v-bind:is="view" :item="item" />
+
+    <template v-else>
+       
+        <slot v-for="item in items" :item="item"/>
+            
+    </template>
 
 </div>
