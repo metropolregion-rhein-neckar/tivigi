@@ -41,6 +41,10 @@ export default class MapPanel extends Vue {
             return
         }
 
+        if (!(this.map instanceof ol.Map)) {
+            return
+        }
+
         if (this.onlyOnTrue && !this.trigger) {
             return
         }

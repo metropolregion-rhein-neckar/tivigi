@@ -62,6 +62,18 @@ export default class DataMapLayer extends AbstractData {
     }
 
 
+    @Watch('zIndex')
+    onZIndexChange() {
+
+        if (this.layer == null) {
+            console.log("Z-Index change: Layer is null")
+            return
+        }
+
+        this.layer.setZIndex(this.zIndex)
+    }
+
+
     setup() {
 
         if (!(this.map instanceof ol.Map)) {
@@ -81,14 +93,38 @@ export default class DataMapLayer extends AbstractData {
             return
         }
 
-        let layer = createLayerFromConfig(this.layerDef[this.layerId], this.map.getView().getProjection())
 
-        if (layer == null) {
+
+        //########### BEGIN Check if layer with same ID already exists in the map ############
+
+        // If a layer with the same ID already exists, we assign it to "this.layer" to that
+        // further changes made through/by this component are applied to the correct layer.
+
+        for (let otherLayer of this.map.getLayers().getArray()) {
+
+            if (otherLayer.get("id") == this.layerId) {
+                this.layer = otherLayer as ol_layer.Layer
+                break                
+            }
+        }
+        //########### END Check if layer with same ID already exists in the map ############
+
+        if (this.layer == null) {
+            let layer = createLayerFromConfig(this.layerDef[this.layerId], this.map.getView().getProjection())
+
+            if (layer != null) {
+                layer.set("id", this.layerId)
+                this.map.addLayer(layer)
+                this.layer = layer
+            }
+        }
+
+
+        if (this.layer == null) {
             return
         }
 
-        this.layer = layer
-
+    
         if (this.maxResolution != undefined) {
             this.layer.setMaxResolution(this.maxResolution)
         }
@@ -96,9 +132,9 @@ export default class DataMapLayer extends AbstractData {
 
         this.layer.setVisible(this.visible)
 
-        this.layer.setZIndex(this.zIndex)        
+        this.layer.setZIndex(this.zIndex)
 
-        this.map.addLayer(this.layer)
+
 
         this.register(this.layer)
 

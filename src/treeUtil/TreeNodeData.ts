@@ -106,6 +106,11 @@ export class TreeNodeData {
     }
 
 
+    removeAllChildren() {
+        this.children = []
+    }
+    
+
     removeChild(child : TreeNodeData) {
         let index = this.children.indexOf(child)
 

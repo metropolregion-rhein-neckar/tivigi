@@ -11,14 +11,14 @@ import RenderEvent from 'ol/render/Event'
 import { getRenderPixel } from 'ol/render'
 import { Coordinate } from 'ol/coordinate'
 
-import WithRender from './MapExplorerCursor.html'
+import WithRender from './Spyglass.html'
 
 @WithRender
 @Component({
     components: {
     }
 })
-export default class MapExplorerCursor extends Vue {
+export default class Spyglass extends Vue {
 
     //################# BEGIN Props #################
 

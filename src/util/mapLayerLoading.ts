@@ -9,12 +9,11 @@ import * as ol_tile from 'ol/Tile'
 import VectorSource from 'ol/source/Vector'
 import { StyleFunction } from 'ol/style/Style'
 import IconAnchorUnits from 'ol/style/IconAnchorUnits'
-import { Extent } from 'ol/extent'
 import Projection from 'ol/proj/Projection'
 import WMSCapabilities from 'ol/format/WMSCapabilities';
 import { Geometry } from 'ol/geom'
 import { Feature } from 'ol'
-import { FeatureUrlFunction } from 'ol/featureloader'
+
 //################## END OpenLayers imports #################
 
 //############# BEGIN OL-Ext imports ##############
@@ -28,12 +27,12 @@ import { vectorPointStyleFactory } from 'tivigi/src/olVectorLayerStyling/miscSty
 import { multiStyleFunctionFactory, addStyleFunctionToLayer } from 'tivigi/src/olVectorLayerStyling/styleUtils'
 import { quantilesStyleFactory } from 'tivigi/src/olVectorLayerStyling/quantilesStyle'
 import { manualClassificationStyleFactory } from 'tivigi/src/olVectorLayerStyling/manualClassificationStyle'
+import { createWfsLayerFromCapabilities, getWfs100UrlFunction } from 'tivigi/src/util/wfsFunctions'
+import { FilterableVectorSource } from 'tivigi/src/util/FilterableVectorSource'
 
 
 
-// TODO: 3 Use async/await for this?
-
-function asnyc_loadWmsLegend(layer: ol_layer.Layer) {
+function async_loadWmsLegend(layer: ol_layer.Layer) {
 
     let source = layer.getSource()
 
@@ -81,7 +80,8 @@ function asnyc_loadWmsLegend(layer: ol_layer.Layer) {
 }
 
 
-function createClusterLayer(layerConfig: any, projection: Projection, sourceType: string) {
+
+function createClusterLayerFromConfig(layerConfig: any, projection: Projection, sourceType: string) {
 
     //################# BEGIN Read cluster settings from JSON ############
 
@@ -137,7 +137,7 @@ function createClusterLayer(layerConfig: any, projection: Projection, sourceType
 
         let fontStyle = fontWeight + " " + fontSize * clusterScaleFactor + "px " + fontFamily;
 
-        
+
 
 
         let hoverScale = 1
@@ -147,18 +147,18 @@ function createClusterLayer(layerConfig: any, projection: Projection, sourceType
         let zIndex = 0
 
         if (feature.get("hover")) {
-            isHover = true            
+            isHover = true
         }
 
         //######### BEGIN Check hover state of cluster subfeatures #########
-        for(let sf of subfeatures) {
+        for (let sf of subfeatures) {
             if (sf.get("hover")) {
-               isHover = true
-               break
+                isHover = true
+                break
             }
         }
         //######### END Check hover state of cluster subfeatures #########
-        
+
         if (isHover) {
             hoverScale = 1.35
             zIndex = 1
@@ -195,7 +195,7 @@ function createClusterLayer(layerConfig: any, projection: Projection, sourceType
                 anchorYUnits: IconAnchorUnits.FRACTION,
                 src: iconUrl,
                 scale: iconScale * clusterScaleFactor * hoverScale,
-                crossOrigin: 'anonymous',                
+                crossOrigin: 'anonymous',
             }),
             text: text1
         });
@@ -211,7 +211,7 @@ function createClusterLayer(layerConfig: any, projection: Projection, sourceType
         backendSource = new ol_source.Vector({
             format: new ol_format.GeoJSON(),
 
-            url: getWfsUrlFunction(layerConfig.baseUrl, layerConfig.urlParams, projection),
+            url: getWfs100UrlFunction(layerConfig.baseUrl, layerConfig.urlParams, projection.getCode()),
             strategy: ol_loadingstrategy.bbox
 
         })
@@ -220,8 +220,9 @@ function createClusterLayer(layerConfig: any, projection: Projection, sourceType
     // for "geojson":
     else {
 
-        backendSource = new ol_source.Vector({
-
+            //backendSource = new ol_source.Vector({
+            backendSource = new FilterableVectorSource({
+        
             format: new ol_format.GeoJSON({ dataProjection: 'EPSG:4326', featureProjection: projection }),
 
             loader: function (extent, resolution, projection) {
@@ -247,11 +248,13 @@ function createClusterLayer(layerConfig: any, projection: Projection, sourceType
         });
     }
 
+    
 
     // Cluster source:
     let source = new ol_source.Cluster({
         distance: distance,
         source: backendSource
+        
     });
 
 
@@ -309,172 +312,33 @@ function createClusterLayer(layerConfig: any, projection: Projection, sourceType
     return layer
 }
 
-//################## BEGIN Functions to create OGC layers (WMS/WFS) from capabilities XML #################
 
-export function createWfsLayerFromCapabilities(capabilitiesXml: string, projection: Projection, useProxy = true): ol_layer.Vector | null {
-
-
-    // ATTENTION: This follows WFS 1.0.0!
-    // TODO: 2 Implement WFS 1.1.0!
-
-    let parser = new DOMParser();
-    let doc = parser.parseFromString(capabilitiesXml, "text/xml");
-
-    let featureTypeListElem = doc.getElementsByTagName("FeatureTypeList").item(0)
-
-    if (featureTypeListElem == null) {
-        return null
-    }
-
-    let featureTypeElem = featureTypeListElem.getElementsByTagName("FeatureType").item(0)
-
-    if (featureTypeElem == null) {
-        return null
-    }
+export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Projection): ol_layer.Vector {
 
     
-    let onlineResourceElem = doc.getElementsByTagName("OnlineResource").item(0)
-
-
-    if (onlineResourceElem == null) {
-        return null
-    }
-
-    let baseUrl = onlineResourceElem.innerHTML
-
-    if (baseUrl == undefined) {
-        console.log("baseUrl undefined")
-        return null
-    }
-
-    let nameElem = featureTypeElem.getElementsByTagName("Name").item(0)
-
-    if (nameElem == null) {
-        return null
-    }
-
-    let typeName = nameElem.innerHTML
-
-    if (typeName == undefined) {
-        console.log("typename undefined")
-        return null
-    }
-
-    let source = new ol_source.Vector({
-        format: new ol_format.GeoJSON(),
-        url: getWfsUrlFunction(baseUrl, { 'typeName': typeName }, projection),
-        strategy: ol_loadingstrategy.bbox
-
-    });
-
-
-    return new ol_layer.Vector({ source: source });
-}
-
-
-export function createWmsLayerFromCapabilities(capabilitiesXml: string): ol_layer.Tile | null {
-
-    // TODO: 3 Do we not need the projection here?
-
-    let result = undefined
-    let parser = new WMSCapabilities();
-    try {
-
-        result = parser.read(capabilitiesXml);
-
-    }
-    catch (exception) {
-        console.log("Failed to parse WMS GetCapabilities Document")
-        return null
-    }
-
-    let layerdefs = result.Capability.Layer.Layer
-
-    if (layerdefs == undefined) {
-        return null
-    }
-
-    let layer = new ol_layer.Tile({});
-
-    if (layerdefs.length == 1) {
-        let layerdef = layerdefs[0]
-
-
-        let layerBaseUrl = result.Capability.Request.GetMap.DCPType[0].HTTP.Get.OnlineResource
-
-        let styles = []
-        for (let style of layerdef.Style) {
-            styles.push(style.Name)
-        }
-        let stylesString = styles.join(",")
-
-        //############# BEGIN Create source object ##############
-        let source = new ol_source.TileWMS({
-            url: layerBaseUrl,
-            //  crossOrigin: 'anonymous',
-            params: { "layers": layerdef.Name, "STYLES": stylesString }
-        });
-
-
-        // Remember extent:
-        let extent_4326 = layerdef.BoundingBox[0].extent
-        source.set('extent_4326', extent_4326)
-        //############# END Create source object ##############
-
-
-        layer.setSource(source)
-
-        layer.set('title', layerdef.Title)
-    }
-
-    return layer
-}
-//################## END Functions to create OGC layers (WMS/WFS) from capabilities XML #################
-
-
-export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Projection, useProxy = true): ol_layer.Vector {
-
-
-    let url = layerConfig.baseUrl
-
     let source = new ol_source.Vector({
 
         format: new ol_format.GeoJSON({ dataProjection: 'EPSG:4326', featureProjection: projection }),
 
         loader: function (extent, resolution, projection) {
 
-            let options: RequestInit = {
-                headers: layerConfig.http_headers
-            }
+            let options: RequestInit = {headers: layerConfig.http_headers}
 
-            if (useProxy) {
+            proxyfetch.proxyfetch(layerConfig.baseUrl, options).then(response => response.json()).then((geojson) => {
 
-                proxyfetch.proxyfetch(url, options).then(response => response.json()).then((geojson) => {
+                let sourceFormat = source.getFormat()
 
-                    let sourceFormat = source.getFormat()
+                if (sourceFormat != undefined) {
 
-                    if (sourceFormat != undefined) {
+                    let features = sourceFormat.readFeatures(geojson) as Feature<Geometry>[]
+                    source.addFeatures(features)
+                }
 
-                        let features = sourceFormat.readFeatures(geojson) as Feature<Geometry>[]
-                        source.addFeatures(features)
-                    }
+            })
 
-                })
-            }
-            else {
-                fetch(url, options).then(response => response.json()).then((geojson) => {
-
-                    let sourceFormat = source.getFormat()
-
-                    if (sourceFormat != undefined) {
-                        let features = sourceFormat.readFeatures(geojson) as Feature<Geometry>[]
-                        source.addFeatures(features)
-                    }
-
-                })
-            }
         }
     });
+   
 
     return new ol_layer.Vector({ source });
 }
@@ -483,12 +347,12 @@ export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Proje
 export function createWfsLayerFromConfig(layerConfig: any, projection: Projection, useProxy = true): ol_layer.Vector {
 
     let baseUrl = layerConfig.baseUrl
-    let typeName = layerConfig.urlParams.typeName
+
 
     let source = new ol_source.Vector({
         format: new ol_format.GeoJSON(),
 
-        url: getWfsUrlFunction(baseUrl, layerConfig.urlParams, projection),
+        url: getWfs100UrlFunction(baseUrl, layerConfig.urlParams, projection.getCode()),
         strategy: ol_loadingstrategy.bbox
 
     });
@@ -510,7 +374,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
 
     switch (layerConfig.type) {
-     
+
 
         case "geojson": {
             layer = createGeoJsonLayerFromConfig(layerConfig, projection)
@@ -519,7 +383,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
         }
 
         case "geojson-cluster":
-            layer = createClusterLayer(layerConfig, projection, "geojson")
+            layer = createClusterLayerFromConfig(layerConfig, projection, "geojson")
             break;
 
         case "geojson-manualclasses": {
@@ -618,7 +482,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
 
         case "stamen": {
-            layer = new ol_layer.Tile({source: new ol_source.Stamen({layer: layerConfig.stamenStyle})})
+            layer = new ol_layer.Tile({ source: new ol_source.Stamen({ layer: layerConfig.stamenStyle }) })
             break
         }
 
@@ -646,7 +510,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
         }
 
         case "wfs-cluster": {
-            layer = createClusterLayer(layerConfig, projection, "wfs")
+            layer = createClusterLayerFromConfig(layerConfig, projection, "wfs")
             break;
         }
 
@@ -656,7 +520,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             layer = createWmsLayerFromCapabilities(layerConfig.capabilities)
 
             if (layer != null && layerConfig.legend_url == undefined) {
-                asnyc_loadWmsLegend(layer)
+                async_loadWmsLegend(layer)
             }
 
             break;
@@ -670,7 +534,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             // and possibly other stuff, too!
 
             let tileLoadFunction: ol_tile.LoadFunction = function (imageTile: any, src: string) {
-                
+
                 imageTile.getImage().src = proxyfetch.getProxyUrl(src)
             };
 
@@ -685,7 +549,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             layer = new ol_layer.Tile({ source: source });
 
             if (layerConfig.legend_url == undefined) {
-                asnyc_loadWmsLegend(layer)
+                async_loadWmsLegend(layer)
             }
 
             break;
@@ -714,7 +578,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             layer = new ol_layer.Image({ source: source });
 
             if (layerConfig.legend_url == undefined) {
-                asnyc_loadWmsLegend(layer)
+                async_loadWmsLegend(layer)
             }
 
             break;
@@ -727,11 +591,14 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             layer = new ol_layer.Tile({ source: new ol_source.XYZ({ url: proxyfetch.getProxyUrl(layerConfig.url) }) })
             break
         }
+
+
     }
 
 
 
     //####################### BEGIN Set layer parameters ####################
+    
     if (layer == null) {
         return null
     }
@@ -806,48 +673,65 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
 
 
-function getWfsUrlFunction(baseUrl: string, urlParams: any, projection: Projection, useProxy = true): FeatureUrlFunction {
 
-    // TODO: 4 Use custom loader function instead of this?
 
-    let result = null
+export function createWmsLayerFromCapabilities(capabilitiesXml: string): ol_layer.Tile | null {
 
-    let baseUrlObj = new URL(baseUrl)
+    let capabilities = undefined
 
-    for (let key in urlParams) {
-        baseUrlObj.searchParams.append(key, urlParams[key])
+    let parser = new WMSCapabilities();
+    try {
+        capabilities = parser.read(capabilitiesXml);
+    }
+    catch (exception) {
+        console.log("Failed to parse WMS GetCapabilities Document")
+        return null
     }
 
-    baseUrlObj.searchParams.append("service", "WFS")
 
-    // ATTENTION: Using Version 1.1.0 causes Problems!
-    baseUrlObj.searchParams.append("version", "1.0.0")
-    baseUrlObj.searchParams.append("request", "GetFeature")
-    baseUrlObj.searchParams.append("outputFormat", "application/json")
-    baseUrlObj.searchParams.append("srsname", projection.getCode())
+    let layerdefs = capabilities.Capability.Layer.Layer
 
-    if (useProxy) {
-
-        result = function (extent: Extent) {
-
-            let url = new URL(baseUrlObj.toString())
-
-            url.searchParams.append("bbox", extent.join(',') + "," + projection.getCode())
-
-            //return proxyfetch.config.proxyUrl + encodeURIComponent(url.toString());
-            return proxyfetch.getProxyUrl(url.toString())
-        }
+    if (layerdefs == undefined) {
+        return null
     }
-    else {
-        result = function (extent: Extent) {
 
-            let url = new URL(baseUrlObj.toString())
-
-            url.searchParams.append("bbox", extent.join(',') + "," + projection.getCode())
-
-            return url.toString()
-        }
+    if (layerdefs.length != 1) {
+        return null
     }
+
+
+    let result = new ol_layer.Tile({});
+
+
+    let layerdef = layerdefs[0]
+
+
+    let layerBaseUrl = capabilities.Capability.Request.GetMap.DCPType[0].HTTP.Get.OnlineResource
+
+    let styles = []
+    for (let style of layerdef.Style) {
+        styles.push(style.Name)
+    }
+    let stylesString = styles.join(",")
+
+    //############# BEGIN Create source object ##############
+    let source = new ol_source.TileWMS({
+        url: layerBaseUrl,
+        //  crossOrigin: 'anonymous',
+        params: { "layers": layerdef.Name, "STYLES": stylesString }
+    });
+
+
+    // Remember extent:
+    let extent_4326 = layerdef.BoundingBox[0].extent
+    source.set('extent_4326', extent_4326)
+    //############# END Create source object ##############
+
+
+    result.setSource(source)
+
+    result.set('title', layerdef.Title)
+
 
     return result
 }

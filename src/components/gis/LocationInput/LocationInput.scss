@@ -2,15 +2,10 @@ div.LocationInput {
     > button {
         display: inline-flex;
         align-items: center;
-        padding: 6px;
-
+         
         > img {
-            height: 1.1em;
-            
-        }
-
-        > div.LocationInput__LonLat {
-            margin-left:4px;
+            height: 1.3em;            
+            margin:2px 4px 2px 0px;
         }
     }
 }
@@ -31,6 +26,6 @@ div.LocationInput__Overlay {
     height: 0;
 
     img {
-        position: relative;
+        position: relative;        
     }
 }

@@ -1,4 +1,4 @@
-// TODO: 3 Move shared code from DataCkanLayersTree and DataFileLayersTree to a common base class
+// TODO: 3 Move shared code from DataCkanLayersTree and DataLayerTree to a common base class
 
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
@@ -17,16 +17,15 @@ export default class DataCkanLayersTree extends AbstractData {
     url!: string
 
     @Prop()
-    ckan_api_key!: string
+    ckanApiKey!: string
 
     @Prop()
     map!: ol.Map;
 
+
     layerConfig: any = null
 
     rootNode: TreeNodeData = new TreeNodeData("root")
-
-
 
     initialLayersConfig : Array<any> = []
 
@@ -37,8 +36,10 @@ export default class DataCkanLayersTree extends AbstractData {
     }
 
 
-    @Watch('ckan_api_key')
+    @Watch('ckanApiKey')
     onCkanApiKeyChange() {
+        // TODO: Check if key has really changed
+        console.log("ckan API key has changed!")
         this.setup()
     }
 
@@ -53,7 +54,7 @@ export default class DataCkanLayersTree extends AbstractData {
 
         let options: RequestInit = {
             headers: {
-                "X-CKAN-API-Key": this.ckan_api_key
+                "X-CKAN-API-Key": this.ckanApiKey
             }
         }
 
@@ -64,6 +65,9 @@ export default class DataCkanLayersTree extends AbstractData {
 
 
     onDataLoaded(data: any) {      
+
+
+        this.rootNode.removeAllChildren()
 
         let layerTreeConfig = {
             "treeLabel": "root", "children": [
@@ -201,7 +205,7 @@ export default class DataCkanLayersTree extends AbstractData {
                         "level": level,
                         "title": dataset.title + " - " + resource.format,
                         "http_headers": {
-                            "X-CKAN-API-Key": this.ckan_api_key
+                            "X-CKAN-API-Key": this.ckanApiKey
                         }
                     },
 

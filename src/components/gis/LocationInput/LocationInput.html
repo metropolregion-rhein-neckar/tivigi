@@ -4,19 +4,15 @@
         <img v-if="showMarker" :src="markerUrl" :style="dynamicStyle_marker" />
     </div>
 
-
     <button :class="dynamicClass" @click="onMapPick" title="Ort auf der Karte wählen">
 
-        <img :src="markerUrl" style="width:40px" />
+        <img :src="markerUrl" />
 
-        <div class="LocationInput__LonLat">
-
-            <template v-if="coords != null">
-                Lon: <strong>{{lonlat[0]  | formatNumber(2, '.')}}</strong> Lat: <strong>{{lonlat[1] | formatNumber(2, '.')}}</strong>
-            </template>
-            <template v-else>
-                Ort auf der Karte wählen
-            </template>
+        <div v-if="coords != null">
+            Lon: <strong>{{lonlat[0]  | formatNumber(2, '.')}}</strong> Lat: <strong>{{lonlat[1] | formatNumber(2, '.')}}</strong>
+        </div>
+        <div v-else>
+            Ort auf der Karte wählen
         </div>
 
     </button>

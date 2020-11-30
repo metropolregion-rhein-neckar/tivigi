@@ -49,8 +49,7 @@ export default class Collapsible extends Vue {
 
         return {
             "Collapsible" : true,        
-            "Collapsible--uncollapsed" : !this.pCollapsed,        
-         //   "Collapsible--uncollapsed-override" : !this.collapsed
+            "Collapsible--uncollapsed" : !this.pCollapsed         
         }
     }
 

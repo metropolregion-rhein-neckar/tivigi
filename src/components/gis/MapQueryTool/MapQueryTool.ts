@@ -18,11 +18,7 @@ import { Extent } from 'ol/extent';
 
 
 @WithRender
-@Component({
-    components: {
-
-    }
-})
+@Component({})
 export default class FeatureInfoTool extends Vue {
 
     //################### BEGIN Props #################
@@ -32,15 +28,13 @@ export default class FeatureInfoTool extends Vue {
     @Prop()
     coords!: Coordinate;
 
-
-
     @Prop({ default: 5 })
     queryRadius!: number
 
     @Prop({ default: 1000 })
     wmsMaxFeatureCount!: number
-
     //################### END Props #################
+
 
     geojsonFormat = new ol_format.GeoJSON()
 
@@ -197,18 +191,21 @@ export default class FeatureInfoTool extends Vue {
             //###################### END Get feature info URL #####################
 
 
-            if (url != undefined) {
-
-                proxyfetch(url).then(response => {
-
-                    response.json().then(gfi_geojson => {
-
-                        for (let feature of this.geojsonFormat.readFeatures(gfi_geojson)) {
-                            this.addFeature(feature, layer as ol_layer.Layer)
-                        }
-                    })
-                });
+            if (url == undefined) {
+                continue
             }
+
+          
+            proxyfetch(url).then(response => {
+
+                response.json().then(gfi_geojson => {
+
+                    for (let feature of this.geojsonFormat.readFeatures(gfi_geojson)) {
+                        this.addFeature(feature, layer as ol_layer.Layer)
+                    }
+                })
+            });
+
         }
         //################ END Perform GFI request for all layers in the map ###############
     }

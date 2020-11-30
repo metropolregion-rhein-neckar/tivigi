@@ -1,0 +1,25 @@
+<div class="CkanLogin">
+
+    <template v-if="loggedInAs == ''">
+
+        <div class="CkanLogin__LoginHint">
+            <h2>Sie sind nicht angemeldet.</h2>
+            Melden Sie sich mit Ihrem <strong>CKAN API-Schlüssel</strong> an, um Zugriff auf geschützte Daten zu erhalten.
+        </div>
+
+        <div class="CkanLogin__LoginForm">
+
+            <input class="Input" type="text" v-model="inputApiKey" placeholder="CKAN API-Schlüssel" />
+
+            <button @click="onLoginButtonClick">Anmelden</button>
+        </div>
+    </template>
+
+    <template v-else>
+        <div class="CkanLogin__LoginForm">
+            Angemeldet als '<strong>{{loggedInAs}}</strong>'
+            <button @click="onLogoutButtonClick">Abmelden</button>
+        </div>
+    </template>
+
+</div>

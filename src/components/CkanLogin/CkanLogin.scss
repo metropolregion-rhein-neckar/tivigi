@@ -1,0 +1,34 @@
+div.CkanLogin {
+    background-color: #eee;
+
+    button {
+        margin-top: 8px;
+    }
+    border-bottom: 1px solid #ccc;
+
+    div.Collapsible__Content {
+        margin: 0;
+    }
+
+    button {
+        margin-left: 4px;
+    }
+}
+
+div.CkanLogin__LoginHint {
+    h2 {
+        margin: 0;
+        color: #f00;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    background-color: #eea;
+    line-height: 1.5em;
+    padding: 10px;
+    
+}
+
+div.CkanLogin__LoginForm {
+    padding: 8px;
+}

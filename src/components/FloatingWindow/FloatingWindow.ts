@@ -20,9 +20,6 @@ export default class FloatingWindow extends Vue {
     @Prop({ default: true })
     show!: boolean
 
-    @Prop({ default: true })
-    centerTrigger!: boolean
-
     @Prop({ default: 600 })
     width!: number
 
@@ -35,7 +32,7 @@ export default class FloatingWindow extends Vue {
     @Prop({ default: true })
     dockButton!: boolean
 
-    @Prop({ default: true })
+    @Prop({ default: false })
     fullscreenButton!: boolean
 
     @Prop({ default: 'Untitled Window' })
@@ -136,7 +133,6 @@ export default class FloatingWindow extends Vue {
     get fullscreenButtonLabel(): string {
         if (this.fullscreen) {
             return "Panel verkleinern"
-
         }
 
         return "Panel maximieren"
@@ -323,7 +319,7 @@ export default class FloatingWindow extends Vue {
     onBodyMouseMove(evt: MouseEvent) {
 
         // Don't handle mouse move events for docked or hidden panels:
-        if (this.pdocked || !this.pshow) {
+        if (this.pdocked || this.fullscreen || this.mobile || !this.pshow) {
             return
         }
 
@@ -338,90 +334,88 @@ export default class FloatingWindow extends Vue {
 
         if (this.drag) {
             this.setPosition(x - this.mouseDragOffsetX, y - this.mouseDragOffsetY)
+            return
         }
-        else {
-
-            if (!this.fullscreen && !this.mobile) {
-                let bbox = this.panelRef.getBoundingClientRect()
 
 
-                this.panelRef.classList.remove("cursor-ew-resize")
-                this.panelRef.classList.remove("cursor-ns-resize")
-                this.panelRef.classList.remove("cursor-nw-resize")
-                this.panelRef.classList.remove("cursor-ne-resize")
-                this.panelRef.classList.remove("cursor-sw-resize")
-                this.panelRef.classList.remove("cursor-se-resize")
+        let bbox = this.panelRef.getBoundingClientRect()
 
 
-                let right = Math.abs(bbox.right - x)
-                let left = Math.abs(x - bbox.left)
-                let bottom = Math.abs(bbox.bottom - y)
-                let top = y - Math.abs(bbox.top)
+        this.panelRef.classList.remove("cursor-ew-resize")
+        this.panelRef.classList.remove("cursor-ns-resize")
+        this.panelRef.classList.remove("cursor-nw-resize")
+        this.panelRef.classList.remove("cursor-ne-resize")
+        this.panelRef.classList.remove("cursor-sw-resize")
+        this.panelRef.classList.remove("cursor-se-resize")
 
 
-                let dright = right < this.cfg_resizeGrabTolerance
-                let dleft = left < this.cfg_resizeGrabTolerance
-                let dbottom = bottom < this.cfg_resizeGrabTolerance
-                let dtop = top < this.cfg_resizeGrabTolerance
-
-                if (dright && dtop) {
-                    this.panelRef.classList.add("cursor-ne-resize")
-                }
-                else if (dright && dbottom) {
-                    this.panelRef.classList.add("cursor-se-resize")
-                }
-
-                else if (dleft && dtop) {
-                    this.panelRef.classList.add("cursor-nw-resize")
-                }
-                else if (dleft && dbottom) {
-                    this.panelRef.classList.add("cursor-sw-resize")
-                }
-
-                else if (dleft) {
-                    this.panelRef.classList.add("cursor-ew-resize")
-                }
-                else if (dright) {
-                    this.panelRef.classList.add("cursor-ew-resize")
-                }
-
-                else if (dtop) {
-                    this.panelRef.classList.add("cursor-ns-resize")
-                }
-                else if (dbottom) {
-                    this.panelRef.classList.add("cursor-ns-resize")
-                }
+        let right = Math.abs(bbox.right - x)
+        let left = Math.abs(x - bbox.left)
+        let bottom = Math.abs(bbox.bottom - y)
+        let top = y - Math.abs(bbox.top)
 
 
-                if (this.resize_right) {
-                    let width = x - bbox.left
+        let dright = right < this.cfg_resizeGrabTolerance
+        let dleft = left < this.cfg_resizeGrabTolerance
+        let dbottom = bottom < this.cfg_resizeGrabTolerance
+        let dtop = top < this.cfg_resizeGrabTolerance
 
-                    this.setSize(width, this.pHeight)
-                }
-                else if (this.resize_left) {
+        if (dright && dtop) {
+            this.panelRef.classList.add("cursor-ne-resize")
+        }
+        else if (dright && dbottom) {
+            this.panelRef.classList.add("cursor-se-resize")
+        }
 
-                    let width = bbox.right - x
+        else if (dleft && dtop) {
+            this.panelRef.classList.add("cursor-nw-resize")
+        }
+        else if (dleft && dbottom) {
+            this.panelRef.classList.add("cursor-sw-resize")
+        }
 
-                    if (this.setSize(width, this.pHeight)) {
-                        this.setPosition(x, this.posY)
-                    }
-                }
+        else if (dleft) {
+            this.panelRef.classList.add("cursor-ew-resize")
+        }
+        else if (dright) {
+            this.panelRef.classList.add("cursor-ew-resize")
+        }
 
-                if (this.resize_bottom) {
+        else if (dtop) {
+            this.panelRef.classList.add("cursor-ns-resize")
+        }
+        else if (dbottom) {
+            this.panelRef.classList.add("cursor-ns-resize")
+        }
 
-                    let height = y - bbox.top
 
-                    this.setSize(this.pWidth, height)
+        if (this.resize_right) {
+            let width = x - bbox.left
 
-                }
-                else if (this.resize_top) {
+            this.setSize(width, this.pHeight)
+        }
+        else if (this.resize_left) {
 
-                    let height = bbox.bottom - y
+            let width = bbox.right - x
 
-                    if (this.setSize(this.pWidth, height)) {
-                        this.setPosition(this.posX, y)
-                    }
-                }
+            if (this.setSize(width, this.pHeight)) {
+                this.setPosition(x, this.posY)
+            }
+        }
+
+        if (this.resize_bottom) {
+
+            let height = y - bbox.top
+
+            this.setSize(this.pWidth, height)
+
+        }
+        else if (this.resize_top) {
+
+            let height = bbox.bottom - y
+
+            if (this.setSize(this.pWidth, height)) {
+                this.setPosition(this.posX, y)
             }
         }
     }
