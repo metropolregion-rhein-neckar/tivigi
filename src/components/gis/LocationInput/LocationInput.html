@@ -1,20 +1,19 @@
 <div class="LocationInput">
 
     <div class="LocationInput__Overlay" ref="overlay_marker">
-        <img v-if="showMarker" :src="markerUrl" :style="dynamicStyle_marker" />
+        <img v-if="showMarker" :src="markerUrl" />
     </div>
 
-    <button :class="dynamicClass" @click="onMapPick" title="Ort auf der Karte wählen">
-
+    <div>
         <img :src="markerUrl" />
 
-        <div v-if="coords != null">
-            Lon: <strong>{{lonlat[0]  | formatNumber(2, '.')}}</strong> Lat: <strong>{{lonlat[1] | formatNumber(2, '.')}}</strong>
+        <div v-if="lonlat != null">
+            Lon <strong>{{lonlat[0] | formatNumber(2, '.')}}</strong> Lat <strong>{{lonlat[1] | formatNumber(2, '.')}}</strong>
         </div>
-        <div v-else>
-            Ort auf der Karte wählen
-        </div>
+       
 
-    </button>
+        <Superbutton title="Ort auf der Karte wählen" icon="tivigi/img/map_pin.svg"  v-model="mapPickState" :set="true" :unset="false" />
 
+        <LocationSearch :map="map" @locationSelect="onLocationSelect" :query.sync="query" />
+    </div>
 </div>

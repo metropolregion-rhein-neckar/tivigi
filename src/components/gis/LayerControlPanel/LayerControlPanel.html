@@ -51,7 +51,7 @@
 
         <LayerLegend :layer="layer" style="margin-top:6px;"/>
 
-        <div style="display:flex;align-items: center;height:50px;margin-top:8px;">
+        <div v-if="attributesTableButton" style="display:flex;align-items: center;height:50px;margin-top:8px;">
             <Superbutton style="margin-right:8px;" v-if="isVectorLayer" v-model="showAttributesTable" :set="true" :unset="false" icon="tivigi/img/table.svg" label="Datentabelle" title="Datentabelle öffnen" />
             <StyleSwitcher :layer="layer" />
         </div>

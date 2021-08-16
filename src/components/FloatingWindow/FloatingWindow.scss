@@ -12,8 +12,7 @@ div.FloatingWindow__Socket--hidden {
 
 div.FloatingWindow {
     height: 100%; // Important!
-
-    user-select: none;
+    
 
     &:focus > div > div.FloatingWindow__Header {
         background-color: #0be;

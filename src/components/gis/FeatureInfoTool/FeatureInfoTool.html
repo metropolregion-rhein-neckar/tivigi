@@ -1,22 +1,18 @@
 <div class="FeatureInfoTool">
 
-    <LocationInput style="display:none;" v-model="coords" :map="map" :alwaysEnabled="true" cursor="" :showMarker="show" markerUrl="tivigi/img/map_query.png" :markerWidth="40" :markerHeight="40"/>
+    <LocationInput style="display:none;" v-model="coords" :map="map" :alwaysEnabled="true" cursor="" :showMarker="show" markerUrl="tivigi/img/map_query.png" />
 
-    <MapQueryTool :coords="coords" :map="map" @resultUpdate="onResultUpdate" :queryRadius="queryRadius"/>
+    <MapQueryTool :coords="coords" :map="map" :result.sync="resultset" :queryRadius="queryRadius" />
 
     <div v-if="coords == null">
-        Kein Ort ausgewählt.
+        <strong>Kein Ort ausgewählt.</strong>
     </div>
 
     <div v-else-if="resultset.numFeatures() == 0">
-        <h3>Über den gewählten Ort sind keine Informationen verfügbar</h3>
+        <strong>Über den gewählten Ort sind keine Informationen verfügbar.</strong>
+    </div>
 
-        <p>
-            Fügen Sie ein Thema, zu dem Sie Informationen abfragen möchten, zur Karte hinzu. Klicken Sie anschließend
-            erneut auf die Karte, um eine neue Datenabfrage durchzuführen.
-        </p>
-    </div>    
-    
-    <CollapsibleFeaturesList v-else :featuresList="resultset"/>
-    
+    <CollapsibleFeaturesList v-else :featuresList="resultset" />
+
+
 </div>

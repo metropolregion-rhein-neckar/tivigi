@@ -1,12 +1,11 @@
 <div class="CollapsibleFeaturesList">
-    <template v-for="entry in featuresList.entries">
 
-        <h2>{{entry.layer.get('title')}}</h2>
+    <Collapsible v-for="entry in featuresList.entries" :title="entry.layer.get('title')" class="CollapsibleFeaturesList__LayerHeading">
 
-        <template v-for="(feature,index) in entry.features">
-            <Collapsible :title="getFeatureLabel(feature, entry.layer, 'Objekt ' + (index+1))" :collapsed="featuresList.numFeatures() != 1" :exclusive="true">
-                <PropertyGridWithSlideshow :value="feature.getProperties()" :fieldsConfig="entry.layer.get('propertyLabels')" :fieldsBlacklist="['geometry']" />
-            </Collapsible>
-        </template>
-    </template>
+        <Collapsible v-for="(feature,index) in getFeaturesOrdered(entry)" :title="getFeatureLabel(feature, entry.layer, 'Objekt ' + (index+1))" :collapsed="featuresList.numFeatures() != 1" :exclusive="true">
+            <PropertyGridWithSlideshow :value="feature.getProperties()" :fieldsConfig="entry.layer.get('propertyLabels')" :fieldsBlacklist="['geometry']" />
+        </Collapsible>
+
+    </Collapsible>
+
 </div>

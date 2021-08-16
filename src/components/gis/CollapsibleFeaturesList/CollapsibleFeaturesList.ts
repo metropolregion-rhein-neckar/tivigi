@@ -8,35 +8,74 @@ import * as ol_layer from 'ol/layer'
 //############## BEGIN Tivigi imports ##############
 import Collapsible from 'tivigi/src/components/Collapsible/Collapsible'
 import PropertyGridWithSlideshow from 'tivigi/src/components/PropertyGridWithSlideshow/PropertyGridWithSlideshow'
-import { MapQueryResultSet } from 'tivigi/src/components/gis/MapQueryTool/mapQueryUtil';
+import { MapQueryResultSet } from 'tivigi/src/util/mapQueryUtil';
+import { getFeatureLabelField } from 'tivigi/src/util/featureAttributeUtils';
 //############## END Tivigi imports ##############
 
+import "./CollapsibleFeaturesList.scss"
 import WithRender from './CollapsibleFeaturesList.html';
-import './CollapsibleFeaturesList.scss';
-import { getFeatureLabelField } from 'tivigi/src/util/featureAttributeUtils';
+
 
 
 @WithRender
 @Component({
     components: {
-        Collapsible,      
+        Collapsible,
         PropertyGridWithSlideshow,
     }
 })
 export default class CollapsibleFeaturesList extends Vue {
 
-    @Prop({ default: () => { return new MapQueryResultSet()} })
-    featuresList!: string
+    //@Prop({ default: () => { return new MapQueryResultSet() } })
+    @Prop()
+    featuresList!: MapQueryResultSet
 
+    @Watch("featuresList")
+    onFeaturesListChange() {
+        console.log("features change!")
+        console.log("features: " + this.featuresList.numFeatures())
+    }
+    
+    // ATTENTION: We don't move this method to a library file because it is called from the template!
     getFeatureLabel(feature: ol.Feature, layer: ol_layer.Vector, defaultLabel: string) {
 
-        let labelField = getFeatureLabelField(layer, feature)
-
-        if (labelField != null) {
-            return feature.getProperties()[labelField]
+        const labelField = getFeatureLabelField(layer, feature)
+    
+        if (labelField == null) {
+            return defaultLabel    
         }
-
-        return defaultLabel
+    
+        return feature.getProperties()[labelField]
+        
     }
 
+    getFeaturesOrdered(entry: any) {
+
+        let index = 0
+
+        let temp = []
+
+        for (let feature of entry.features) {
+            temp.push({ feature: feature, label: this.getFeatureLabel(feature, entry.layer, 'Objekt ' + (index + 1)) })
+        }
+
+        temp.sort(this.sortFunc)
+
+        let result = []
+
+        for (let kvp of temp) {
+            result.push(kvp.feature)
+        }
+
+        return result
+    }
+
+
+    sortFunc(a:any,b:any) {
+        if (!a.label || !b.label) {
+            return 0
+        }
+        
+        return a.label.toLowerCase().localeCompare(b.label.toLowerCase())
+    }
 }

@@ -6,6 +6,8 @@ export function tryToRead(rootObject: any, path : string, fallback: any) {
 
     for(let piece of pathPieces) {
 
+        // TODO: 1 Add support for arrays
+
         if (obj[piece] != undefined) {
             obj = obj[piece]
         }

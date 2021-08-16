@@ -35,6 +35,9 @@ export default class FloatingWindow extends Vue {
     @Prop({ default: false })
     fullscreenButton!: boolean
 
+    @Prop({default: false})
+    fullscreenWindow!: boolean
+
     @Prop({ default: 'Untitled Window' })
     title!: String;
     //##################### END Props #######################
@@ -268,6 +271,7 @@ export default class FloatingWindow extends Vue {
 
 
         this.pdocked = this.docked
+        this.fullscreen = this.fullscreenWindow
 
         this.updateDockedState()
     }

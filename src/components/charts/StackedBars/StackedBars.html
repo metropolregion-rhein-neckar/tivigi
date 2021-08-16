@@ -1,0 +1,23 @@
+<g>
+  <g class="SvgChart__StackedBars" v-for="(stack, stackIndex) of preparedData">
+
+    <rect v-for="(point, pointIndex) of stack" :x="getX(stackIndex)" :y="w2sY(point.y)" 
+
+    
+    :style="getStyle(point.dataset)" :width="barWidth" :height="Math.abs(w2sY(point.height))" 
+    
+    :data-tooltip="point.dataset.label + ': ' + point.height"
+    @mouseover="onMouseOver"/>
+
+    <!--
+    <text class="SvgChart__StackedBars__BarSum" :x="getX(stackIndex) + barWidth/2"  :y="w2sY(getStackHeightSum(stack)) - 7">{{getStackHeightSum(stack)}}</text>
+    -->
+  </g>
+
+
+<!--
+  <g class="SvgChart__Bars" v-for="(dataset,datasetIndex) of data.datasets">
+    <rect v-for="(point,pointIndex) in dataset.points" :data-tooltip="dataset.label + ': ' + point.y" :x="getXbars(point, datasetIndex) + 1" :y="getYbars(point.y)" :style="getStyle(dataset)" :width="getBarWidth() - 2" :height="Math.abs(w2sY(point.y) - w2sY(displayMinY))" />
+  </g>
+  -->
+</g>

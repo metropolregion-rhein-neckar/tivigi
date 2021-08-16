@@ -8,7 +8,7 @@ import './RangeSlider.scss';
 @Component({})
 export default class RangeSlider extends Vue {
 
-    
+    //########### BEGIN Props ############
     @Prop({ default: 0 })
     value!: number
 
@@ -18,25 +18,21 @@ export default class RangeSlider extends Vue {
     @Prop({ default: 1 })
     max!:number
 
-
     @Prop({ default: 1 })
     step!:number
 
     @Prop( { default : ""})
     unit! : string
+    //########### END Props ############
     
-    mounted() {
 
-    }
     onInput(evt : InputEvent) {
 
-        
-
         if (evt.target != null) {
-        
-          
-            let target = evt.target as HTMLInputElement
-            var tooltipEvent = new CustomEvent('tooltip', { detail: target.value + " " + this.unit });
+                  
+            const target = evt.target as HTMLInputElement
+            const tooltipEvent = new CustomEvent('tooltip', { detail: target.value + " " + this.unit });
+            
             window.dispatchEvent(tooltipEvent)
 
             this.$emit('input', parseFloat(target.value))

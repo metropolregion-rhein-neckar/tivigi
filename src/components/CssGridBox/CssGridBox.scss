@@ -1,0 +1,7 @@
+div.CssGridBox {
+    // ATTENTION: "overflow:hidden" is required to prevent render artifacts during size change.
+    // It also prevents boxes to grow wider horizontally than the page width in Firefox, which is especially
+    // important on very narrow screens (e.g. smartphone in portrait mode).
+
+    overflow: hidden;
+}

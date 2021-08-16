@@ -20,7 +20,7 @@
             <!-- TODO: 2 Is layer ID a good key here? -->
 
             <div v-for="(layer,index) in getLayers()" :key="layer.get('id')">
-                <LayerControlPanel :buttonsConfig="buttonsConfig" :menuConfig="menuConfig" :map="map" :ckanApiUrl="ckanApiUrl" :layer="layer" style="border-bottom:2px dotted #ccc;padding:2px 0px;" @showAttributesTableButtonClick="onShowAttributesTableButtonClick(layer)" />
+                <LayerControlPanel :attributesTableButton="attributesTableButton" :buttonsConfig="buttonsConfig" :menuConfig="menuConfig" :map="map" :ckanApiUrl="ckanApiUrl" :layer="layer" style="border-bottom:2px dotted #ccc;padding:2px 0px;" @showAttributesTableButtonClick="onShowAttributesTableButtonClick(layer)" />
             </div>
         </template>
     </template>

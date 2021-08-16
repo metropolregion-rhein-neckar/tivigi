@@ -1,0 +1,23 @@
+<!--
+NOTE:
+The two nested <divs> and their assigned CSS styles are required to prevent the map panel from 
+shrinking too small in flex row (portrait) mode under some circumstances, not only in Safari,
+but also in other browsers (though the problem is probably caused in the first place 
+by having to set the map <div>'s 'position' property to 'absolute' to work around a Safari bug).
+-->
+
+<div class="OlMap" v-onresize="onResize">
+    <div class="OlMap__Inner" ref="mapContainer" @dragover="onDragover" @drop="onDrop" @focus="onFocus" @focusout="onFocusOut"></div>
+
+    
+    <MapLoadingProgressBar v-if="showLoadingBar" :map="map" :fadeout="true" :showPercent="false" />
+
+    <img src="/tivigi/img/crosshair_red.svg" v-if="hasFocus" class="OlMap__Crosshair" />
+
+
+    <div class="OlMap__Toolbar">
+         <slot />
+    </div>
+
+   
+</div>

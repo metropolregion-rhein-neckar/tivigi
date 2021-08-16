@@ -4,6 +4,7 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import * as ol from 'ol/'
 import * as ol_source from 'ol/source'
 import * as ol_layer from 'ol/layer'
+import * as ol_proj from 'ol/proj'
 import { FeatureLike } from 'ol/Feature';
 import { Coordinate } from 'ol/coordinate';
 import * as ol_format from 'ol/format'
@@ -11,7 +12,7 @@ import * as ol_format from 'ol/format'
 
 
 import { proxyfetch } from 'tivigi/src/util/proxyfetch';
-import { MapQueryResultSet } from 'tivigi/src/components/gis/MapQueryTool/mapQueryUtil';
+import { MapQueryResultSet } from 'tivigi/src/util/mapQueryUtil';
 
 import WithRender from './MapQueryTool.html';
 import { Extent } from 'ol/extent';
@@ -19,12 +20,13 @@ import { Extent } from 'ol/extent';
 
 @WithRender
 @Component({})
-export default class FeatureInfoTool extends Vue {
+export default class MapQueryTool extends Vue {
 
     //################### BEGIN Props #################
     @Prop()
     map!: ol.Map;
 
+    // ATTENTION: coords must be in EPSG 4326 / WGS 84 !!
     @Prop()
     coords!: Coordinate;
 
@@ -33,6 +35,9 @@ export default class FeatureInfoTool extends Vue {
 
     @Prop({ default: 1000 })
     wmsMaxFeatureCount!: number
+
+    @Prop()
+    result : MapQueryResultSet|undefined
     //################### END Props #################
 
 
@@ -42,21 +47,35 @@ export default class FeatureInfoTool extends Vue {
 
 
     @Watch('coords')
-    onCoordsChange() {
+    async onCoordsChange() {
+
+        console.log("coords change")
 
         this.resultset = new MapQueryResultSet()
 
         // Reset props:
-        this.$emit('resultUpdate', this.resultset)
+        //this.$emit('resultUpdate', this.resultset)
 
-        this.processVectorFeatures(this.coords)
+
+        let coords_3857 = ol_proj.transform(this.coords, 'EPSG:4326', this.map.getView().getProjection())
+
+        await this.processVectorFeatures(coords_3857)
 
         if (this.wmsMaxFeatureCount > 0) {
-            this.processWmsLayers(this.coords)
+            await this.processWmsLayers(coords_3857)
         }
+
+        // Reset props:
+        //this.$emit('resultUpdate', this.resultset)
+        console.log(this.resultset.numFeatures())
+
+      //  this.$emit('resultUpdate', this.resultset)
+
+        this.$emit("update:result", this.resultset)
     }
 
 
+    // TODO: 3 Replace this with getClusteredFeaturesRecursive()
     addFeature(feature: FeatureLike, layer: ol_layer.Layer) {
 
         if (layer == null) {
@@ -68,6 +87,7 @@ export default class FeatureInfoTool extends Vue {
         if (feature.getProperties().features instanceof Array) {
 
             for (let f2 of feature.getProperties().features) {
+                // TODO: 3 Replace this with getClusteredFeaturesRecursive()
                 this.addFeature(f2, layer)
             }
 
@@ -90,7 +110,7 @@ export default class FeatureInfoTool extends Vue {
         this.resultset.add(feature as ol.Feature, layer as ol_layer.Layer)
 
         // Update props:
-        this.$emit('resultUpdate', this.resultset)
+        //this.$emit('resultUpdate', this.resultset)
     }
 
 
@@ -98,10 +118,11 @@ export default class FeatureInfoTool extends Vue {
 
         //############################ BEGIN Process local vector features ##########################
         if (coordinate.length == 2) {
-            let pixel = this.map.getPixelFromCoordinate(coordinate);
+            const pixel = this.map.getPixelFromCoordinate(coordinate);
 
             this.map.forEachFeatureAtPixel(pixel,
 
+                // TODO: 3 Replace this with getClusteredFeaturesRecursive()
                 this.addFeature,
                 {
                     layerFilter: (layer) => true,
@@ -112,7 +133,7 @@ export default class FeatureInfoTool extends Vue {
         }
         else if (coordinate.length == 4) {
 
-            for (let layer of this.map.getLayers().getArray()) {
+            for (const layer of this.map.getLayers().getArray()) {
 
                 if (!layer.getVisible()) {
                     continue
@@ -127,11 +148,12 @@ export default class FeatureInfoTool extends Vue {
                 // 'BaseLayer' is the abstract base class of all layer classes, and each(?) actually instanceable 
                 // layer class should be derived from 'Layer'.
 
-                let source = (layer as ol_layer.Layer).getSource()
+                const source = (layer as ol_layer.Layer).getSource()
 
                 if (source instanceof ol_source.Vector) {
 
                     source.forEachFeatureInExtent(coordinate as Extent, (feature: FeatureLike) => {
+                        // TODO: 3 Replace this with getClusteredFeaturesRecursive()
                         this.addFeature(feature, layer as ol_layer.Layer)
                     })
 
@@ -142,10 +164,10 @@ export default class FeatureInfoTool extends Vue {
     }
 
 
-    processWmsLayers(coordinate: Coordinate) {
+    async processWmsLayers(coordinate: Coordinate) {
 
         //################ BEGIN Perform GFI request for all layers in the map ###############
-        for (let layer of this.map.getLayers().getArray()) {
+        for (const layer of this.map.getLayers().getArray()) {
 
             if (!layer.getVisible()) {
                 continue
@@ -160,7 +182,7 @@ export default class FeatureInfoTool extends Vue {
             // 'BaseLayer' is the abstract base class of all layer classes, and each(?) actually instanceable 
             // layer class should be derived from 'Layer'.
 
-            let source = (layer as ol_layer.Layer).getSource()
+            const source = (layer as ol_layer.Layer).getSource()
 
             //################## BEGIN Try to fetch URL parameter 'layers' from source ##################
             let layers = ""
@@ -177,7 +199,7 @@ export default class FeatureInfoTool extends Vue {
 
 
             //###################### BEGIN Get feature info URL ####################
-            let url = source.getFeatureInfoUrl(
+            const url = source.getFeatureInfoUrl(
                 coordinate,
                 this.map.getView().getResolution() as number,
                 this.map.getView().getProjection(),
@@ -195,17 +217,26 @@ export default class FeatureInfoTool extends Vue {
                 continue
             }
 
-          
+            const response = await proxyfetch(url)
+
+            const gfi_geojson = await response.json()
+
+            for (let feature of this.geojsonFormat.readFeatures(gfi_geojson)) {
+                // TODO: 3 Replace this with getClusteredFeaturesRecursive()
+                this.addFeature(feature, layer as ol_layer.Layer)
+            }
+            /*
             proxyfetch(url).then(response => {
 
                 response.json().then(gfi_geojson => {
 
                     for (let feature of this.geojsonFormat.readFeatures(gfi_geojson)) {
+                        // TODO: 3 Replace this with getClusteredFeaturesRecursive()
                         this.addFeature(feature, layer as ol_layer.Layer)
                     }
                 })
             });
-
+            */
         }
         //################ END Perform GFI request for all layers in the map ###############
     }

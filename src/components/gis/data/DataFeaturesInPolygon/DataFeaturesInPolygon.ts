@@ -10,6 +10,8 @@ import * as ol_layer from 'ol/layer'
 
 import { Extent } from 'ol/extent';
 import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
+import { getClusteredFeaturesRecursive } from 'tivigi/src/util/mapQueryUtil';
+import { FeatureLike } from 'ol/Feature';
 
 @Component({
     components: {}
@@ -37,6 +39,17 @@ export default class DataFeaturesInPolygon extends AbstractData {
     @Watch("layer")
     onLayerChange() {
         this.init()
+    }
+
+
+    beforeDestroy() {
+        if (this.layer == undefined) {
+            return
+        }
+
+        let source = this.layer.getSource()
+
+        source.un("change", this.updateClippedFeatures)
     }
 
 
@@ -94,7 +107,7 @@ export default class DataFeaturesInPolygon extends AbstractData {
     */
 
 
-    get clipExtent(): Extent {
+    getClipExtent(): Extent {
 
         if (this.clipCoords == undefined || this.clipCoords.length == 0) {
             return [0, 0, 0, 0]
@@ -135,18 +148,19 @@ export default class DataFeaturesInPolygon extends AbstractData {
 
         let clipGeom = this.geojsonFormat.readGeometry(geojson) as ol_geom.MultiPolygon
 
-        let f = Array<ol.Feature>()
+        let features = Array<FeatureLike>()
 
-        source.forEachFeatureInExtent(this.clipExtent, (feature => {
+        source.forEachFeatureInExtent(this.getClipExtent(), (feature => {
 
             let coords = (feature.getGeometry() as ol_geom.Point).getCoordinates()
 
             if (clipGeom.intersectsCoordinate(coords)) {
-                f.push(feature)
+                //features.push(feature)
+                features = features.concat(getClusteredFeaturesRecursive(feature))
             }
         }))
         //################### END Generate clipped features #################
 
-        this.register(f)
+        this.register(features)
     }
 }

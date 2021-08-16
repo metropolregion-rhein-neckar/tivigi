@@ -53,7 +53,7 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
     // TODO: 3 Setting up a source change event handler and writing layer.get('legend') in here is not very clean.
     // Also, perhaps try to separate the creation of the OpenLayers style function from the creation of the legend?
 
-
+   
     //#################### BEGIN On source change, recalculate quantiles and update legend ##################
     let onSourceChange = function (e: BaseEvent) {
 
@@ -65,7 +65,7 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
         quantiles = computeQuantiles(layer, numQuantiles)
 
         // Update legend:
-        let legend = updateQuantilesLegend(quantiles, colors, noDataColor, lineColor, lineWidth)
+        let legend = makeQuantilesLegend(quantiles, colors, noDataColor, lineColor, lineWidth)
 
         layer.set('legend', legend)
     }
@@ -215,9 +215,6 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
             }))
 
 
-            
-          
-
             return result
         }
     };
@@ -228,8 +225,7 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
 
 
 
-
-export function computeQuantiles(layer: ol_layer.Layer, numQuantiles: number): Array<number> {
+function computeQuantiles(layer: ol_layer.Layer, numQuantiles: number): Array<number> {
 
     //############ BEGIN Update min/max and the ordered list of values ###########
     let attribute = layer.get('attribute')
@@ -302,7 +298,7 @@ export function computeQuantiles(layer: ol_layer.Layer, numQuantiles: number): A
 
 
 
-export function updateQuantilesLegend(quantiles: Array<number>, colors: Array<ColorRGBA>, noDataColor: ColorRGBA, lineColor: ColorRGBA, lineWidth: number) {
+function makeQuantilesLegend(quantiles: Array<number>, colors: Array<ColorRGBA>, noDataColor: ColorRGBA, lineColor: ColorRGBA, lineWidth: number) : any {
 
     let result = {
         "Legend": [
@@ -374,4 +370,3 @@ export function updateQuantilesLegend(quantiles: Array<number>, colors: Array<Co
 
     return result
 }
-

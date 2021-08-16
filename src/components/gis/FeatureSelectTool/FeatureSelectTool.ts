@@ -28,7 +28,7 @@ export default class FeatureSelectTool extends Vue {
 
     @Watch('selectedFeature')
     onSelectedFeatureChange() {
-        this.centerSelectedFeatureOnMap()
+       // this.centerSelectedFeatureOnMap()
     }
 
     @Watch('map')
@@ -65,13 +65,14 @@ export default class FeatureSelectTool extends Vue {
         //#################### END Center map on selected feature ####################
     }
 
+
     init() {
         if (!(this.map instanceof ol.Map)) {
             return
         }
 
         this.map.on("click", this.onMapClick)
-        this.map.on("pointermove", this.onMapPointerMove)
+     //   this.map.on("pointermove", this.onMapPointerMove)
     }
 
 
@@ -103,7 +104,8 @@ export default class FeatureSelectTool extends Vue {
             // through a "feedback loop". But in any case, for now, this.selectedFeature remains unchanged!
             this.$emit('update:selectedFeature', selectedFeature)
 
-            this.centerSelectedFeatureOnMap()
+            
+            //this.centerSelectedFeatureOnMap()
         }
     }
 

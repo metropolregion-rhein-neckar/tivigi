@@ -1,21 +1,9 @@
 <div class="LocationSearch">
 
-    <!-- 
-        NOTE: 
-        Here, we encapsulate the input field with a <form> in order to capture presses of the "search" or "submit" button
-        on Android virtual keyboards. The former solution, which listened for "input" events on the input field and
-        called onSearchButtonClick() if <enter> key was pressed did not react to Android virtual keyboard submit button
-        presses.
-    -->
-    
-        <div class="InputGroup">
-
-            <Superinput :clearButton="true" placeholder="Ort oder Adresse" @enter="onSearchButtonClick" @blur="onBlur" v-model="query"  />
-
-            <Superbutton title="Suchen" icon="img/search.svg" @click="onSearchButtonClick" />
-        </div>
-
-    
+    <span class="InputGroup">
+        <Superinput :clearButton="true" placeholder="Ort oder Adresse" @enter="onSearchButtonClick" v-model="pQuery" />
+        <Superbutton title="Suchen" icon="tivigi/img/search.svg" @click="onSearchButtonClick" />
+    </span>
 
     <FloatingWindow :show.sync="showResults" v-if="result != null" :dockButton="false" :title="'Ortssuche: ' + result.length + ' Ergebnisse für &quot;' + lastQuery + '&quot;'">
         <div class="LocationSearch__Result">

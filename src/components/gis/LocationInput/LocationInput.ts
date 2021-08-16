@@ -6,20 +6,26 @@ import * as ol_proj from 'ol/proj'
 import { Coordinate } from 'ol/coordinate';
 //############ END OpenLayers imports ############
 
+import Superbutton from '../../Superbutton/Superbutton'
+import LocationSearch from '../LocationSearch/LocationSearch'
+
 import WithRender from './LocationInput.html';
 
 import './LocationInput.scss';
 
 @WithRender
-@Component({})
+@Component({
+    components: {
+        LocationSearch,
+        Superbutton
+        
+    }
+})
 export default class LocationInput extends Vue {
 
     //############### BEGIN Props ###############
     @Prop({ default: false })
     alwaysEnabled!: boolean
-
-    @Prop({ default: undefined })
-    crs!: string
 
     @Prop({ default: "crosshair" })
     cursor!: string
@@ -27,67 +33,45 @@ export default class LocationInput extends Vue {
     @Prop()
     map!: ol.Map;
 
-    /*
-    @Prop({ default: 0 })
-    markerOffsetX!: number
+    @Prop()
+    markerUrl!: string
 
-    @Prop({ default: 0 })
-    markerOffsetY!: number
-*/
     @Prop({ default: true })
     showMarker!: boolean
 
-    @Prop({default:40})
-    markerWidth!: number
-    
-    @Prop({default:40})
-    markerHeight!: number
-
-
-    @Prop()
-    markerUrl!: string
+    // NOTE: If "v-model" is used, the "value" prop holds the value:
+    @Prop({ default: null })
+    value!: Coordinate | null
     //############### END Props ###############
 
-    overlay_marker = new ol.Overlay({ autoPan: false });
 
-    coords: Coordinate | null = null
+    overlay_marker = new ol.Overlay({ autoPan: false });
 
     lonlat: Coordinate | null = null
 
     pMapPickState = false
 
+    query = ""
 
-    get dynamicClass(): any {        
+
+    get dynamicClass(): any {
 
         return {
-            "Button" : true,
+            "LocationInput__MapPickButton" : true,
+            "Button": true,
             "Input": true,
-            "Button--active" : this.mapPickState
-        }
-    }
-
-
-    get dynamicStyle_marker(): any {
-
-        return {
-            "left": -this.markerWidth/2 + "px",
-            "top": -this.markerHeight + "px",
-            "width" : this.markerWidth + "px",
-            "height" : this.markerHeight + "px"
+            "Button--active": this.mapPickState
         }
     }
 
 
     //################# BEGIN Computed property mapPickState #################
-
-
     get mapPickState(): boolean {
         return this.pMapPickState
     }
 
 
     set mapPickState(newval: boolean) {
-
 
         if (!(this.map instanceof ol.Map)) {
             return
@@ -101,7 +85,7 @@ export default class LocationInput extends Vue {
         if (mapTarget == undefined) {
             return
         }
-        
+
         if (this.pMapPickState) {
             mapTarget.style.cursor = this.cursor
             this.map.on('click', this.onMapClick)
@@ -123,7 +107,6 @@ export default class LocationInput extends Vue {
 
     beforeDestroy() {
         this.mapPickState = false
-
 
         if (!(this.map instanceof ol.Map)) {
             return
@@ -150,8 +133,22 @@ export default class LocationInput extends Vue {
         }
     }
 
+
     mounted() {
+
         this.init()
+
+        this.setCoordinate(this.value)
+    }
+
+
+    onLocationSelect(evt : any) {
+  
+
+        let lon = parseFloat(evt.lon)
+        let lat = parseFloat(evt.lat)
+
+        this.setCoordinate([lon,lat])
     }
 
 
@@ -162,11 +159,6 @@ export default class LocationInput extends Vue {
 
     onMapClick(evt: ol.MapBrowserEvent) {
 
-
-        if (!(this.map instanceof ol.Map)) {
-            return
-        }
-
         if (evt.coordinate == null) {
             return
         }
@@ -175,27 +167,33 @@ export default class LocationInput extends Vue {
             this.mapPickState = false
         }
 
-        // Update coordinates:
-        this.coords = evt.coordinate
+        let coords_4326 = ol_proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326')
 
-        if (this.coords != null) {
-
-            // Also store coordinates in WGS 84 for display:
-            this.lonlat = ol_proj.transform(this.coords, this.map.getView().getProjection(), 'EPSG:4326')
-
-            // Update overlay position:
-            this.overlay_marker.setPosition(this.coords);
+        this.query = ""
+        
+        // Update coordinates:        
+        this.setCoordinate(coords_4326)
+    }
 
 
-            //############# BEGIN Communicate selected coordinates through input event ##############
-            let exportCoords = [this.coords[0], this.coords[1]]
+    setCoordinate(coords_wgs84: Coordinate | null) {
 
-            if (this.crs != undefined) {
-                exportCoords = ol_proj.transform(this.coords, this.map.getView().getProjection(), this.crs)
-            }
-
-            this.$emit('input', exportCoords)
+        if (coords_wgs84 == null) {
+            return
         }
-        //############# END Communicate selected coordinates through input event ##############
+
+        
+
+        // Store coordinates for display:
+
+        this.lonlat = coords_wgs84
+
+        this.$emit('input', coords_wgs84)
+
+        // Update overlay position:
+        if (this.map instanceof ol.Map) {
+            let coords_map = ol_proj.transform(coords_wgs84, 'EPSG:4326', this.map.getView().getProjection())
+            this.overlay_marker.setPosition(coords_map);
+        }
     }
 }

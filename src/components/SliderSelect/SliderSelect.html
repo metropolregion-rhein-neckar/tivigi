@@ -1,0 +1,7 @@
+<div class="SliderSelect">
+
+    <input type="range" :min="0" :max="options.length - 1" step="1" v-model="index" />
+    <div>
+        {{getLabel()}}
+    </div>
+</div>

@@ -1,12 +1,14 @@
-div.LocationInput {
-    > button {
-        display: inline-flex;
-        align-items: center;
-         
-        > img {
-            height: 1.3em;            
-            margin:2px 4px 2px 0px;
-        }
+div.LocationInput > div {
+    display: inline-flex;
+
+    align-items: center;
+
+    img {
+        height: 2em;
+    }
+    
+    > * {
+        margin: 4px;
     }
 }
 
@@ -18,14 +20,16 @@ div.LocationInput {
 div.LocationInput__Overlay {
     user-select: none;
 
-    // NOTE: For some strange reason, a border is required to anchor the overlay to the map.
-    // border: 0px solid transparent;
-
     pointer-events: none; // This is required to forward clicks on the marker to the map!
     width: 0;
     height: 0;
 
     img {
-        position: relative;        
+        position: relative;
+
+        left: -20px;
+        top: -40px;
+        width: 40px;
+        height: 40px;
     }
 }

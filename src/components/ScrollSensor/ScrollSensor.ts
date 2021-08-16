@@ -29,14 +29,27 @@ export default class ScrollSensor extends Vue {
     }
 
     @Watch('container')
-    onContainerChange() {
-        //console.log("container change")
+    onContainerChange() {       
         this.init()
     }
 
 
     beforeDestroy() {
         this.pContainer.removeEventListener("scroll", this.onContainerScroll)
+    }
+
+
+    checkInView() {
+
+        let bbox_container = this.pContainer.getBoundingClientRect()
+        let bbox_element = this.$el.getBoundingClientRect()
+
+        let container_center_y = bbox_container.top + bbox_container.height / 2
+
+        this.isInView = bbox_element.bottom > container_center_y && bbox_element.top < container_center_y
+
+        this.$emit("update:value", this.isInView)
+
     }
 
 
@@ -68,21 +81,10 @@ export default class ScrollSensor extends Vue {
         this.checkInView()
     }
 
-
-    checkInView() {
-
-       
-
-        let bbox_container = this.pContainer.getBoundingClientRect()
-        let bbox_element = this.$el.getBoundingClientRect()
-
-        let container_center_y = bbox_container.top + bbox_container.height / 2
-
-        this.isInView = bbox_element.bottom > container_center_y && bbox_element.top < container_center_y
-
-        this.$emit("update:value", this.isInView)
-
+    onResize() {    
+        this.checkInView()
     }
+
 }
 
 

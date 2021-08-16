@@ -1,0 +1,18 @@
+<g class="SvgChart__Legend">
+
+  <g v-for="(dataset,index) in data.datasets">
+
+       
+        <!--
+        <rect :x="(index % 2) * itemWidth" :y="Math.floor(index / 2) * 30" :width="boxWidth" :height="boxHeight" :style="getStyle(dataset)"/>
+      
+          <text :x="(index % 2) * itemWidth + boxWidth + 8"  :y="Math.floor(index / 2) * 30 + boxHeight/2" style="fill:#000;dominant-baseline:middle">{{dataset.label}}</text>
+      -->
+
+      <rect :x="0" :y="index * 30" :width="boxWidth" :height="boxHeight" :style="getStyle(dataset)"/>
+      
+        <text :x="boxWidth + 8"  :y="index * 30 + boxHeight/2" style="fill:#000;dominant-baseline:middle">{{dataset.label}}</text>
+      
+    </g>
+ 
+</g>

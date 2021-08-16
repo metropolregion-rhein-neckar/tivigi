@@ -1,0 +1,25 @@
+div.HereRouteInstructionsView {
+
+    table {
+        border-collapse: collapse;
+    }
+
+     td {
+        padding:10px;
+        cursor: pointer;
+    
+        
+    }
+
+    td.HereRouteInstructionsView__ActionColumn {
+        img {
+            width:24px;
+        }
+    }
+
+    tr {
+        &:hover {
+            background-color:#eee;
+        }
+    }
+}

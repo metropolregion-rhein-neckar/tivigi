@@ -1,0 +1,10 @@
+<div class="CssGridBox">
+    <!-- 
+        NOTE: Padding for the box should be applied to the inner div. 
+        Applying padding to the outer div would break the automatic 
+        grid box height (CSS grid-row) calculation.
+    -->
+    <div class="CssGridBox__Inner" ref="inner" v-onresize="onResize">
+        <slot/>
+    </div>
+</div>

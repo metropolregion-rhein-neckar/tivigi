@@ -1,0 +1,18 @@
+<div class="HereRouteInstructionsView" @mouseout="onMouseOut">
+
+   <template v-if="route != null">
+      <template v-for="section in route.sections">
+
+         <!-- TODO: 4 Use list component for this? -->
+         <table>
+            <template v-for="action in section.actions">
+               <tr @click="onActionClick(action)" @mouseover="onActionMouseOver(action)">
+                  <td class="HereRouteInstructionsView__ActionColumn"><img :src="getActionImageUrl(action)" /></td>
+                  <td>{{action.instruction}}</td>
+               </tr>
+
+            </template>
+         </table>
+      </template>
+   </template>
+</div>

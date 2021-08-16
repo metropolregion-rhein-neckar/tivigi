@@ -25,38 +25,42 @@ export default class Spyglass extends Vue {
     // NOTE: 'coords' can be used as an attribute to receive update/"sync" events from this component.
     // It is not defined as a prop here though, since it can not be used to inject data into the component.
 
-    @Prop({ default: 32})
-    circle_steps! : number
+    @Prop({ default: 32 })
+    circle_steps!: number
 
-    @Prop({ default: true})
-    enabled! : boolean
+    @Prop({ default: true })
+    enabled!: boolean
 
-    @Prop({default:  "bold 14px Arial"  })
-    fontStyle! : string
-    
+    @Prop({ default: "bold 14px Arial" })
+    fontStyle!: string
+
+    @Prop()
+    layer!: ol_layer.Layer
+
     @Prop()
     map!: ol.Map;
 
     @Prop({ default: () => { return [8.7, 49.45] } })
     position!: Coordinate
 
-    @Prop({ default:  1000  })
+    @Prop({ default: 1000 })
     radius!: number
     //################# END Props #################
 
 
-    pPosition: Coordinate = this.position  
+    pPosition: Coordinate = this.position
     mouseGrabOffset = [0, 0]
     panInteraction: Interaction | null = null
 
-   
+
+    /*
     // TODO: 2 Make layer configurable through prop
     layer = new ol_layer.Tile({
         source: new ol_source.Stamen({            
             layer: 'toner-lite'
         })
     })
-
+    */
 
 
     pDrag = false
@@ -75,10 +79,13 @@ export default class Spyglass extends Vue {
         }
     }
 
+
     @Watch('enabled')
     onEnabledChange() {
-        
-        this.layer.setVisible(this.enabled)
+
+        if (this.layer instanceof ol_layer.Layer) {
+            this.layer.setVisible(this.enabled)
+        }
 
         if (this.enabled) {
             this.onClipAreaChanged()
@@ -86,6 +93,13 @@ export default class Spyglass extends Vue {
         else {
             this.$emit('update:coords', undefined)
         }
+    }
+
+    @Watch('layer')
+    onLayerChange(oldVal: any, newVal: any) {
+
+        // TODO: 3 Remove event listerners for "prerender" and "postrender" from previous layer instance
+        this.init()
     }
 
 
@@ -104,17 +118,23 @@ export default class Spyglass extends Vue {
 
     @Watch('position')
     onPositionChange() {
-        this.pPosition = ol_proj.transform(this.position, 'EPSG:4326', this.map.getView().getProjection())   
-        this.onClipAreaChanged()     
+        this.pPosition = ol_proj.transform(this.position, 'EPSG:4326', this.map.getView().getProjection())
+        this.onClipAreaChanged()
     }
 
 
     beforeDestroy() {
-        if (!(this.map instanceof ol.Map)) {
-            return
+        if (this.map instanceof ol.Map) {
+            this.map.un("change:target", this.onMapTargetChange)
         }
 
-        this.map.removeLayer(this.layer)
+
+        // ATTENTION: This is REQUIRED to avoid render errors/artifacts under some circumstances,
+        // for example if a MapQueryTool is used together with the Spyglass:
+        if (this.layer instanceof ol_layer.Layer) {
+            this.layer.un('prerender', this.onBaseLayerPrerender)
+            this.layer.un('postrender', this.onBaseLayerPostrender)
+        }
     }
 
 
@@ -123,15 +143,15 @@ export default class Spyglass extends Vue {
             return
         }
 
-        this.onPositionChange()
-     
-        this.map.addLayer(this.layer)
-        this.layer.setVisible(this.enabled)
-        this.layer.setZIndex(999)
+        if (!(this.layer instanceof ol_layer.Layer)) {
+            return
+        }
 
-    
         this.layer.on('prerender', this.onBaseLayerPrerender)
         this.layer.on('postrender', this.onBaseLayerPostrender)
+
+        this.onPositionChange()
+
 
         // TODO: 4 Remove event listener from previous map instance
         this.map.on("change:target", this.onMapTargetChange)
@@ -148,11 +168,13 @@ export default class Spyglass extends Vue {
 
 
     mounted() {
+
+
         this.init()
     }
 
-    
-    onBaseLayerPrerender(event:RenderEvent) {
+
+    onBaseLayerPrerender(event: RenderEvent) {
 
         if (!(this.map instanceof ol.Map)) {
             return
@@ -163,7 +185,7 @@ export default class Spyglass extends Vue {
         if (resolution == undefined) {
             return
         }
-     
+
         let radius = this.radius / resolution
         let pixel = this.map.getPixelFromCoordinate(this.pPosition)
         let renderPixel = getRenderPixel(event, pixel);
@@ -173,20 +195,20 @@ export default class Spyglass extends Vue {
         // TODO: 1 The displayed radius is wrong
 
         // Clip layer to the spyrole region:
-        
+
         let ctx = event.context;
-        
+
         ctx.save();
-        
+
         // ATTENTION: Here, we create an *inverse* clip shape by first adding the path of the circle and then
         // adding the *inverse/negative* path of the whole canvas area rectangle around it. 
         // This idea is from here: https://stackoverflow.com/questions/6271419/how-to-fill-the-opposite-shape-on-canvas
         ctx.beginPath();
         ctx.arc(renderPixel[0], renderPixel[1], canvasRadius, 0, 2 * Math.PI);
-        ctx.rect(ctx.canvas.width, 0, -ctx.canvas.width,ctx.canvas.height);
+        ctx.rect(ctx.canvas.width, 0, -ctx.canvas.width, ctx.canvas.height);
         ctx.closePath()
-      
-        ctx.clip();              
+
+        ctx.clip();
     }
 
 
@@ -199,8 +221,8 @@ export default class Spyglass extends Vue {
         if (resolution == undefined) {
             return
         }
-     
-    
+
+
         let radius = this.radius / resolution
 
         let ctx = event.context;
@@ -269,7 +291,7 @@ export default class Spyglass extends Vue {
 
 
     // NOTE: The type of 'evt' should be 'ObjectEvent', but specifying this causes a build error
-    onMapTargetChange(evt : any) {
+    onMapTargetChange(evt: any) {
 
         let oldTarget = evt.oldValue
 
@@ -277,13 +299,13 @@ export default class Spyglass extends Vue {
             oldTarget.removeEventListener("mousedown", this.onMouseDown)
             oldTarget.removeEventListener("mouseup", this.onMouseUp)
             oldTarget.removeEventListener("mousemove", this.onMouseMove)
-    
+
             oldTarget.removeEventListener("touchstart", this.onTouchStart)
             oldTarget.removeEventListener("touchend", this.onTouchEnd)
-            oldTarget.removeEventListener("touchmove", this.onTouchMove)   
+            oldTarget.removeEventListener("touchmove", this.onTouchMove)
         }
 
-        
+
         let target = this.map.getTarget() as HTMLElement
 
         if (target == undefined) {
@@ -297,7 +319,7 @@ export default class Spyglass extends Vue {
 
         target.addEventListener("touchstart", this.onTouchStart)
         target.addEventListener("touchend", this.onTouchEnd)
-        target.addEventListener("touchmove", this.onTouchMove)           
+        target.addEventListener("touchmove", this.onTouchMove)
     }
 
 
@@ -308,7 +330,7 @@ export default class Spyglass extends Vue {
 
 
     onTouchEnd(evt: TouchEvent) {
-        this.onPointerUp()      
+        this.onPointerUp()
     }
 
 
@@ -352,7 +374,7 @@ export default class Spyglass extends Vue {
 
 
     onPointerMove(mouseCoords: Coordinate) {
-        
+
         if (!this.enabled) {
             return
         }
@@ -360,7 +382,7 @@ export default class Spyglass extends Vue {
         if (this.pPosition == null || mouseCoords == null) {
             return
         }
-        
+
         let target = this.map.getTarget() as HTMLElement
 
         let dx = mouseCoords[0] - this.pPosition[0]
@@ -368,9 +390,9 @@ export default class Spyglass extends Vue {
 
         let dist = Math.sqrt(dx * dx + dy * dy)
 
-      
+
         if (dist < this.radius) {
-      
+
             target.classList.add("cursor-pointer")
         }
         else {
@@ -380,7 +402,7 @@ export default class Spyglass extends Vue {
 
         if (this.drag) {
             this.pPosition = [mouseCoords[0] - this.mouseGrabOffset[0], mouseCoords[1] - this.mouseGrabOffset[1]];
-         
+
             // This is required:
             this.map.render()
 
@@ -400,7 +422,7 @@ export default class Spyglass extends Vue {
     onClipAreaChanged() {
 
         let coords = []
-  
+
         let correction = 1.0031
 
         for (let ii = 0; ii < this.circle_steps; ii++) {

@@ -13,8 +13,7 @@ export default class Legend extends Vue {
                 "Legend": undefined
             }
         }
-    })
-    
+    })    
     config: any
 
 

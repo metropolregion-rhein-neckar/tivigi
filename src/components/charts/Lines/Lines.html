@@ -1,0 +1,28 @@
+<g>
+
+    <g class="SvgChart__Lines" v-for="dataset of data.datasets">
+        <!-- Colored area under the chart line path: -->
+        <!--
+        <polygon class="SvgChart__Lines__Area" :points="getPolygonUnderLine(dataset)" />
+        -->
+
+        <!-- The chart line path: -->
+        <path :d="getPath(dataset)" :style="getLineStyle(dataset)" />
+
+
+
+        <!-- Circles on data points: -->
+        <g v-for="(point,index) in dataset.points" >
+
+            <!-- The actually visible circle: -->
+            <circle class="SvgChart__Lines__Dot" :cx="w2sX(point.x)" :cy="w2sY(point.y)" :r="getCircleRadius(dataset)" :style="getCircleStyle(dataset)" :data-tooltip="dataset.label + ': ' + point.y" />
+
+            <!-- Place a larger invisible circle for pointer interaction  (hover events) around the actually drawn circle: -->
+
+            <!--
+            <circle :cx="w2sX(point.x)" :cy="w2sY(point.y)" r="20" style="fill:transparent;stroke:none" :data-tooltip="dataset.label + ': ' + point.y" />
+            -->
+        </g>
+    </g>
+
+</g>

@@ -68,7 +68,7 @@ export function removeStyleFunctionFromLayer(layer: ol_layer.Vector, name: strin
 }
 
 
-export function multiStyleFunctionFactory(layer: ol_layer.Vector) {
+export function multiStyleFunctionFactory(layer: ol_layer.Vector) : StyleFunction {
 
     let multiStyleFunction: StyleFunction = function (feature: FeatureLike, resolution: number): Array<ol_style.Style> {
 

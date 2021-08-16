@@ -9,23 +9,24 @@ import { FeatureLike } from 'ol/Feature';
 
 //################# BEGIN Tivigi imports #################
 import TableView from '../../TableView/TableView'
-import { FieldConfig } from 'tivigi/src/util/FieldConfig';
+import TableView2 from '../../TableView2/TableView2'
+import { TableData } from 'tivigi/src/components/TableView2/TableData';
+import { FieldConfig, FieldTextAlign } from '../../TableView2/FieldConfig';
 import FeatureHighlightTool from 'tivigi/src/components/gis/FeatureHighlightTool/FeatureHighlightTool'
 import FeatureSelectTool from 'tivigi/src/components/gis/FeatureSelectTool/FeatureSelectTool'
 
 //################# END Tivigi imports #################
 
 import './AttributesTable.scss'
-
 import WithRender from './AttributesTable.html';
-
 
 @WithRender
 @Component({
     components: {
         FeatureHighlightTool,
         FeatureSelectTool,
-        TableView        
+        TableView,
+        TableView2
     },
 })
 export default class AttributesTable extends Vue {
@@ -40,35 +41,26 @@ export default class AttributesTable extends Vue {
 
     @Prop()
     map!: ol.Map
+    //################### END Props #####################
 
-    
+
     selectedCol: FieldConfig | null = null
 
     hoverFeature: ol.Feature | null = null
     selectedFeature: ol.Feature | null = null
-    //################### END Props #####################
-
-
     pFieldsConfig = this.fieldsConfig
-    
     pLayer: ol_layer.Vector = this.layer
     pSelectedCol: FieldConfig | null = this.selectedCol
-    
-  
-
     data: Array<any> = []
 
-    @Watch("selectedFeature") 
-    onSelectedFeatureChange() {
-        console.log("change")
-    }
+    tableData = new TableData()
 
 
     @Watch('fieldsConfig')
     onFieldsConfigChange() {
         this.pFieldsConfig = this.fieldsConfig
     }
-    
+
 
     @Watch('layer')
     onLayerChange() {
@@ -79,7 +71,7 @@ export default class AttributesTable extends Vue {
     }
 
 
-    
+
 
     beforeDestroy() {
 
@@ -87,8 +79,8 @@ export default class AttributesTable extends Vue {
             return
         }
 
-    
-        let source = this.pLayer.getSource()
+
+        const source = this.pLayer.getSource()
 
         source.un('change', this.onSourceChange)
     }
@@ -105,7 +97,7 @@ export default class AttributesTable extends Vue {
             return
         }
 
-        let source = this.pLayer.getSource()
+        const source = this.pLayer.getSource()
 
         if (!(source instanceof VectorSource)) {
             console.log("Not a vector source: " + this.pLayer.get('title'))
@@ -124,44 +116,100 @@ export default class AttributesTable extends Vue {
             return
         }
 
-        this.data = []
+        console.log("source change")
+
+        let features = Array<FeatureLike>()
 
         for (let f of this.pLayer.getSource().getFeatures()) {
-            this.addFeature(f)
+            features = features.concat(this.addFeatureRecursive(f))
         }
 
-        this.updateFieldsConfig()
+        this.data = features
+
+        this.pFieldsConfig = this.makeFieldsConfig()
+
+        this.tableData = this.prepareTableData()
     }
 
 
 
-    addFeature(feature: FeatureLike) {
 
+    addFeatureRecursive(feature: FeatureLike) : Array<FeatureLike> {
+
+        let result = Array<FeatureLike>()
 
         // Handle cluster layer features:
         if (feature.getProperties().features instanceof Array) {
 
             for (let f2 of feature.getProperties().features) {
-                this.addFeature(f2)
+               result = result.concat(this.addFeatureRecursive(f2))
             }
 
-            return
+            return result
         }
 
-        this.data.push(feature)
+        result.push(feature)
+
+        return result
     }
 
 
-    updateFieldsConfig() {
 
-        if (this.fieldsConfig != undefined) {
-            this.pFieldsConfig = this.fieldsConfig
-            return
+    addFeatureRecursive2(feature: FeatureLike) : Array<FeatureLike> {
+
+        let result = Array<FeatureLike>()
+
+        // Handle cluster layer features:
+        if (feature.getProperties().features instanceof Array) {
+
+            for (let f2 of feature.getProperties().features) {
+               result = result.concat(this.addFeatureRecursive(f2))
+            }
+
+            return result
         }
 
+        result.push(feature)
 
-        this.pFieldsConfig = []
+        return result
+    }
 
+
+
+
+
+
+    prepareTableData(): TableData {
+
+        const result = new TableData()
+
+        result.fields = this.makeFieldsConfig()
+
+
+        let features = Array<FeatureLike>()
+        for (let f of this.pLayer.getSource().getFeatures()) {
+            features = features.concat(this.addFeatureRecursive(f))
+        }
+
+        for(const f of features) {
+     
+            result.rows.push(f)
+        }
+       
+
+        return result
+    }
+
+
+
+
+    makeFieldsConfig(): Array<FieldConfig> {
+
+        let result = new Array<FieldConfig>()
+
+        if (this.fieldsConfig != undefined) {
+            return this.fieldsConfig
+        }
 
         let propConfig = this.layer.get('propertyLabels')
 
@@ -175,10 +223,10 @@ export default class AttributesTable extends Vue {
                 if (propConfig[key].label != undefined) {
                     label = propConfig[key].label
                 }
-                
-                this.pFieldsConfig.push(new FieldConfig(label, 
-                    (feature: any) => { return feature != undefined ? feature.getProperties()[key] : "" }, 
-                    (feature: any) => { return feature != undefined ? feature.getProperties()[key] : ""}))
+
+                result.push(new FieldConfig(label,
+                    (feature: any) => { return feature != undefined ? feature.getProperties()[key] : "" },
+                    (feature: any) => { return feature != undefined ? feature.getProperties()[key] : "" }, FieldTextAlign.LEFT))
             }
         }
         else {
@@ -193,12 +241,14 @@ export default class AttributesTable extends Vue {
                     if (key == 'geometry') {
                         continue
                     }
-                    this.pFieldsConfig.push(new FieldConfig(key, 
-                        (feature: any) => { return feature.getProperties()[key] }, 
-                        (feature: any) => { return feature.getProperties()[key] }))
+                    result.push(new FieldConfig(key,
+                        (feature: any) => { return feature.getProperties()[key] },
+                        (feature: any) => { return feature.getProperties()[key] }, FieldTextAlign.LEFT))
                 }
             }
             //################# END Update TableView field config ###############
         }
+
+        return result
     }
 }

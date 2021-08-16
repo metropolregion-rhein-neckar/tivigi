@@ -1,17 +1,17 @@
 div.Tooltip {
     pointer-events: none;
-    position:fixed;
-    //max-width:200px;    
+    position:fixed;    
     background-color:#fff;
     border-radius:4px;
-    z-index:1000;
-    overflow: hidden;
-    padding:7px 10px;
+    z-index:1000;    
+    padding:10px;
     transition: 0.4s;
     transition-property: opacity;
 
-    background-color: #222;
+   // white-space: nowrap;
+    background-color: #444;    
     color:#fff;
     font-weight:bold;
-   
+    max-width:300px;
+    line-height:1.3em;
 }

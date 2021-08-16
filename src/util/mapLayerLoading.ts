@@ -1,5 +1,6 @@
 //################## BEGIN OpenLayers imports #################
 import * as ol_format from 'ol/format'
+import * as ol from 'ol'
 import * as ol_layer from 'ol/layer'
 import * as ol_source from 'ol/source'
 import * as ol_loadingstrategy from 'ol/loadingstrategy'
@@ -13,6 +14,7 @@ import Projection from 'ol/proj/Projection'
 import WMSCapabilities from 'ol/format/WMSCapabilities';
 import { Geometry } from 'ol/geom'
 import { Feature } from 'ol'
+
 
 //################## END OpenLayers imports #################
 
@@ -136,12 +138,7 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
         // Expected font style schema: 'bold 18px Arial'                
 
         let fontStyle = fontWeight + " " + fontSize * clusterScaleFactor + "px " + fontFamily;
-
-
-
-
         let hoverScale = 1
-
 
         let isHover = false
         let zIndex = 0
@@ -220,9 +217,9 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
     // for "geojson":
     else {
 
-            //backendSource = new ol_source.Vector({
-            backendSource = new FilterableVectorSource({
-        
+        //backendSource = new ol_source.Vector({
+        backendSource = new FilterableVectorSource({
+
             format: new ol_format.GeoJSON({ dataProjection: 'EPSG:4326', featureProjection: projection }),
 
             loader: function (extent, resolution, projection) {
@@ -248,13 +245,13 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
         });
     }
 
-    
+
 
     // Cluster source:
     let source = new ol_source.Cluster({
         distance: distance,
         source: backendSource
-        
+
     });
 
 
@@ -315,14 +312,16 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
 
 export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Projection): ol_layer.Vector {
 
-    
+    //####################### BEGIN Define GeoJSON vector source ########################
     let source = new ol_source.Vector({
 
         format: new ol_format.GeoJSON({ dataProjection: 'EPSG:4326', featureProjection: projection }),
 
+        attributions: layerConfig.attribution,
+
         loader: function (extent, resolution, projection) {
 
-            let options: RequestInit = {headers: layerConfig.http_headers}
+            let options: RequestInit = { headers: layerConfig.http_headers }
 
             proxyfetch.proxyfetch(layerConfig.baseUrl, options).then(response => response.json()).then((geojson) => {
 
@@ -338,9 +337,52 @@ export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Proje
 
         }
     });
-   
+    //####################### END Define GeoJSON vector source ########################
 
-    return new ol_layer.Vector({ source });
+    let layer = new ol_layer.Vector({ source });
+
+
+    let iconUrl = tryToRead(layerConfig, "style.iconUrl", null)
+    let iconScale = tryToRead(layerConfig, "style.iconScale", 1)
+
+
+    if (iconUrl != null) {
+        //##################### BEGIN Style function ########################
+        let styleFunc: StyleFunction = function getStyle(feature: any) {
+
+            let isHover = false
+
+            if (feature.get("hover")) {
+                isHover = true
+            }
+
+            if (iconUrl == null) {
+                return []
+            }
+
+            //################## BEGIN Icon ###################
+            let style1 = new ol_style.Style({
+
+                image: new ol_style.Icon({
+                    anchor: [0.5, 0.5],
+                    anchorXUnits: IconAnchorUnits.FRACTION,
+                    anchorYUnits: IconAnchorUnits.FRACTION,
+                    src: iconUrl,
+                    scale: iconScale,
+                    crossOrigin: 'anonymous',
+                })
+            });
+            //################## END Icon ###################
+
+            return [style1];
+
+        }
+        //##################### END Style function ########################
+
+        layer.setStyle(styleFunc)
+    }
+
+    return layer
 }
 
 
@@ -351,7 +393,7 @@ export function createWfsLayerFromConfig(layerConfig: any, projection: Projectio
 
     let source = new ol_source.Vector({
         format: new ol_format.GeoJSON(),
-
+        attributions: layerConfig.attribution,
         url: getWfs100UrlFunction(baseUrl, layerConfig.urlParams, projection.getCode()),
         strategy: ol_loadingstrategy.bbox
 
@@ -407,7 +449,6 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
             break;
         }
-
 
         case "geojson-statistics": {
 
@@ -519,10 +560,14 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
             layer = createWmsLayerFromCapabilities(layerConfig.capabilities)
 
-            if (layer != null && layerConfig.legend_url == undefined) {
-                async_loadWmsLegend(layer)
-            }
 
+            if (layer != null) {
+
+                if (layerConfig.legend_url == undefined) {
+                    async_loadWmsLegend(layer)
+                }
+
+            }
             break;
         }
 
@@ -539,7 +584,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             };
 
             let source = new ol_source.TileWMS({
-
+                attributions: layerConfig.attribution,
                 url: layerConfig.baseUrl,
                 crossOrigin: 'anonymous',
                 params: { ...wmsDefaultParams, ...layerConfig.urlParams },
@@ -570,6 +615,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
                 url: layerConfig.baseUrl,
                 params: { ...wmsDefaultParams, ...layerConfig.urlParams },
                 projection: projection,
+                attributions: layerConfig.attribution,
                 ratio: 1,
                 crossOrigin: 'anonymous',
                 imageLoadFunction: imageLoadFunction
@@ -586,9 +632,13 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
 
         case "xyz": {
-            //layer = new ol_layer.Tile({ source: new ol_source.XYZ({ url: proxyfetch.config.proxyUrl + encodeURI(layerConfig.url) }) })
 
-            layer = new ol_layer.Tile({ source: new ol_source.XYZ({ url: proxyfetch.getProxyUrl(layerConfig.url) }) })
+            layer = new ol_layer.Tile({
+                source: new ol_source.XYZ({
+                    url: proxyfetch.getProxyUrl(layerConfig.url),
+                    attributions: layerConfig.attribution
+                })
+            })
             break
         }
 
@@ -597,11 +647,19 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
 
 
+
+
     //####################### BEGIN Set layer parameters ####################
-    
+
     if (layer == null) {
         return null
     }
+
+
+    const source = layer.getSource()
+
+    source.setAttributions(layerConfig.attribution)
+
 
     if (layerConfig.group) {
         layer.set("exclusive-group", layerConfig.group)
@@ -717,6 +775,7 @@ export function createWmsLayerFromCapabilities(capabilitiesXml: string): ol_laye
     //############# BEGIN Create source object ##############
     let source = new ol_source.TileWMS({
         url: layerBaseUrl,
+
         //  crossOrigin: 'anonymous',
         params: { "layers": layerdef.Name, "STYLES": stylesString }
     });

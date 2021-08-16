@@ -9,11 +9,6 @@ let erd = elementResizeDetectorMaker({
     strategy: "scroll"
 });
 
-let resizeListener = function (element: HTMLElement, vnode : Vue) {
-    var width = element.offsetWidth;
-    var height = element.offsetHeight;
-}
-
 
 Vue.directive('onresize', {
     bind(element, binding, vnode) {
@@ -22,7 +17,8 @@ Vue.directive('onresize', {
     },
 
     unbind(element, binding, vnode) {
-        erd.removeListener(binding.value, resizeListener);
+        //erd.removeListener(binding.value, resizeListener);
+        erd.removeListener(binding.value);
        
     }
 

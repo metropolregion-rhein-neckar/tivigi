@@ -8,7 +8,7 @@ import { Coordinate } from 'ol/coordinate';
 //############## BEGIN Tivigi imports ##############
 import LocationInput from '../LocationInput/LocationInput'
 import MapQueryTool from '../MapQueryTool/MapQueryTool'
-import { MapQueryResultSet } from '../MapQueryTool/mapQueryUtil';
+import { MapQueryResultSet } from 'tivigi/src/util/mapQueryUtil';
 import CollapsibleFeaturesList from '../CollapsibleFeaturesList/CollapsibleFeaturesList'
 //############## END Tivigi imports ##############
 
@@ -39,16 +39,27 @@ export default class FeatureInfoTool extends Vue {
     queryRadius!: number
     //################### END Props #################
 
-    coords: Coordinate|null = null
+    coords: Coordinate | null = null
 
     resultset = new MapQueryResultSet()
+ 
+
+    @Watch("resultset")
+    onResultSetChange() {
+        this.emitUpdateEvents()
+    }
+
 
     emitUpdateEvents() {
 
+        if (this.resultset == null) {
+            console.log("resultset is null")
+            return
+        }
+
+
         this.$emit('update:show', this.resultset.numFeatures() > 0)
 
-        // Emit results:
-        this.$emit('update:result', this.resultset)
 
         //############## BEGIN Emit title update ###############
         let title = "Kartenabfrage: " + this.resultset.numFeatures() + " "
@@ -61,12 +72,7 @@ export default class FeatureInfoTool extends Vue {
         }
 
         this.$emit('update:title', title)
-        //############## END Emit title update ###############        
+        //############## END Emit title update ###############            
     }
 
-
-    onResultUpdate(result: MapQueryResultSet) {
-        this.resultset = result;
-        this.emitUpdateEvents()
-    }
 }

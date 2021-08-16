@@ -1,9 +1,3 @@
-div.LocationSearch {
-    input[type="text"] {
-        width: 160px;
-    }
-}
-
 /* 
 ATTENTION:
 
@@ -12,7 +6,13 @@ are detached from their parent element and re-attached as children of the <body>
 mounting. This means that style rules won't work if they apply to children of 'LocationSearch' <div>s!
 */
 
-// TODO: 4 Implement and use a generic list component for this?
+// TODO: 4 Implement and use a generic list component for this? (Note: We now have one)
+
+div.LocationSearch {
+    // The follwing is important to prevent the component from shrinking horizontally
+    // if there is not enough space, causing overlapping of the input field and the search button:    
+    display:inline-flex;
+}
 
 div.LocationSearch__Result {
 
@@ -29,6 +29,7 @@ div.LocationSearch__Result {
         background-position: 6px 10px;
 
         border:2px solid #eee;
+        
         
         &:focus {
             outline: 2px solid #000;

@@ -33,9 +33,19 @@ export default class LayerControlPanel extends Vue {
 
 
     @Watch('layer')
-    onLayerChange() {
-        this.init()
+    onLayerChange(now : ol_layer.Layer|undefined, before : ol_layer.Layer|undefined) {
+
+     
+        if (before instanceof ol_layer.Layer) {
+            before.un("propertychange", this.onLayerPropertyChange)
+        }
+
+        if (now instanceof ol_layer.Layer) {
+            now.on("propertychange", this.onLayerPropertyChange)
+            this.legend = now.get('legend')
+        }  
     }
+
 
     beforeDestroy() {
         if (this.layer == undefined) {
@@ -46,18 +56,8 @@ export default class LayerControlPanel extends Vue {
     }
 
 
-    init() {
-        if (this.layer == undefined) {
-            return
-        }
-
-        this.layer.on("propertychange", this.onLayerPropertyChange)
-
-        this.legend = this.layer.get('legend')
-    }
-
     mounted() {
-        this.init()
+        this.onLayerChange(this.layer, undefined)
     }
 
 

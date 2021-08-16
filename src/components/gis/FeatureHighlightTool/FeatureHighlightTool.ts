@@ -1,9 +1,6 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import * as ol from 'ol/'
-import { Feature } from 'ol/';
-import { FeatureLike } from 'ol/Feature';
-
 
 import WithRender from './FeatureHighlightTool.html';
 
@@ -78,15 +75,4 @@ export default class FeatureHighlightTool extends Vue {
             this.prevSelectedFeature.changed()
         }
     }
-
-
-    init() {
-             
-    }
-
-
-    mounted() {
-        this.init()
-    }
-
 }

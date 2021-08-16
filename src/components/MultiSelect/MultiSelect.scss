@@ -1,0 +1,27 @@
+div.MultiSelect  {
+
+
+    user-select: none;
+
+    button {
+        display:block;
+        width:100%;
+        border:none;
+        background-color: transparent;
+        text-align:left;
+        font-size:1em;    
+        
+        padding:3px 4px;
+
+        &:hover {
+          //  color:#888;
+        }
+    }
+
+    button.MultiSelect__Option--selected {
+
+        background-color:#ddd;
+        
+    }
+}
+

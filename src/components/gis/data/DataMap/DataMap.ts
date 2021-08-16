@@ -3,13 +3,26 @@ import * as ol from 'ol'
 import * as ol_interaction from 'ol/interaction'
 import AbstractData from '../../../data/AbstractData/AbstractData'
 import { getUrlState, setUrlState } from 'tivigi/src/util/urlStateKeeping';
+import { DragPan, MouseWheelZoom, defaults } from 'ol/interaction';
+import { platformModifierKeyOnly } from 'ol/events/condition';
+import { Attribution, defaults as defaultControls } from 'ol/control';
 
 
 @Component({})
 export default class DataMap extends AbstractData {
 
+    //############## BEGIN Props ###############
     @Prop({ default: 17 })
     resolution!: number
+
+    @Prop({ default: true })
+    setUrlState!: boolean
+
+    @Prop({ default: false })
+    touchScreenMode!: boolean
+    //############## END Props ###############
+
+
 
     map!: ol.Map
 
@@ -28,10 +41,35 @@ export default class DataMap extends AbstractData {
 
     setup() {
 
+        // See https://openlayers.org/en/latest/examples/two-finger-pan-scroll.html
+
+        // TODO: 3 Perhaps remove setting of interactions from here and do it in MapPanel only?
+
+        const interactions_default = ol_interaction.defaults({ keyboard: false })
+
+        const interactions_touchscreen = defaults({ dragPan: false, mouseWheelZoom: false }).extend([
+            new DragPan({
+                condition: function (event) {
+                    return this.getPointerCount() === 2 || platformModifierKeyOnly(event);
+                },
+            }),
+            new MouseWheelZoom({
+                condition: platformModifierKeyOnly,
+            })])
+
+
+        let interactions = this.touchScreenMode ? interactions_touchscreen : interactions_default
+
+
+        const attribution = new Attribution({
+            collapsible: false,
+        });
+
         //######################## BEGIN Create object ########################
         this.map = new ol.Map({
 
-            interactions: ol_interaction.defaults({ keyboard: false }),
+            interactions: interactions_default,
+            controls: defaultControls({attribution: false}).extend([attribution]),
 
             view: new ol.View({
                 center: [0, 0],
@@ -44,10 +82,14 @@ export default class DataMap extends AbstractData {
         // This is required for URL status synchronization:
         this.map.set("name", this.name);
 
-        
+        // This is required to have the MapPanel component dispay a respective notification message:
+        this.map.set("touchScreenMode", true)
+        this.map.set("setUrlState", this.setUrlState)
+
+
         // Register event handler to inform the parent component about the current map resolution:
         this.map.on('moveend', this.onMapMoveEnd);
-   
+
 
         // Register event handlers to update the list of active layers in the URL state.
         // NOTE: We *set* the URL state here in the DataMap component, but we do no *read* it here,
@@ -58,10 +100,10 @@ export default class DataMap extends AbstractData {
         // This is somewhat of a design/architecture inconsistency, and it might be worth thinking
         // about whether this should be changed and how it could be done. However, it is not a
         // high priority issue.
-        
+
         this.map.getLayers().on("add", this.onLayerAdded);
         this.map.getLayers().on("remove", this.onLayerRemoved);
-        
+
 
         this.map.addInteraction(new ol_interaction.KeyboardZoom())
 
@@ -78,69 +120,76 @@ export default class DataMap extends AbstractData {
 
     onLayerAdded(evt: any) {
 
-        let addedLayer = evt.element
 
-        let id = addedLayer.get("id")
+        if (this.setUrlState) {
 
-        if (id == undefined) {
-            return
+            const addedLayer = evt.element
+
+            const id = addedLayer.get("id")
+
+            if (id == undefined) {
+                return
+            }
+
+            const state = getUrlState()
+
+            const name = this.map.get("name")
+
+            if (state[name] == undefined) {
+                state[name] = {}
+            }
+
+            if (state[name].layers == undefined) {
+                state[name].layers = new Array<string>()
+            }
+
+            if (state[name].layers.includes(id)) {
+                return
+            }
+
+
+            state[name].layers.push(id)
+
+            setUrlState(state)
         }
-
-        let state = getUrlState()
-
-        let name = this.map.get("name")
-
-        if (state[name] == undefined) {
-            state[name] = {}
-        }
-
-        if (state[name].layers == undefined) {
-            state[name].layers = new Array<string>()
-        }
-
-        if (state[name].layers.includes(id)) {
-            return
-        }
-
-
-        state[name].layers.push(id)
-
-        setUrlState(state)
     }
 
 
     onLayerRemoved(evt: any) {
 
-        let addedLayer = evt.element
+        if (this.setUrlState) {
 
-        let id = addedLayer.get("id")
+            let addedLayer = evt.element
 
-        if (id == undefined) {
-            return
+            let id = addedLayer.get("id")
+
+            if (id == undefined) {
+                return
+            }
+
+
+            let state = getUrlState()
+
+            let name = this.map.get("name")
+
+            if (state[name] == undefined) {
+                return
+            }
+
+            if (state[name].layers == undefined) {
+                return
+            }
+
+            const index = state[name].layers.indexOf(id);
+
+            if (index == -1) {
+                return
+            }
+
+            state[name].layers.splice(index, 1)
+
+
+            setUrlState(state)
         }
-
-
-        let state = getUrlState()
-
-        let name = this.map.get("name")
-
-        if (state[name] == undefined) {
-            return
-        }
-
-        if (state[name].layers == undefined) {
-            return
-        }
-
-        const index = state[name].layers.indexOf(id);
-
-        if (index == -1) {
-            return
-        }
-
-        state[name].layers.splice(index, 1)
-
-
-        setUrlState(state)
     }
 }

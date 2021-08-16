@@ -54,6 +54,14 @@ export default class Collapsible extends Vue {
     }
 
 
+    getCollapseButtonTitle() : string {
+        if (this.pCollapsed) {
+            return "Aufklappen"
+        }
+
+        return "Zuklappen"
+    }
+
     onCollapseButtonClick() {
         this.pCollapsed = !this.pCollapsed
     }

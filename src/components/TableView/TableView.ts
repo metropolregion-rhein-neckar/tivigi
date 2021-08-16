@@ -1,6 +1,6 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { FieldConfig } from '../../util/FieldConfig'
+import { FieldConfig } from '../TableView2/FieldConfig'
 
 import './TableView.scss'
 import WithRender from './TableView.html';

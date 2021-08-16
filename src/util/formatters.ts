@@ -1,3 +1,13 @@
+export class FormatNumberStringOptions {
+    numDecimals : number = 2
+    decimalSeparator : string = ","
+    thousandsSeparator : string = "."
+    unit : string = ""
+    addSign : boolean = false
+}
+
+
+// TODO: Change this function and all calls of it to use FormatNumberStringOptions
 export function formatNumberString(value: number, numDecimals: number, decimalSeparator : string = ",", thousandsSeparator : string = ".", unit : string = "") {
 
     if (isNaN(value)) {

@@ -1,5 +1,5 @@
 div.TableView {
-    user-select:text;
+    user-select:none;
 
     > table {
         cursor: default;
@@ -44,6 +44,7 @@ div.TableView {
         }
 
         > tbody {
+            user-select: none;
             > tr {
                
                 &.TableView__HoverRow {

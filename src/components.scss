@@ -7,6 +7,7 @@
 //############### BEGIN General fixes ################
 * {
     box-sizing: border-box;
+    //  transition: 0.4s;
 }
 //############### END General fixes ################
 
@@ -23,10 +24,27 @@ button {
 select {
     max-width: 280px !important;
 }
+
+input,
+select {
+    background-color: #eee;
+    color: #444;
+    border-radius: 2px;
+    border: none;
+    margin: 0;
+    padding: 6px 6px 6px 6px;
+    font-size: 1em;
+    max-width: 100%;
+}
+
 //################ END Classless rules ################
 
 .floating {
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.45);
+}
+
+.padded {
+    padding: 16px;
 }
 
 //###################### BEGIN Cursor classes ######################
@@ -195,14 +213,15 @@ $button_bgcolor_unchecked: #ddd;
 
 //###################### BEGIN InputGroup ########################
 .InputGroup {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
+    flex-shrink: 0;
 
     > * {
         &:not(:last-child) {
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
-            border-right-width: 0px;
+            border-right-width: 0px !important;
         }
         &:not(:first-child) {
             border-top-left-radius: 0;
@@ -218,7 +237,7 @@ $minitoolbar_button_bgcolor_hover: #ccc;
 $minitoolbar_button_bgcolor_active: #ccc;
 
 .MiniToolbar {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     user-select: none;
 
@@ -302,11 +321,113 @@ $minitoolbar_button_bgcolor_active: #ccc;
     tr {
         border-bottom: 1px solid #ccc;
     }
-
-    /*
-    tr:last-child {
-        border-bottom: none;
-    }
-    */
 }
 //################## END Table component ###################
+
+//################## BEGIN SVG Charts ###################
+
+rect.SvgChart__Frame {
+    fill: transparent;
+    stroke: #000;
+}
+
+circle.SvgChart__Origin {
+    fill: transparent;
+    stroke: #000;
+}
+
+g.SvgChart__Bars {
+    > rect {
+        fill: #88e;
+
+        &:hover {
+            // filter: brightness(60%);
+            
+             stroke: var(--color);
+            
+            stroke-width: 3;
+           
+        }
+    }
+}
+
+.SvgChart {
+    text {
+        font-size: 18px;
+    }
+}
+
+g.SvgChart__Legend {
+    fill: transparent;
+    stroke: none;
+    stroke-width: 0;
+}
+
+text.SvgChart__StackedBars__BarSum {
+    font-size:15px;
+    //font-weight: 300;
+    text-anchor: middle;
+}
+
+g.SvgChart__Lines {
+
+    > path {
+        fill: none;
+    }
+
+    path,
+    circle {
+        stroke-width: 3;
+        stroke: #00f;
+    }
+
+    circle {
+        fill: #fff;
+    }
+
+    g:hover {
+        circle.SvgChart__Lines__Dot {
+            fill: var(--color-hover);
+        }
+    }
+
+    &:hover {
+        > path,
+        circle {
+            stroke-width: 5;
+        }
+    }
+
+    > polygon.SvgChart__Lines__Area {
+        fill: rgba(0, 0, 255, 0.4);
+    }
+   
+}
+
+g.SvgChart__Axis__X {
+    line {
+        stroke-width: 1;
+        //stroke:#666;
+        stroke-dasharray: 3;
+    }
+
+    text {
+        fill: #666;
+        text-anchor: middle;
+    }
+}
+
+g.SvgChart__Axis__Y {
+    line {
+        stroke-width: 1;
+        stroke: #888;
+        stroke-dasharray: 3;
+    }
+
+    text {
+        fill: #666;
+        text-anchor: end;
+        dominant-baseline: middle;
+    }
+}
+//################## END SVG Charts ###################

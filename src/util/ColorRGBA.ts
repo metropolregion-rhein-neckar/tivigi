@@ -1,3 +1,5 @@
+import { Color } from "ol/color";
+
 export class ColorRGBA {
 
     values : Array<number> = [0,0,0,255];
@@ -55,10 +57,15 @@ export class ColorRGBA {
         return result
     }
 
-    changeBrightnessByPercent(percent : number) {
+    changeBrightnessByPercent(percent : number) : ColorRGBA {
+
+        let result = this.copy()
+
         for(let ii = 0; ii < 4; ii++) {
-            this.values[ii] = Math.min(255, this.values[ii] * ((100 + percent)/100))
+            result.values[ii] = Math.min(255, result.values[ii] * ((100 + percent)/100))
         }
+
+        return result
     }
 
 
@@ -66,6 +73,7 @@ export class ColorRGBA {
         return new ColorRGBA(this.values.slice())
     }
 
+    
     mult(factor : number) : ColorRGBA {
 
         let result = new ColorRGBA()
@@ -77,6 +85,7 @@ export class ColorRGBA {
         return result
     }
 
+
     round() {
         let result = new ColorRGBA()
 
@@ -87,6 +96,7 @@ export class ColorRGBA {
         return result
     }
 
+    
     sub(other : ColorRGBA) : ColorRGBA {
 
         let result = new ColorRGBA()

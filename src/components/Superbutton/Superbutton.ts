@@ -1,7 +1,8 @@
+// NOTE: The Superbutton component is deprecated! We recommend to use Smartbutton instead. Smartbutton
+// requires some more manual work to add an image/icon, but it is overall more flexible and technically simpler.
+
 import { Component, Vue, Prop } from 'vue-property-decorator';
-
 import WithRender from './Superbutton.html';
-
 import './Superbutton.scss';
 
 @WithRender
@@ -15,6 +16,7 @@ export default class Superbutton extends Vue {
     @Prop()
     label!: string
 
+    // ATTENTION: No default for 'set' and 'unset' must be defined! The behaviour is different based on whether these are set or not!
     @Prop()
     set: any
 
@@ -28,6 +30,7 @@ export default class Superbutton extends Vue {
     @Prop()
     title!: string
 
+    // ATTENTION: No default for 'set' and 'unset' must be defined! The behaviour is different based on whether these are set or not!
     @Prop()
     unset: any
 
@@ -75,14 +78,17 @@ export default class Superbutton extends Vue {
             "Superbutton": true,
             "Button": true,
             "Input": true,
-            "Button--active": (this.value != undefined) && (this.value == this.set)
+            "checked": (this.value != undefined) && (this.value == this.set),
+            // NOTE: Button--active is deprecated!
+            //"Button--active": (this.value != undefined) && (this.value == this.set)
         }
     }
 
-
+    /*
     get hasState(): boolean {
         return this.value != undefined && (this.set != undefined || this.unset != undefined)
     }
+    */
 
 
     onClick(evt: MouseEvent) {

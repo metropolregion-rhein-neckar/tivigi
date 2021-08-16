@@ -58,6 +58,9 @@ export default class LayerControlPanel extends Vue {
 
     @Prop({ default: () => { return ["info", "attributes", "fit_extent", "remove"] } })
     menuConfig!: Array<string>
+
+    @Prop({default:true})
+    attributesTableButton! : Boolean
     //################# END Props ####################
 
 

@@ -1,9 +1,6 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
-
-
 import WithRender from './Tooltip.html';
-
 import './Tooltip.scss'
 
 @WithRender
@@ -18,11 +15,14 @@ export default class Tooltips extends Vue {
     x = 0
     y = 0
 
+    prevX = 0
+    prevY = 0
 
     show = false
-    remove = false
 
-    timeout = 0
+
+    timeout_hide = 0
+    timeout_show = 0
 
 
     get dynamicStyle(): any {
@@ -32,12 +32,9 @@ export default class Tooltips extends Vue {
 
         let el = this.$el as HTMLElement
 
-        if (el != null) {
-           // top = this.y - el.offsetHeight / 2
-           top = this.y + 20
-
-            left = this.x - el.offsetWidth / 2 
-            left = this.x + 10
+        if (el != null) {            
+            top = this.y - el.offsetHeight - 10
+            left = this.x - el.offsetWidth / 2        
         }
 
         return {
@@ -49,40 +46,53 @@ export default class Tooltips extends Vue {
 
 
     beforeDestroy() {
-        //@ts-ignore
-        window.removeEventListener("tooltip", this.onTooltip)
         window.removeEventListener("mousemove", this.onMouseMove)
+        window.removeEventListener("scroll", this.onScroll)
+ 
     }
 
-    mounted() {
 
-        //@ts-ignore
-        window.addEventListener("tooltip", this.onTooltip)
+    mounted() {
         window.addEventListener("mousemove", this.onMouseMove)
+        window.addEventListener("scroll", this.onScroll)
+    
     }
 
 
     onMouseMove(evt: MouseEvent) {
+    
+        let dx = evt.clientX - this.prevX
+        let dy = evt.clientY - this.prevY
+
+        let dist = Math.sqrt(dx * dx + dy * dy)
+
+        this.prevX = evt.clientX
+        this.prevY = evt.clientY
+
 
         this.x = evt.clientX
         this.y = evt.clientY
 
-        this.$forceUpdate()
 
-        this.remove = true
-        this.timeout = window.setTimeout(() => { if (this.remove) this.show = false }, 300)
+        let target = evt.target as HTMLElement
+
+        let tta = target.getAttribute("data-tooltip")
+
+        if (tta == null) {            
+            this.show = false
+        }
+        else {
+            this.tooltipText = tta
+            this.show = true
+        }
     }
 
 
-    onTooltip(evt: CustomEvent) {
-
-        window.setTimeout(() => {this.remove = false}, 0)
-
-        this.show = true
-
-        this.tooltipText = evt.detail
-
-        window.clearTimeout(this.timeout)
-
+    onScroll(evt: Event) {
+        window.clearTimeout(this.timeout_show)
+        window.clearTimeout(this.timeout_hide)
+        this.show = false
     }
+
+
 }
