@@ -1,3 +1,5 @@
-<div>
-    lalala
+<div class="ScrollMenu">    
+    <a v-for="(label,index) in jumpLabels" :class="getDynamicClass_label(index)" @click="onEntryClick(label)">
+        {{label.getAttribute("data-jump-label")}}
+    </a>
 </div>

@@ -1,7 +1,6 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './ScrollSensor.html';
-import { inView } from 'ol/layer/Layer';
 
 
 @WithRender
