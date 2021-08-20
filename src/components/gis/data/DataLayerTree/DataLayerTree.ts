@@ -12,9 +12,11 @@ import { TreeNodeData } from 'tivigi/src/treeUtil/TreeNodeData'
 
 import * as ol from 'ol'
 
+
 @Component({})
 export default class DataLayerTree extends AbstractData {
 
+    //############## BEGIN Props ##############
     @Prop()
     treeDef!: any
 
@@ -23,6 +25,10 @@ export default class DataLayerTree extends AbstractData {
 
     @Prop()
     map!: ol.Map;
+
+    @Prop()
+    data! : TreeNodeData
+    //############## END Props ##############
 
 
     rootNode: TreeNodeData = new TreeNodeData("root")
@@ -63,7 +69,11 @@ export default class DataLayerTree extends AbstractData {
 
         this.rootNode.sortChildren()
 
+        // Old way:
         this.register(this.rootNode)
+
+        // New way:
+        this.$emit("update:data", this.rootNode)
     }
 
 

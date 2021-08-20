@@ -30,10 +30,13 @@ export default class DataMapLayer extends AbstractData {
 
     @Prop()
     layerId!: any
+
+    @Prop()
+    data! : ol_layer.Layer
     //############# END Props ##############
 
 
-    layer: ol_layer.Layer | null = null
+    pLayer: ol_layer.Layer | null = null
 
     pTargetOpacity = 0;
 
@@ -53,24 +56,24 @@ export default class DataMapLayer extends AbstractData {
     @Watch('visible')
     onVisibleChange() {
 
-        if (this.layer == null) {
+        if (this.pLayer == null) {
             console.log("Visibility toggle: Layer is null")
             return
         }
 
-        this.layer.setVisible(this.visible)
+        this.pLayer.setVisible(this.visible)
     }
 
 
     @Watch('zIndex')
     onZIndexChange() {
 
-        if (this.layer == null) {
+        if (this.pLayer == null) {
             console.log("Z-Index change: Layer is null")
             return
         }
 
-        this.layer.setZIndex(this.zIndex)
+        this.pLayer.setZIndex(this.zIndex)
     }
 
 
@@ -80,7 +83,7 @@ export default class DataMapLayer extends AbstractData {
             return
         }
 
-        if (this.layer != null) {
+        if (this.pLayer != null) {
             return
         }
 
@@ -103,40 +106,43 @@ export default class DataMapLayer extends AbstractData {
         for (let otherLayer of this.map.getLayers().getArray()) {
 
             if (otherLayer.get("id") == this.layerId) {
-                this.layer = otherLayer as ol_layer.Layer
+                this.pLayer = otherLayer as ol_layer.Layer
                 break                
             }
         }
         //########### END Check if layer with same ID already exists in the map ############
 
-        if (this.layer == null) {
+        if (this.pLayer == null) {
             let layer = createLayerFromConfig(this.layerDef[this.layerId], this.map.getView().getProjection())
 
             if (layer != null) {
                 layer.set("id", this.layerId)
                 this.map.addLayer(layer)
-                this.layer = layer
+                this.pLayer = layer
             }
         }
 
 
-        if (this.layer == null) {
+        if (this.pLayer == null) {
             return
         }
 
     
         if (this.maxResolution != undefined) {
-            this.layer.setMaxResolution(this.maxResolution)
+            this.pLayer.setMaxResolution(this.maxResolution)
         }
 
 
-        this.layer.setVisible(this.visible)
+        this.pLayer.setVisible(this.visible)
 
-        this.layer.setZIndex(this.zIndex)
+        this.pLayer.setZIndex(this.zIndex)
 
 
+        // Old way:
+        this.register(this.pLayer)
 
-        this.register(this.layer)
+        // New way:
+        this.$emit("update:data", this.pLayer)
 
     }
 }

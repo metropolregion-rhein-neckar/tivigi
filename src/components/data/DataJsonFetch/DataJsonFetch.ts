@@ -7,6 +7,9 @@ import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
 export default class DataJsonFetch extends AbstractData {
 
     //############ BEGIN Props ############
+    @Prop()
+    data!: any
+
     @Prop({ default: () => { } })
     headers!: any
 
@@ -21,31 +24,13 @@ export default class DataJsonFetch extends AbstractData {
     @Watch("url")
     async setup() {
 
+        const t0 = performance.now()
+
         const options: RequestInit = {
             headers: this.headers
         }
 
-
-        /*
-        if (this.useProxy) {
-            proxyfetch(this.url, options).then(response => response.json()).then((data) => {
-                this.register(data)
-            })
-        }
-        else {
-            fetch(this.url, options).then(response => response.json()).then((data) => {
-                this.register(data)
-            })
-        }
-        */
-
-        console.log("requesting data")
-
         let response = undefined
-
-
-        var t0 = performance.now()
-
 
 
         if (this.useProxy) {
@@ -59,18 +44,22 @@ export default class DataJsonFetch extends AbstractData {
             return
         }
 
-        let data = await response.json()
+        const data = await response.json()
 
         if (data == undefined) {
             return
         }
 
 
-        console.log("data received")
+        console.log("Data fetched from " + this.url)
 
+        // Old way:
         this.register(data)
 
-        var t1 = performance.now()
+        // New way:
+        this.$emit("update:data", data)
+
+        const t1 = performance.now()
         console.log(this.url + ": Download and JSON parsing took " + (t1 - t0) + " milliseconds.")
 
 
