@@ -1,5 +1,5 @@
 div.ScrollMenu {
- a {
+button {
      text-decoration:underline;
      cursor:pointer;
      
@@ -8,11 +8,12 @@ div.ScrollMenu {
 
 
 
-a.ScrollMenu__Button {
+button.ScrollMenu__Button {
     display:inline-block;
     padding:8px;
+    border:none;
     
 }
-a.ScrollMenu__Button--Active {
+button.ScrollMenu__Button--Active {
     font-weight:bold;
 }

@@ -7,7 +7,7 @@ by having to set the map <div>'s 'position' property to 'absolute' to work aroun
 -->
 
 <div class="OlMap" v-onresize="onResize">
-    <div class="OlMap__Inner" ref="mapContainer" @dragover="onDragover" @drop="onDrop" @focus="onFocus" @focusout="onFocusOut"></div>
+    <div class="OlMap__Inner" ref="mapContainer" @focus="onFocus" @focusout="onFocusOut"></div>
 
     
     <MapLoadingProgressBar v-if="showLoadingBar" :map="map" :fadeout="true" :showPercent="false" />

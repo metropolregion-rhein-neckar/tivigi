@@ -50,7 +50,7 @@ export default class ScrollMenu extends Vue {
             return
         }
 
-        console.log("element is there!")
+        
         window.clearInterval(this.gceTimer)
 
         this.container = elem

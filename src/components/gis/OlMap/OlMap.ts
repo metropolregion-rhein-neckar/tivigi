@@ -19,6 +19,7 @@ import "tivigi/src/directives/v-onresize"
 
 import WithRender from './OlMap.html';
 import './OlMap.scss'
+import { fromExtent } from 'ol/geom/Polygon';
 
 
 
@@ -40,7 +41,7 @@ export class MapDropEvent {
         MapLoadingProgressBar
     }
 })
-export default class MapPanel extends Vue {
+export default class OlMap extends Vue {
 
     //################## BEGIN Props ##################
     @Prop({
@@ -59,12 +60,11 @@ export default class MapPanel extends Vue {
     })
     map!: ol.Map;
 
-    //@Prop({ default: () => { return [-180, -90, 180, 90] } })
-    @Prop()
-    homeExtent!: Extent
+    @Prop({ default: () => { return [-180, -90, 180, 90] } })
+    extent!: Extent
 
     @Prop({ default: "EPSG:4326" })
-    initialExtentSrs!: ol_proj.ProjectionLike
+    extentSrs!: ol_proj.ProjectionLike
 
     @Prop({ default: true })
     showLoadingBar!: boolean
@@ -88,19 +88,13 @@ export default class MapPanel extends Vue {
 
     lastMouseMoveCoordinate: Coordinate = [0, 0]
 
-    showHelpWindow = false
-
     touchscreenMode: Boolean | null = null
 
-    initialExtentSet = false
+   
 
-
-
-
-    @Watch("homeExtent")
-    onHomeExtentChange() {
-        this.setInitialMapExtent()
-        
+    @Watch("extent")
+    onHomeExtentChange(newExt : Extent, oldExt : Extent) {
+        this.setMapExtent(newExt)
     }
 
 
@@ -108,27 +102,18 @@ export default class MapPanel extends Vue {
 
         window.clearInterval(this.keyboardPanInterval)
 
-        this.map.un('moveend', this.updateUrlExtent)
+        this.map.un('moveend', this.onMapMoveEnd)
 
         window.removeEventListener('keydown', this.onWindowKeyDown)
         window.removeEventListener('mousedown', this.onWindowMouseDown)
     }
 
 
-
-
     init() {
 
-
-
-
+        this.setMapExtent(this.extent)
 
         this.$emit("update:map", this.map)
-
-        //######################## BEGIN Create object ########################
-
-        //######################## END Create object ########################
-
 
         this.touchscreenMode = this.map.get("touchscreenMode")
 
@@ -141,17 +126,15 @@ export default class MapPanel extends Vue {
 
         this.map.setTarget(this.mapTargetElem);
 
-     
+
 
         // Fire "map mounted" event_
         // NOTE: Currently, only the "FileDropTool" component listens to this event
         this.map.dispatchEvent("mounted")
 
 
+        this.map.on('moveend', this.onMapMoveEnd)
 
-        if (this.map.get("setUrlState")) {
-            this.map.on('moveend', this.updateUrlExtent)
-        }
 
         // Add event listeners for accessibility features (toggle keyboard control):
         window.addEventListener('keydown', this.onWindowKeyDown);
@@ -165,32 +148,6 @@ export default class MapPanel extends Vue {
         this.init()
     }
 
-
-    onDragover(evt: DragEvent) {
-
-        // First, prevent the browser from performing the default action on drop, 
-        // e.g. just opening a dropped file in the browser viewport;
-        evt.stopPropagation();
-        evt.preventDefault();
-        evt.dataTransfer!.dropEffect = 'copy';
-
-        // Then, do our custom things:
-
-        let mouseCoords = this.map.getCoordinateFromPixel([evt.offsetX, evt.offsetY])
-
-        let coords2 = ol_proj.transform(mouseCoords, this.map.getView().getProjection(), 'EPSG:4326');
-
-        this.$emit('dragover', new MapDragEvent(evt, coords2))
-    }
-
-
-    onDrop(evt: DragEvent) {
-        let mouseCoords = this.map.getCoordinateFromPixel([evt.offsetX, evt.offsetY])
-
-        let coords2 = ol_proj.transform(mouseCoords, this.map.getView().getProjection(), 'EPSG:4326');
-
-        this.$emit('drop', new MapDropEvent(evt, coords2))
-    }
 
 
     onFocus(evt: FocusEvent) {
@@ -280,6 +237,15 @@ export default class MapPanel extends Vue {
     }
 
 
+    onMapMoveEnd() {
+
+        const extent = this.map.getView().calculateExtent()
+     
+        
+        this.$emit("update:extent", extent)
+    }
+
+
     onWindowKeyDown(evt: KeyboardEvent) {
         if (evt.key == 'Tab') {
             this.mapTargetElem.setAttribute("tabindex", "0")
@@ -298,11 +264,7 @@ export default class MapPanel extends Vue {
         // Resize map to fit the size of its container element when the container was resized:        
         this.map.updateSize();
 
-        if (!this.initialExtentSet) {
-            this.map.getView().fit(extent)
-            //this.setInitialMapExtent()
-            //this.initialExtentSet = true
-        }
+        this.map.getView().fit(extent)
     }
 
 
@@ -336,33 +298,43 @@ export default class MapPanel extends Vue {
     }
 
 
-    setInitialMapExtent() {
+    setMapExtent(extent: Extent) {
+      
+        if (JSON.stringify(this.map.getView().calculateExtent()) == JSON.stringify(extent)) {
+            return
+        }
 
+      
         //#################### BEGIN Try to read map extent from URL #######################
-        let state = getUrlState()
+        /*
+        const state = getUrlState()
 
 
-        var name = this.map.get("name")
+        const name = this.map.get("name")
 
 
         // Set extent from URL:
-        if (state[name] != undefined) {
-            if (state[name].extent != undefined) {
-                //this.map.getView().fit(state[name].extent, { size: this.map.getSize() })
-                this.map.getView().fit(state[name].extent)
-                return
-            }
+        if (state[name] != undefined && state[name].extent != undefined) {
+            this.map.getView().fit(state[name].extent)
+            return
+
         }
+        */
         //#################### END Try to read map extent from URL #######################
 
 
-        if (this.homeExtent != undefined) {
-            // If no extent for this map is defined in the URL, set extent to configured initial extent:
-            // Set intial extent:
-            let extent_transformed = ol_proj.transformExtent(this.homeExtent, this.initialExtentSrs, this.map.getView().getProjection())
-
-            this.map.getView().fit(extent_transformed);
+        if (extent == undefined) {
+            return
         }
+
+        // If no extent for this map is defined in the URL, set extent to configured initial extent:
+        // Set intial extent:
+        const extent_transformed = ol_proj.transformExtent(extent, this.extentSrs, this.map.getView().getProjection())
+
+        
+        this.map.getView().fit(extent_transformed);
+
+        
     }
 
 
@@ -401,6 +373,7 @@ export default class MapPanel extends Vue {
     }
 
 
+    /*
     updateUrlExtent() {
 
         if (!(this.map instanceof ol.Map)) {
@@ -430,5 +403,6 @@ export default class MapPanel extends Vue {
 
         setUrlState(state)
     }
+    */
 }
 
