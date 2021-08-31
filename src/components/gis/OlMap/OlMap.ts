@@ -44,7 +44,10 @@ export class MapDropEvent {
 export default class OlMap extends Vue {
 
     //################## BEGIN Props ##################
-    @Prop({
+    @Prop(
+        /*
+        {
+        
         default: () => {
             return new ol.Map({
 
@@ -57,7 +60,10 @@ export default class OlMap extends Vue {
                 })
             })
         }
-    })
+        
+    }
+    */
+    )
     map!: ol.Map;
 
     @Prop({ default: () => { return [-180, -90, 180, 90] } })
@@ -111,10 +117,16 @@ export default class OlMap extends Vue {
 
     init() {
 
+        if (!(this.map instanceof ol.Map)) {
+            return
+        }
+        console.log(this.map)
+    //    this.$emit("update:map", this.map)
+
+
         this.setMapExtent(this.extent)
 
-        this.$emit("update:map", this.map)
-
+      
         this.touchscreenMode = this.map.get("touchscreenMode")
 
 
@@ -299,6 +311,10 @@ export default class OlMap extends Vue {
 
 
     setMapExtent(extent: Extent) {
+
+        if (!(this.map instanceof ol.Map)) {
+            return
+        }
       
         if (JSON.stringify(this.map.getView().calculateExtent()) == JSON.stringify(extent)) {
             return
