@@ -16,19 +16,19 @@ export default class ScrollSensor extends Vue {
     value!: boolean
 
 
-    pContainer : HTMLElement = this.container
+    pContainer: HTMLElement = this.container
 
     isInView = false
 
-    get dynamicClass() : any {
+    get dynamicClass(): any {
         return {
-            "ScrollSensor" : true,
-            "ScrollSensor--active" : this.isInView
+            "ScrollSensor": true,
+            "ScrollSensor--active": this.isInView
         }
     }
 
     @Watch('container')
-    onContainerChange() {       
+    onContainerChange() {
         this.init()
     }
 
@@ -40,18 +40,22 @@ export default class ScrollSensor extends Vue {
 
     checkInView() {
 
+        if (this.pContainer == null) {
+            return
+        }
+
         let bbox_container = this.pContainer.getBoundingClientRect()
         let bbox_element = this.$el.getBoundingClientRect()
 
         let container_center_y = bbox_container.top + bbox_container.height / 2
 
-        this.isInView = bbox_element.bottom > container_center_y && bbox_element.top < container_center_y
+        const inViewNew = bbox_element.bottom > container_center_y && bbox_element.top < container_center_y
 
-        
-        this.$emit("update:value", this.isInView)
+       // if (inViewNew != this.isInView) {
+            this.isInView = inViewNew
 
-        
-
+            this.$emit("update:value", this.isInView)
+        //}
     }
 
 
@@ -64,10 +68,10 @@ export default class ScrollSensor extends Vue {
 
         if (this.pContainer == undefined) {
             this.pContainer = this.$el.parentElement!
-        
+
         }
 
-        
+
         this.pContainer.addEventListener("scroll", this.onContainerScroll)
 
         this.checkInView()
@@ -83,7 +87,7 @@ export default class ScrollSensor extends Vue {
         this.checkInView()
     }
 
-    onResize() {    
+    onResize() {
         this.checkInView()
     }
 

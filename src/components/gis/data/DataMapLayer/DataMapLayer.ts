@@ -4,13 +4,13 @@ import * as ol from 'ol'
 import * as ol_layer from 'ol/layer'
 
 import { createLayerFromConfig } from 'tivigi/src/util/mapLayerLoading';
-import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
+import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
 
 
 @Component({
     components: {}
 })
-export default class DataMapLayer extends AbstractData {
+export default class DataMapLayer extends AbstractRenderlessComponent {
 
     //############# BEGIN Props ##############
     @Prop({})
@@ -38,8 +38,7 @@ export default class DataMapLayer extends AbstractData {
 
     pLayer: ol_layer.Layer | null = null
 
-    pTargetOpacity = 0;
-
+   
 
     @Watch('map')
     onMapChange() {
@@ -77,16 +76,17 @@ export default class DataMapLayer extends AbstractData {
     }
 
 
+    mounted() {
+        this.setup()
+    }
+
+
     setup() {
 
         if (!(this.map instanceof ol.Map)) {
             return
         }
-
-        if (this.pLayer != null) {
-            return
-        }
-
+        
         if (this.layerDef == undefined) {
             return
         }
@@ -113,7 +113,7 @@ export default class DataMapLayer extends AbstractData {
         //########### END Check if layer with same ID already exists in the map ############
 
         if (this.pLayer == null) {
-            let layer = createLayerFromConfig(this.layerDef[this.layerId], this.map.getView().getProjection())
+            const layer = createLayerFromConfig(this.layerDef[this.layerId], this.map.getView().getProjection())
 
             if (layer != null) {
                 layer.set("id", this.layerId)
@@ -137,12 +137,7 @@ export default class DataMapLayer extends AbstractData {
 
         this.pLayer.setZIndex(this.zIndex)
 
-
-        // Old way:
-        this.register(this.pLayer)
-
         // New way:
-        this.$emit("update:data", this.pLayer)
-
+        this.$emit("update:data", this.pLayer)    
     }
 }

@@ -35,7 +35,7 @@ export default class FeaturesByPropertyGroupTable extends Vue {
     @Watch('features')
     onFeaturesChange(newData : Array<ol.Feature>, oldData: Array<ol.Feature>) {
 
-        console.log(newData.length)
+    
         const stats = []
 
         for(const feature of newData) {
