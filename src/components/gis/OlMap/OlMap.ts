@@ -120,9 +120,7 @@ export default class OlMap extends Vue {
         if (!(this.map instanceof ol.Map)) {
             return
         }
-        console.log(this.map)
-    //    this.$emit("update:map", this.map)
-
+        
 
         this.setMapExtent(this.extent)
 

@@ -47,7 +47,10 @@ export default class ScrollSensor extends Vue {
 
         this.isInView = bbox_element.bottom > container_center_y && bbox_element.top < container_center_y
 
+        
         this.$emit("update:value", this.isInView)
+
+        
 
     }
 

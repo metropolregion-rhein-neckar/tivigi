@@ -1,9 +1,8 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import * as ol from 'ol'
-import * as ol_layer from 'ol/layer'
 
-
+import "./FeaturesByPropertyGroupTable.scss"
 import WithRender from './FeaturesByPropertyGroupTable.html';
 
 
@@ -34,38 +33,46 @@ export default class FeaturesByPropertyGroupTable extends Vue {
 
 
     @Watch('features')
-    onFeaturesChange() {
+    onFeaturesChange(newData : Array<ol.Feature>, oldData: Array<ol.Feature>) {
 
-        this.stats = []
+        console.log(newData.length)
+        const stats = []
 
-        for(let feature of this.features) {
+        for(const feature of newData) {
+
             let propertyValue = feature.getProperties()[this.property]
 
             if (propertyValue == undefined) {
-                console.log("not defined")
+                //console.log("not defined")
             }
 
             let entry = undefined
 
-            for (let e of this.stats) {
+            for (let e of stats) {
                 if (e.code == propertyValue) {
                     entry = e
                     break
                 }
             }
 
+            // Create entry if it doesn't exist yet:
             if (entry == undefined) {
                 entry = {
                     "code": propertyValue,
                     "sum": 0
                 }
 
-                this.stats.push(entry)
+                stats.push(entry)
             }
 
             entry.sum += 1
-        }
-                
-          
+        }    
+        
+      
+        this.stats = stats.sort((a, b) => {
+            return b.sum - a.sum
+        })
+      
+        
     }
 }

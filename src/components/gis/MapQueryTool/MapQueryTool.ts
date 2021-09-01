@@ -49,8 +49,7 @@ export default class MapQueryTool extends Vue {
     @Watch('coords')
     async onCoordsChange() {
 
-        console.log("coords change")
-
+       
         this.resultset = new MapQueryResultSet()
 
         // Reset props:
@@ -65,12 +64,7 @@ export default class MapQueryTool extends Vue {
             await this.processWmsLayers(coords_3857)
         }
 
-        // Reset props:
-        //this.$emit('resultUpdate', this.resultset)
-        console.log(this.resultset.numFeatures())
-
-      //  this.$emit('resultUpdate', this.resultset)
-
+ 
         this.$emit("update:result", this.resultset)
     }
 

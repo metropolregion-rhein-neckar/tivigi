@@ -51,7 +51,7 @@ export default class DataJsonFetch extends AbstractData {
         }
 
 
-        console.log("Data fetched from " + this.url)
+        //console.log("Data fetched from " + this.url)
 
         // Old way:
         this.register(data)
@@ -60,8 +60,7 @@ export default class DataJsonFetch extends AbstractData {
         this.$emit("update:data", data)
 
         const t1 = performance.now()
-        console.log(this.url + ": Download and JSON parsing took " + (t1 - t0) + " milliseconds.")
-
-
+        
+        //console.log(this.url + ": Download and JSON parsing took " + (t1 - t0) + " milliseconds.")
     }
 }

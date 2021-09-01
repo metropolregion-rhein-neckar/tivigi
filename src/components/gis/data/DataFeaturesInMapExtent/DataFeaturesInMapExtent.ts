@@ -5,14 +5,14 @@ import * as ol_layer from 'ol/layer'
 
 
 import { FeatureLike } from 'ol/Feature';
-import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
+import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
 
 
 
 @Component({
     components: {}
 })
-export default class DataFeaturesInMapExtent extends AbstractData {
+export default class DataFeaturesInMapExtent extends AbstractRenderlessComponent {
 
     //################# BEGIN Props #################
     @Prop()
@@ -23,65 +23,50 @@ export default class DataFeaturesInMapExtent extends AbstractData {
     //################# END Props #################
 
 
-    @Watch('map')
-    onMapChange() {
-        this.init()
-    }
-
 
     beforeDestroy() {
-        if (!(this.map instanceof ol.Map)) {
+        if (!(this.map instanceof ol.Map && this.layer instanceof ol_layer.Layer)) {
             return
         }
 
-        this.map.un("moveend", this.onMapMoveEnd)
+        this.layer.un('change:visible', this.onLayerVisibilityChange);
 
+        this.layer.getSource().un("change", this.update)
+
+        this.map.un("moveend", this.onMapMoveEnd)  
     }
 
 
-
-
+    @Watch('map')
+    @Watch('layer')
     init() {
-        if (!(this.map instanceof ol.Map)) {
+        
+        if (!(this.map instanceof ol.Map && this.layer instanceof ol_layer.Layer)) {
             return
         }
 
+        this.layer.on('change:visible', this.onLayerVisibilityChange);
+
+        this.layer.getSource().on("change", this.update)
 
         this.map.on("moveend", this.onMapMoveEnd)
     }
 
 
     mounted() {
-        // NOTE: 
-        // Initial registration with an empty array is required to avoid an annoying reinstantiation 
-        // of the parent component when updateClippedFeatures() is called for the first time.
-        this.register([])
-
         this.init()
     }
 
 
     onMapMoveEnd(evt: ol.MapBrowserEvent) {
-
-        if (!(this.layer instanceof ol_layer.Vector)) {
-            return
-        }
-
-        let extent = this.map.getView().calculateExtent()
-
-
-        let features = Array<FeatureLike>()
-
-        for (let feature of this.layer.getSource().getFeaturesInExtent(extent)) {
-            features = features.concat(this.getClusteredFeatures(feature))
-        }
-
-        this.register(features)
+        this.update()
     }
 
 
+    onLayerVisibilityChange() {        
+        this.update()
+    }
 
-    // TODO: Add this to DataFeaturesInPolygon
     
     getClusteredFeatures(feature: FeatureLike): Array<FeatureLike> {
 
@@ -89,7 +74,8 @@ export default class DataFeaturesInMapExtent extends AbstractData {
         if (feature.getProperties().features instanceof Array) {
 
             let result = Array<FeatureLike>()
-            for (let f2 of feature.getProperties().features) {
+
+            for (const f2 of feature.getProperties().features) {
 
                 result = result.concat(this.getClusteredFeatures(f2))
             }
@@ -99,6 +85,22 @@ export default class DataFeaturesInMapExtent extends AbstractData {
         //############### END Handle cluster layer features ###############
 
         return [feature]
+    }
+
+
+    update() {
+
+        const extent = this.map.getView().calculateExtent()
+
+
+        let features = Array<FeatureLike>()
+
+        for (const feature of this.layer.getSource().getFeaturesInExtent(extent)) {
+            features = features.concat(this.getClusteredFeatures(feature))
+        }
+
+      
+        this.$emit("update:data", features)        
     }
 }
 

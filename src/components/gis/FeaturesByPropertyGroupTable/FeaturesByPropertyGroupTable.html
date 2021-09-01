@@ -1,5 +1,4 @@
-<div class="FeaturesByPropertyGroupTable">
-
+<div class="FeaturesByPropertyGroupTable">    
     <table class="Table">
 
         <tr>
@@ -8,7 +7,8 @@
             <th class="numeric">Anzahl</th>
             
         </tr>
-        <tr v-for="entry in statsSorted">
+        
+        <tr v-for="entry in stats">
           
             <td>{{entry.code}}</td>
             <td class="numeric">{{entry.sum}}</td>
