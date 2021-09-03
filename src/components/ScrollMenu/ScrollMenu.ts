@@ -1,3 +1,4 @@
+import { commonJSAvailable } from 'tivigi/node_modules/lzutf8';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './ScrollMenu.html';
@@ -21,12 +22,26 @@ export default class ScrollMenu extends Vue {
 
     highlightIndex = -1
 
-   
+    
+ 
 
-    getDynamicClass_label(index : number) : any {
+    get selectedLabel() {
+        return this.jumpLabels[this.highlightIndex]
+    }
+
+    set selectedLabel(newval : HTMLElement) {
+        if (newval == this.jumpLabels[this.highlightIndex]) {
+            return
+        }
+
+        this.onEntryClick(newval)
+    }
+
+
+    getDynamicClass_label(index: number): any {
         let result = {
-            "ScrollMenu__Button" : true,
-            "ScrollMenu__Button--Active" : index == this.highlightIndex
+            "ScrollMenu__Button": true,
+            "ScrollMenu__Button--Active": index == this.highlightIndex
         }
 
         return result
@@ -46,11 +61,11 @@ export default class ScrollMenu extends Vue {
 
         const elem = document.getElementById(this.containerId)
 
-        if (!(elem instanceof HTMLElement)) {            
+        if (!(elem instanceof HTMLElement)) {
             return
         }
 
-        
+
         window.clearInterval(this.gceTimer)
 
         this.container = elem
@@ -59,16 +74,19 @@ export default class ScrollMenu extends Vue {
 
         let children = this.container.querySelectorAll("[data-jump-label]")
 
-        for(let child of children) {
-            const label = child.getAttribute("data-jump-label")            
+        for (let child of children) {
+            const label = child.getAttribute("data-jump-label")
             this.jumpLabels.push(child as HTMLElement)
         }
 
-        this.container.addEventListener("scroll", this.onContainerScroll)
 
+        this.container.addEventListener("scroll", this.onContainerScroll, true)
+
+       
         this.onContainerScroll()
 
     }
+
 
     mounted() {
         this.gceTimer = window.setInterval(this.getContainerElement, 100)
@@ -76,10 +94,14 @@ export default class ScrollMenu extends Vue {
 
 
     onContainerScroll() {
+        
+        
         if (this.container == null) {
             return
         }
+
         
+
         let bbox_container = this.container.getBoundingClientRect()
 
         let index = 0
@@ -95,12 +117,17 @@ export default class ScrollMenu extends Vue {
             }
 
             index++
-        }
+        } 
+        
+        this.selectedLabel = this.jumpLabels[this.highlightIndex]        
     }
 
+
     onEntryClick(label: HTMLElement) {
+        
         label.scrollIntoView({
-            behavior: "smooth"
+          //  behavior: "smooth",
+            block: 'center'         
         })
     }
 }

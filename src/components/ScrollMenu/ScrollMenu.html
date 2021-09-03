@@ -1,5 +1,8 @@
-<div class="ScrollMenu">    
+<select class="ScrollMenu Input" v-model="selectedLabel">
+    <option v-for="(label,index) in jumpLabels" :value="label">{{label.getAttribute("data-jump-label")}}</option>
+</select>
+<!--
     <button v-for="(label,index) in jumpLabels" :class="getDynamicClass_label(index)" @click="onEntryClick(label)">
         {{label.getAttribute("data-jump-label")}}
     </button>
-</div>
+    -->

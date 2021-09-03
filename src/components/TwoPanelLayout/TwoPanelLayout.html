@@ -1,0 +1,23 @@
+<div class="TwoPanelLayout">
+    <div style="display:flex;align-items: center;padding:4px 0 8px 0;">
+
+        <ScrollMenu :containerId="containerId" />
+        <div style="flex:1"></div>
+        <button class="Smartbutton TwoPanelLayout__ToggleButton" v-if="portrait" @click="onToggleButtonClick">{{getToggleButtonLabel()}}</button>
+    </div>
+
+    <div :class="getDynamicClass()">
+        <!-- TODO: Understand why the resize event stops firing after the root element has been resized to minimal width -->
+        <!-- Because of this problem, we must add the v-onresize directive to the right child column instead of to the root element-->
+
+        <div :style="getPanel1Style()" class="TwoPanelLayout__Panel1" ref="panel1" :id="containerId">
+            <slot name="panel1" />
+        </div>
+
+        <div :style="getPanel2Style()" class="TwoPanelLayout__Panel2" ref="panel2" v-onresize="onResize">
+            <slot name="panel2" />
+        </div>
+
+
+    </div>
+</div>

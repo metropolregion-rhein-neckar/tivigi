@@ -183,6 +183,7 @@ $button_bgcolor_unchecked: #ddd;
 
     // Different from col:
     flex-direction: row;
+    
 }
 
 .Flex--col {
@@ -190,8 +191,8 @@ $button_bgcolor_unchecked: #ddd;
     display: flex;
     flex-grow: 1;
     overflow: auto;
-    position: relative;
-
+    position: relative;    
+    
     // Different from row:
     flex-direction: column;
 }

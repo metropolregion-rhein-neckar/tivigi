@@ -9,14 +9,13 @@ import WithRender from './ScrollSensor.html';
 })
 export default class ScrollSensor extends Vue {
 
-    @Prop()
-    container!: HTMLElement
+   
 
     @Prop({ default: false })
     value!: boolean
 
 
-    pContainer: HTMLElement = this.container
+    container: HTMLElement|null = null
 
     isInView = false
 
@@ -27,24 +26,28 @@ export default class ScrollSensor extends Vue {
         }
     }
 
-    @Watch('container')
+    @Watch('containerId')
     onContainerChange() {
         this.init()
     }
 
 
     beforeDestroy() {
-        this.pContainer.removeEventListener("scroll", this.onContainerScroll)
+        if (this.container == null) {
+            return
+        }
+
+        this.container.removeEventListener("scroll", this.onContainerScroll)
     }
 
 
     checkInView() {
 
-        if (this.pContainer == null) {
+        if (this.container == null) {
             return
         }
 
-        let bbox_container = this.pContainer.getBoundingClientRect()
+        let bbox_container = this.container.getBoundingClientRect()
         let bbox_element = this.$el.getBoundingClientRect()
 
         let container_center_y = bbox_container.top + bbox_container.height / 2
@@ -60,19 +63,31 @@ export default class ScrollSensor extends Vue {
 
 
     init() {
-        if (this.pContainer != null) {
-            this.pContainer.removeEventListener("scroll", this.onContainerScroll)
-        }
-
-        this.pContainer = this.container
-
-        if (this.pContainer == undefined) {
-            this.pContainer = this.$el.parentElement!
-
+        if (this.container != null) {
+            this.container.removeEventListener("scroll", this.onContainerScroll, true)
         }
 
 
-        this.pContainer.addEventListener("scroll", this.onContainerScroll)
+        let element = this.$el
+
+        while(element.parentElement != null) {
+            element = element.parentElement
+
+            if (element.getAttribute("data-scroll-sensor-container") != null) {
+             
+                this.container = element as HTMLElement
+                break
+
+            }
+        }
+
+        if (this.container == null) {
+            console.error("No scroll sensor container found")
+            return
+        }
+
+      
+        this.container.addEventListener("scroll", this.onContainerScroll)
 
         this.checkInView()
     }
@@ -83,8 +98,10 @@ export default class ScrollSensor extends Vue {
     }
 
 
-    onContainerScroll(evt: Event) {
+    onContainerScroll(evt: Event) {     
         this.checkInView()
+
+        return true
     }
 
     onResize() {
