@@ -3,8 +3,6 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './ScrollMenu.html';
 
-import './ScrollMenu.scss';
-
 @WithRender
 @Component({})
 export default class ScrollMenu extends Vue {

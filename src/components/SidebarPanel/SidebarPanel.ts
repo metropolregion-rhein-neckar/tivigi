@@ -1,6 +1,6 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import Smartbutton from 'tivigi/src/components/Smartbutton/Smartbutton'
+import SmartButton from 'tivigi/src/components/SmartButton/SmartButton'
 
 import WithRender from './SidebarPanel.html';
 import './SidebarPanel.scss'
@@ -8,7 +8,7 @@ import './SidebarPanel.scss'
 @WithRender
 @Component({
     components: {
-        Smartbutton
+        SmartButton
     }
 })
 export default class SidebarPanel extends Vue {

@@ -122,6 +122,9 @@ $button_bgcolor_unchecked: #ddd;
     text-decoration: none;
     cursor: pointer;
     padding: 3px 4px;
+    white-space: nowrap;
+    display:inline-flex;
+    align-items: center;
 
     background-color: $button_bgcolor_unchecked;
     user-select: none;

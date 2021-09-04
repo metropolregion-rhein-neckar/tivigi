@@ -1,11 +1,11 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 
-import WithRender from './Smartbutton.html';
-import "./Smartbutton.scss"
+import WithRender from './SmartButton.html';
+import "tivigi/src/components/SmartButton/SmartButton.scss"
 
 @WithRender
 @Component({})
-export default class Smartbutton extends Vue {
+export default class SmartButton extends Vue {
 
     //################## BEGIN Props ###################
   
@@ -42,6 +42,7 @@ export default class Smartbutton extends Vue {
 
     getDynamicClass(): any {
         return {          
+            "Button": true,
             "Smartbutton": true,
             "Smartbutton--checked": (this.value != undefined) && (this.value == this.set)
         }
