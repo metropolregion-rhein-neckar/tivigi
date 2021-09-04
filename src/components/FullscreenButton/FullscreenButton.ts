@@ -12,9 +12,6 @@ import WithRender from './FullscreenButton.html';
 })
 export default class Smartbutton extends Vue {
 
- 
-
-
     is_fullscreen : boolean = false
 
     get fullscreen() : boolean {
@@ -22,17 +19,18 @@ export default class Smartbutton extends Vue {
     }
 
     set fullscreen(newval) {
-        if (this.is_fullscreen) {            
+        if (this.fullscreen) {            
             document.exitFullscreen();
-           // this.showSidebar = true
+           
         }
         else { 
             
             document.body.requestFullscreen()
-            //this.showSidebar = false
+
         }
     }
 
+    
     beforeDestroy() {
         document.removeEventListener("fullscreenchange", this.onFullscreenChange)
     }
@@ -42,7 +40,7 @@ export default class Smartbutton extends Vue {
 
         document.addEventListener("fullscreenchange", this.onFullscreenChange)
 
-     
+        this.is_fullscreen = document.fullscreenElement != null
     }
 
 
