@@ -99,7 +99,6 @@ export default class ScrollMenu extends Vue {
             return
         }
 
-        console.log("container scroll")
         
 
         let bbox_container = this.container.getBoundingClientRect()
@@ -119,7 +118,6 @@ export default class ScrollMenu extends Vue {
             index++
         } 
 
-        console.log(this.highlightIndex)
         
         this.selectedLabel = this.jumpLabels[this.highlightIndex]   
         

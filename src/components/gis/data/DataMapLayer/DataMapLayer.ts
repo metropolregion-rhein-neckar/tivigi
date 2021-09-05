@@ -6,7 +6,6 @@ import * as ol_layer from 'ol/layer'
 import { createLayerFromConfig } from 'tivigi/src/util/mapLayerLoading';
 import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
 
-
 @Component({
     components: {}
 })
@@ -32,13 +31,9 @@ export default class DataMapLayer extends AbstractRenderlessComponent {
     layerId!: any
 
     @Prop()
-    data! : ol_layer.Layer
+    data!: ol_layer.Layer
     //############# END Props ##############
 
-
-    pLayer: ol_layer.Layer | null = null
-
-   
 
     @Watch('map')
     onMapChange() {
@@ -55,24 +50,73 @@ export default class DataMapLayer extends AbstractRenderlessComponent {
     @Watch('visible')
     onVisibleChange() {
 
-        if (this.pLayer == null) {
+        let layer = this.getLayer()
+
+        if (layer == null) {
             console.log("Visibility toggle: Layer is null")
             return
         }
 
-        this.pLayer.setVisible(this.visible)
+
+        layer.setVisible(this.visible)
     }
 
 
     @Watch('zIndex')
     onZIndexChange() {
 
-        if (this.pLayer == null) {
+        let layer = this.getLayer()
+
+        if (layer == null) {
             console.log("Z-Index change: Layer is null")
             return
         }
 
-        this.pLayer.setZIndex(this.zIndex)
+        layer.setZIndex(this.zIndex)
+    }
+
+
+    getLayer(): ol_layer.Layer | null {
+
+        if (!(this.map instanceof ol.Map)) {
+            return null
+        }
+
+
+        for (let otherLayer of this.map.getLayers().getArray()) {
+
+            if (otherLayer.get("id") == this.layerId) {
+                return otherLayer as ol_layer.Layer
+            }
+        }
+
+        if (this.layerDef == undefined) {
+            return null
+        }
+
+        if (!(this.layerId in this.layerDef)) {
+            console.log("DataMapLayer: Layer ID not found: " + this.layerId);
+            return null
+        }
+
+        let layer = createLayerFromConfig(this.layerDef[this.layerId], this.map.getView().getProjection())
+
+        if (layer == null) {
+            return null
+        }
+
+        layer.set("id", this.layerId)
+
+        try {
+            this.map.addLayer(layer)
+        }
+        catch (e) {
+            console.log("layer already in map")
+        }
+
+        this.$emit("update:data", layer)
+
+        return layer
     }
 
 
@@ -83,61 +127,18 @@ export default class DataMapLayer extends AbstractRenderlessComponent {
 
     setup() {
 
-        if (!(this.map instanceof ol.Map)) {
-            return
-        }
-        
-        if (this.layerDef == undefined) {
-            return
-        }
+        let layer = this.getLayer()
 
-        if (!(this.layerId in this.layerDef)) {
-            console.log("DataMapLayer: Layer ID not found: " + this.layerId);
+        if (layer == null) {
             return
         }
 
-
-
-        //########### BEGIN Check if layer with same ID already exists in the map ############
-
-        // If a layer with the same ID already exists, we assign it to "this.layer" to that
-        // further changes made through/by this component are applied to the correct layer.
-
-        for (let otherLayer of this.map.getLayers().getArray()) {
-
-            if (otherLayer.get("id") == this.layerId) {
-                this.pLayer = otherLayer as ol_layer.Layer
-                break                
-            }
-        }
-        //########### END Check if layer with same ID already exists in the map ############
-
-        if (this.pLayer == null) {
-            const layer = createLayerFromConfig(this.layerDef[this.layerId], this.map.getView().getProjection())
-
-            if (layer != null) {
-                layer.set("id", this.layerId)
-                this.map.addLayer(layer)
-                this.pLayer = layer
-            }
-        }
-
-
-        if (this.pLayer == null) {
-            return
-        }
-
-    
         if (this.maxResolution != undefined) {
-            this.pLayer.setMaxResolution(this.maxResolution)
+            layer.setMaxResolution(this.maxResolution)
         }
 
+        layer.setVisible(this.visible)
 
-        this.pLayer.setVisible(this.visible)
-
-        this.pLayer.setZIndex(this.zIndex)
-
-        // New way:
-        this.$emit("update:data", this.pLayer)    
+        layer.setZIndex(this.zIndex)
     }
 }

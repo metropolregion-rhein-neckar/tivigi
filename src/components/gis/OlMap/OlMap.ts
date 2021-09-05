@@ -66,7 +66,8 @@ export default class OlMap extends Vue {
     )
     map!: ol.Map;
 
-    @Prop({ default: () => { return [-180, -90, 180, 90] } })
+    //@Prop({ default: () => { return [-180, -90, 180, 90] } })
+    @Prop()
     extent!: Extent
 
     @Prop({ default: "EPSG:4326" })
@@ -108,7 +109,7 @@ export default class OlMap extends Vue {
 
         window.clearInterval(this.keyboardPanInterval)
 
-        this.map.un('moveend', this.onMapMoveEnd)
+        //this.map.un('moveend', this.onMapMoveEnd)
 
         window.removeEventListener('keydown', this.onWindowKeyDown)
         window.removeEventListener('mousedown', this.onWindowMouseDown)
@@ -143,7 +144,7 @@ export default class OlMap extends Vue {
         this.map.dispatchEvent("mounted")
 
 
-        this.map.on('moveend', this.onMapMoveEnd)
+        //this.map.on('moveend', this.onMapMoveEnd)
 
 
         // Add event listeners for accessibility features (toggle keyboard control):

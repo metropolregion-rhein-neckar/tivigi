@@ -150,7 +150,7 @@ export default class DataMap extends AbstractData {
 
             state[name].layers.push(id)
 
-            setUrlState(state)
+          //  setUrlState(state)
         }
     }
 
@@ -189,7 +189,7 @@ export default class DataMap extends AbstractData {
             state[name].layers.splice(index, 1)
 
 
-            setUrlState(state)
+      //      setUrlState(state)
         }
     }
 }

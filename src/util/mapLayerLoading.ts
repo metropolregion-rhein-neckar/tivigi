@@ -641,8 +641,6 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             })
             break
         }
-
-
     }
 
 
