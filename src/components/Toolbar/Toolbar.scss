@@ -6,10 +6,13 @@ div.Toolbar {
     padding:2px;
     // NOTE: The padding-left + margin of the children is equal to the margin of the "Card" class.
     
-    
+    > * {
+      
+        margin: 3px;
+    }
     
 
-    > * {
+     > div > * {
         
         margin: 3px;
     }

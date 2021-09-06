@@ -1,7 +1,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import Modal from 'tivigi/src/components/Modal/Modal'
-import Superbutton from 'tivigi/src/components/Superbutton/Superbutton'
+
 
 import './PopupMenu.scss'
 import WithRender from './PopupMenu.html';
@@ -9,8 +9,7 @@ import WithRender from './PopupMenu.html';
 @WithRender
 @Component({
     components: {
-        Modal,
-        Superbutton
+        Modal        
     }
 })
 export default class PopupMenu extends Vue {

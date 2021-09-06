@@ -92,18 +92,12 @@ export default class SidebarPanel extends Vue {
     }
 
     mounted() {
-        if (this.autoClose) {
+        //if (this.autoClose) {
             window.addEventListener("mousedown", this.onWindowMouseDown)
-        }
+        //}
     }
 
 
-    onCloseButtonClick(evt: MouseEvent) {
-
-        //this.$emit('closeButtonClick')
-        this.hide()
-
-    }
 
     hide() {
         this.$emit('update:show', false)
@@ -111,6 +105,11 @@ export default class SidebarPanel extends Vue {
 
 
     onWindowMouseDown(evt: MouseEvent) {
+
+        if (!this.autoClose) {
+            return
+        }
+        
         let eventTarget: HTMLElement = evt.target as HTMLElement
 
         // TODO: Move this to library
@@ -124,7 +123,8 @@ export default class SidebarPanel extends Vue {
         }
 
         if (eventTarget != this.$el) {
-            this.$emit('closeButtonClick')
+            
+            this.hide()
         }
     }
 }

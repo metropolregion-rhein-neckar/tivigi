@@ -1,0 +1,36 @@
+div.LocationSearch2__Result {
+
+    overflow: auto;
+    margin-top:20px;
+
+    //############ BEGIN Search result entry ############
+    > button {
+        border:none;
+        display:block;
+        width:100%;
+        text-align:left;
+        background-color: #eee;
+        background-repeat: no-repeat;
+        background-position: 6px 10px;
+
+        border:2px solid #eee;
+        
+        
+        &:focus {
+            outline: 2px solid #000;
+            border:2px dashed #000;
+        }
+        padding: 7px;        
+        
+
+        &:hover {
+            background-color: #ddd;
+            cursor: pointer;
+        }
+    }
+    //############ END Search result entry ############
+
+    div.LocationSearch__NoResult {
+        padding:10px;
+    }
+}

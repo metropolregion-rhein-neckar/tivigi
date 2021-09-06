@@ -12,8 +12,8 @@ import TableView from '../../TableView/TableView'
 import TableView2 from '../../TableView2/TableView2'
 import { TableData } from 'tivigi/src/components/TableView2/TableData';
 import { FieldConfig, FieldTextAlign } from '../../TableView2/FieldConfig';
-import FeatureHighlightTool from 'tivigi/src/components/gis/FeatureHighlightTool/FeatureHighlightTool'
-import FeatureSelectTool from 'tivigi/src/components/gis/FeatureSelectTool/FeatureSelectTool'
+//import FeatureHighlightTool from 'tivigi/src/components/gis/FeatureHighlightTool/FeatureHighlightTool'
+//import FeatureSelectTool from 'tivigi/src/components/gis/FeatureSelectTool/FeatureSelectTool'
 
 //################# END Tivigi imports #################
 
@@ -23,8 +23,8 @@ import WithRender from './AttributesTable.html';
 @WithRender
 @Component({
     components: {
-        FeatureHighlightTool,
-        FeatureSelectTool,
+      //  FeatureHighlightTool,
+      //  FeatureSelectTool,
         TableView,
         TableView2
     },

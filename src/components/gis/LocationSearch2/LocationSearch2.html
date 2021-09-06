@@ -1,0 +1,22 @@
+<div class="LocationSearch2">
+
+    <span class="InputGroup">
+        <Superinput :clearButton="true" placeholder="Ort oder Adresse" @enter="onSearchButtonClick" v-model="pQuery" />
+        <Superbutton title="Suchen" icon="tivigi/img/search.svg" @click="onSearchButtonClick" />
+    </span>
+
+
+    <div class="LocationSearch2__Result">
+
+        <div class="LocationSearch2__NoResult" v-if="!result || result.length == 0">
+            Keine Orte gefunden
+        </div>
+
+        <template v-else>
+            <button class="Button" v-for="entry in result" @click="onEntryClick(entry)">
+                {{entry.display_name}}
+            </button>
+        </template>
+    </div>
+
+</div>

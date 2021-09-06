@@ -102,9 +102,6 @@ export default class MapQueryTool extends Vue {
         //################ END Exclude features based on layer settings ###############
 
         this.resultset.add(feature as ol.Feature, layer as ol_layer.Layer)
-
-        // Update props:
-        //this.$emit('resultUpdate', this.resultset)
     }
 
 
@@ -219,18 +216,7 @@ export default class MapQueryTool extends Vue {
                 // TODO: 3 Replace this with getClusteredFeaturesRecursive()
                 this.addFeature(feature, layer as ol_layer.Layer)
             }
-            /*
-            proxyfetch(url).then(response => {
-
-                response.json().then(gfi_geojson => {
-
-                    for (let feature of this.geojsonFormat.readFeatures(gfi_geojson)) {
-                        // TODO: 3 Replace this with getClusteredFeaturesRecursive()
-                        this.addFeature(feature, layer as ol_layer.Layer)
-                    }
-                })
-            });
-            */
+            
         }
         //################ END Perform GFI request for all layers in the map ###############
     }
