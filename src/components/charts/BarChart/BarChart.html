@@ -1,7 +1,7 @@
 <svg class="SvgChart SvgBarChart" :viewBox="getViewBoxString()" :style="getDynamicStyle()">
 
     <!-- This is a frame around the entire viewBox: -->
-    <rect v-if="debug" :x="0" :y="0" :width="cfg_size.x" :height="cfg_size.y" style="fill:transparent;stroke:#aaa" />
+    <rect v-if="debug" :x="0" :y="0" :width="size.x" :height="size.y" style="fill:transparent;stroke:#aaa" />
 
     <g :transform="'translate(' + getYLabelsWidth() + ',' + (height - w2sY(getDisplayMinY()) + cfg_padding[0]) + ')'">
 
@@ -20,6 +20,6 @@
 
     </g>
 
-    <Legend :data="config" transform="translate(0,300)"></Legend>
+    <Legend :data="config" transform="translate(0,340)"></Legend>
 
 </svg>

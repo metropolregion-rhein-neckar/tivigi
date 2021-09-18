@@ -93,7 +93,7 @@ export default class DataMapLayer extends AbstractRenderlessComponent {
         if (this.layerDef == undefined) {
             return null
         }
-
+      
         if (!(this.layerId in this.layerDef)) {
             console.log("DataMapLayer: Layer ID not found: " + this.layerId);
             return null

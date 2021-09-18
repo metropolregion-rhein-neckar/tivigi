@@ -7,7 +7,7 @@ import WithRender from './AbstractChartElement.html';
 
 @WithRender
 @Component({})
-export default class AbstractChartElement extends Vue {
+export default  class AbstractChartElement extends Vue {
 
 
     @Prop()
@@ -48,6 +48,7 @@ export default class AbstractChartElement extends Vue {
     }
 
     
+
     created() {
        
         this.w2sX = this.parent.w2sX

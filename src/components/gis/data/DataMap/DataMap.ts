@@ -1,19 +1,22 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import * as ol from 'ol'
 import * as ol_interaction from 'ol/interaction'
-import AbstractData from '../../../data/AbstractData/AbstractData'
 import { getUrlState, setUrlState } from 'tivigi/src/util/urlStateKeeping';
 import { DragPan, MouseWheelZoom, defaults } from 'ol/interaction';
 import { platformModifierKeyOnly } from 'ol/events/condition';
 import { Attribution, defaults as defaultControls } from 'ol/control';
+import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
 
 
 @Component({})
-export default class DataMap extends AbstractData {
+export default class DataMap extends AbstractRenderlessComponent {
 
     //############## BEGIN Props ###############
     @Prop({ default: 17 })
     resolution!: number
+
+    @Prop({ default: "map" })
+    name!: string
 
     @Prop({ default: true })
     setUrlState!: boolean
@@ -39,6 +42,11 @@ export default class DataMap extends AbstractData {
     }
 
 
+    mounted() {
+        this.setup()
+    }
+
+
     setup() {
 
         // See https://openlayers.org/en/latest/examples/two-finger-pan-scroll.html
@@ -58,7 +66,7 @@ export default class DataMap extends AbstractData {
             })])
 
 
-        let interactions = this.touchScreenMode ? interactions_touchscreen : interactions_default
+        //let interactions = this.touchScreenMode ? interactions_touchscreen : interactions_default
 
 
         const attribution = new Attribution({
@@ -69,7 +77,7 @@ export default class DataMap extends AbstractData {
         this.map = new ol.Map({
 
             interactions: interactions_default,
-            controls: defaultControls({attribution: false}).extend([attribution]),
+            controls: defaultControls({ attribution: false }).extend([attribution]),
 
             view: new ol.View({
                 center: [0, 0],
@@ -107,7 +115,7 @@ export default class DataMap extends AbstractData {
 
         this.map.addInteraction(new ol_interaction.KeyboardZoom())
 
-        this.register(this.map)
+        this.$emit("update:data", this.map)
     }
 
 
@@ -121,37 +129,38 @@ export default class DataMap extends AbstractData {
     onLayerAdded(evt: any) {
 
 
-        if (this.setUrlState) {
-
-            const addedLayer = evt.element
-
-            const id = addedLayer.get("id")
-
-            if (id == undefined) {
-                return
-            }
-
-            const state = getUrlState()
-
-            const name = this.map.get("name")
-
-            if (state[name] == undefined) {
-                state[name] = {}
-            }
-
-            if (state[name].layers == undefined) {
-                state[name].layers = new Array<string>()
-            }
-
-            if (state[name].layers.includes(id)) {
-                return
-            }
-
-
-            state[name].layers.push(id)
-
-          //  setUrlState(state)
+        if (!this.setUrlState) {
+            return
         }
+
+        const addedLayer = evt.element
+
+        const id = addedLayer.get("id")
+
+        if (id == undefined) {
+            return
+        }
+
+        const state = getUrlState()
+
+        const name = this.map.get("name")
+
+        if (state[name] == undefined) {
+            state[name] = {}
+        }
+
+        if (state[name].layers == undefined) {
+            state[name].layers = new Array<string>()
+        }
+
+        if (state[name].layers.includes(id)) {
+            return
+        }
+
+
+        state[name].layers.push(id)
+
+        setUrlState(state)
     }
 
 
@@ -189,7 +198,7 @@ export default class DataMap extends AbstractData {
             state[name].layers.splice(index, 1)
 
 
-      //      setUrlState(state)
+            //      setUrlState(state)
         }
     }
 }

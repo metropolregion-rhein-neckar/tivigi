@@ -6,7 +6,7 @@
     
     :style="getStyle(point.dataset)" :width="barWidth" :height="Math.abs(w2sY(point.height))" 
     
-    :data-tooltip="point.dataset.label + ': ' + point.height"
+    :data-tooltip="getTooltip(point)"
     @mouseover="onMouseOver"/>
 
     <!--

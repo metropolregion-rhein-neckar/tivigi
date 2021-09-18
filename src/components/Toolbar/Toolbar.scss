@@ -2,29 +2,21 @@ div.Toolbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    padding: 2px;
 
-    padding:2px;
-    // NOTE: The padding-left + margin of the children is equal to the margin of the "Card" class.
-    
     > * {
-      
         margin: 3px;
     }
-    
 
-     > div > * {
-        
+    > div > * {
         margin: 3px;
     }
 
     //########### BEGIN Hide Button labels in mimized Toolbars ########
     &.minimized {
-        .minimizable {
+        .hide-on-mobile {
             display: none;
         }
-
-       
-       
     }
     //########### END Hide Button labels in mimized Toolbars ########
 }

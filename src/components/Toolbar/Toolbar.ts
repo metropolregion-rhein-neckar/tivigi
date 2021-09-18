@@ -44,7 +44,13 @@ export default class Toolbar extends Vue {
             this.height_normal = this.height()
         }
 
+      
         this.minimized = !this.minimized
+    }
+
+
+    mounted() {
+        this.onResize()
     }
 
 
@@ -61,9 +67,11 @@ export default class Toolbar extends Vue {
         else {
             this.height_normal = this.height()
         }
+
+      
         
         // NOTE: We use a factor of 1.5 here since for some reason, 
         // height_minimized is always smaller than height_normal in some browsers.
-        this.minimized = this.height_minimized * 1.5 < this.height_normal
+        this.minimized = this.height_minimized * 1.5 < this.height_normal                
     }
 }

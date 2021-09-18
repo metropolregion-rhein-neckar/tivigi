@@ -1,6 +1,6 @@
 <div class="SidebarPanel" v-show="show" :style="getDynamicStyle_outer()">
 
-    <div class="SidebarPanel__Inner" :style="getDynamicStyle_inner()">
+    <div class="SidebarPanel__Inner floating" :style="getDynamicStyle_inner()">
         <div class="SidebarPanel__Header">
             <h2>{{title}}</h2>
             <SmartButton @click="hide" title="Ausblenden" alt="Ausblenden" style="padding:6px 10px;">

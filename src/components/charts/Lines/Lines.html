@@ -15,7 +15,7 @@
         <g v-for="(point,index) in dataset.points" >
 
             <!-- The actually visible circle: -->
-            <circle class="SvgChart__Lines__Dot" :cx="w2sX(point.x)" :cy="w2sY(point.y)" :r="getCircleRadius(dataset)" :style="getCircleStyle(dataset)" :data-tooltip="dataset.label + ': ' + point.y" />
+            <circle class="SvgChart__Lines__Dot" :cx="w2sX(point.x)" :cy="w2sY(point.y)" :r="getCircleRadius(dataset)" :style="getCircleStyle(dataset)" :data-tooltip="getTooltip(dataset, point)" />
 
             <!-- Place a larger invisible circle for pointer interaction  (hover events) around the actually drawn circle: -->
 

@@ -7,6 +7,7 @@ import Legend from 'tivigi/src/components/charts/Legend/Legend'
 import Lines from 'tivigi/src/components/charts/Lines/Lines'
 import WithRender from './BarChart.html';
 import { AxisLabel, ChartData } from 'tivigi/src/components/charts/chartUtil';
+import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
 
 @WithRender
 @Component({
@@ -40,18 +41,18 @@ export default class BarChart extends Vue {
 
     //############ END Props #############
 
-    size = new Vector2(850, 350)
+    size = new Vector2(850, 450)
 
-    
+
+    overrideMax =  Number.NEGATIVE_INFINITY
+    overrideMin = Number.POSITIVE_INFINITY
 
     // top, right, bottom, left
     // NOTE: padding right and padding left currently have no effect.
-  
-    setminY = Number.POSITIVE_INFINITY
-    setmaxY = Number.NEGATIVE_INFINITY
+
 
     cfg_fontSize = 15
-    cfg_padding = [15, 0, 120, 0]
+    cfg_padding = [15, 0, 175, 0]
     cfg_ySteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000]
     cfg_yPixelsPerStep = 50
 
@@ -63,8 +64,8 @@ export default class BarChart extends Vue {
 
     @Watch("config")
     onConfigChange() {
-        this.setmaxY = Number.NEGATIVE_INFINITY
-        this.setminY = Number.POSITIVE_INFINITY
+        this.overrideMax = Number.NEGATIVE_INFINITY
+        this.overrideMin = Number.POSITIVE_INFINITY
     }
 
 
@@ -118,7 +119,7 @@ export default class BarChart extends Vue {
     //###################### BEGIN This is not generic ###########################
     getAxisLabelStepY(): number {
 
-     
+
         const numSteps = this.height / this.cfg_yPixelsPerStep
 
         let minY = this.getMinY()
@@ -128,7 +129,7 @@ export default class BarChart extends Vue {
         // For e.g. a line chart, something different may be used!
         if (!this.cropToYRange) {
             minY = Math.min(0, minY)
-        } 
+        }
 
         const max = this.getMaxY()
 
@@ -198,11 +199,11 @@ export default class BarChart extends Vue {
 
         if (!this.cropToYRange) {
             minY = Math.min(0, minY)
-        }        
+        }
 
 
-        if (this.setminY != Number.POSITIVE_INFINITY) {
-            minY = Math.min(minY, this.setminY)
+        if (this.overrideMin != Number.POSITIVE_INFINITY) {
+            minY = Math.min(minY, this.overrideMin)
         }
 
         const a = this.getAxisLabelStepY()
@@ -215,7 +216,11 @@ export default class BarChart extends Vue {
 
 
     getDisplayMaxY() {
-        const max = this.getMaxY()
+        let max = this.getMaxY()
+
+        if (this.overrideMax != Number.NEGATIVE_INFINITY) {
+            max = Math.max(max, this.overrideMax)
+        }
 
         const a = this.getAxisLabelStepY()
 
@@ -246,11 +251,14 @@ export default class BarChart extends Vue {
             }
         }
 
+        result = Math.min(result, this.overrideMin)
+
         return result
     }
 
 
     getMaxY() {
+        
         let result = Number.MIN_VALUE
 
         for (const dataset of this.config.datasets) {
@@ -259,6 +267,9 @@ export default class BarChart extends Vue {
             }
         }
 
+
+        result = Math.max(result, this.overrideMax)
+       
         return result
     }
 
@@ -273,6 +284,13 @@ export default class BarChart extends Vue {
         }
 
         return result
+    }
+
+
+    overrideMinMax(newmin : number, newmax: number) {
+        
+        this.overrideMax = Math.max(this.overrideMax,newmax)
+        this.overrideMin = Math.min(this.overrideMin,newmin)        
     }
     //####################### END This is not generic ########################
 }

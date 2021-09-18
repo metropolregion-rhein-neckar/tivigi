@@ -25,6 +25,13 @@ select {
     max-width: 280px !important;
 }
 
+
+
+.ButtonIcon {
+    height:1em;    
+}
+
+
 input,
 select {
     background-color: #eee;
@@ -152,6 +159,10 @@ $button_bgcolor_unchecked: #ddd;
         &:hover {
             background-color: lighten($button_bgcolor_checked, 5%);
         }
+    }
+
+    > * {
+        margin:4px;
     }
 }
 

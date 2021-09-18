@@ -18,9 +18,13 @@ export default class Bars extends AbstractChartElement {
     @Prop({ default: 25 })
     barWidth!: number
 
-  
-   
+
     //########## END Props ##########
+
+    get maxY(): number {
+        return 0
+    }
+
 
     getBarWidth() : number {
         return this.barWidth /this.data.datasets.length

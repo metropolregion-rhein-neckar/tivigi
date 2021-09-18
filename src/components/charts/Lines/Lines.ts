@@ -9,6 +9,10 @@ import WithRender from './Lines.html';
 @WithRender
 @Component({})
 export default class Lines extends AbstractChartElement {
+  
+    get maxY(): number {
+       return 0
+    }
 
 
     getCircleRadius(dataset : Dataset): number {
@@ -26,6 +30,9 @@ export default class Lines extends AbstractChartElement {
 
 
 
+    getTooltip(dataset:any, point : any) : string {
+        return dataset.label + ': <strong>' + point.y + "</strong>"
+    }
 
     getCircleStyle(dataset : Dataset): any {
 
@@ -105,19 +112,6 @@ export default class Lines extends AbstractChartElement {
 
 
         return result
-    }
-
-
-    prepare() {
-
-        let min = 0
-        let max = 0
-
-
-        const parent = this.$parent as BarChart
-        parent.setmaxY = Math.max(parent.setmaxY, max)
-        parent.setminY = Math.min(parent.setminY, min)
-
     }
 
 

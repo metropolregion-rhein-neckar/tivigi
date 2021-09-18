@@ -1,4 +1,4 @@
 <button :disabled="disabled" :class="dynamicClass" @click="onClick" :alt="altText" :title="title">
     <img v-if="icon != undefined" class="Superbutton__Icon" :src="icon" :alt="altText"/>
-    <span v-if="label != undefined && label != ''" class="Superbutton__Label minimizable">{{label}}</span>
+    <span v-if="label != undefined && label != ''" class="Superbutton__Label hide-on-mobile">{{label}}</span>
 </button>

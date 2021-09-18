@@ -19,8 +19,6 @@ import "tivigi/src/directives/v-onresize"
 
 import WithRender from './OlMap.html';
 import './OlMap.scss'
-import { fromExtent } from 'ol/geom/Polygon';
-
 
 
 //############### BEGIN Helper classes for drag & drop events #################
@@ -105,6 +103,12 @@ export default class OlMap extends Vue {
     }
 
 
+    @Watch("map")
+    onMapChange() {
+        this.init()
+    }
+
+
     beforedestroy() {
 
         window.clearInterval(this.keyboardPanInterval)
@@ -122,10 +126,8 @@ export default class OlMap extends Vue {
             return
         }
         
-
         this.setMapExtent(this.extent)
 
-      
         this.touchscreenMode = this.map.get("touchscreenMode")
 
 
@@ -270,6 +272,10 @@ export default class OlMap extends Vue {
 
 
     onResize() {
+
+        if (!(this.map instanceof ol.Map)) {
+            return
+        }
 
         const extent = this.map.getView().calculateExtent()
         // Resize map to fit the size of its container element when the container was resized:        

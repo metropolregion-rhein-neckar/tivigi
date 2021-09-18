@@ -16,7 +16,7 @@ export default class DataJsonFetch extends AbstractData {
     @Prop()
     url!: string
 
-    @Prop({ default: true })
+    @Prop({ default: false })
     useProxy!: boolean
     //############ END Props ############
 
@@ -32,7 +32,7 @@ export default class DataJsonFetch extends AbstractData {
 
         let response = undefined
 
-
+ 
         if (this.useProxy) {
             response = await proxyfetch(this.url, options)
         }
@@ -44,7 +44,24 @@ export default class DataJsonFetch extends AbstractData {
             return
         }
 
-        const data = await response.json()
+        
+
+        let dataText = await response.text()
+
+        let data = undefined
+
+        try {
+            data = JSON.parse(dataText)
+        }
+        catch(e) {
+            console.log("FAILED TO PARSE JSON:")
+            console.log(this.url)
+
+            console.log(e)
+            console.log(dataText)
+        }
+
+        
 
         if (data == undefined) {
             return

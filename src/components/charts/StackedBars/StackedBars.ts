@@ -1,6 +1,7 @@
 import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
 import BarChart from 'tivigi/src/components/charts/BarChart/BarChart';
 import { DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
+import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './StackedBars.html';
@@ -10,19 +11,32 @@ import WithRender from './StackedBars.html';
 @Component({})
 export default class StackedBars extends AbstractChartElement {
 
+
     //########## BEGIN Props ##########
     @Prop({ default: 25 })
     barWidth!: number
 
     //########## END Props ##########
 
-    preparedData :any = null
+    preparedData: any = null
 
     @Watch('data')
     onDataChange() {
         this.preparedData = this.prepareData()
+    }
 
-       
+
+    get maxY(): number {
+        //  throw new Error('Method not implemented.');
+        let max = 0
+
+        for (const stack of this.preparedData) {
+            let max2 = this.getStackHeightSum(stack)
+
+            max = Math.max(max, max2)
+        }
+
+        return max
     }
 
     created() {
@@ -36,33 +50,36 @@ export default class StackedBars extends AbstractChartElement {
 
 
 
-    prepareData() {
+    prepareData(): any {
+
+        let sumMin = Number.POSITIVE_INFINITY
+        let sumMax = Number.NEGATIVE_INFINITY
 
         let min = Number.POSITIVE_INFINITY
         let max = Number.NEGATIVE_INFINITY
 
         let result = []
 
-        
+
         // TODO: 1 Do we need to start at 0 or 1 here?
-        
+
         for (let ii = 0; ii <= this.data.labelsX.length; ii++) {
 
-             
+
             let negativeY = 0
             let positiveY = 0
 
             let stack = []
 
             for (const dataset of this.data.datasets) {
-               
+
                 for (const point of dataset.points) {
 
                     if (point.x != ii) {
-                   
+
                         continue
                     }
-               
+
                     // ATTENTION: The order of commands (increase of positiveY/negativeY vs. push to stack) is important here!
                     if (point.y > 0) {
                         positiveY += point.y
@@ -83,28 +100,30 @@ export default class StackedBars extends AbstractChartElement {
             }
 
             result.push(stack)
+
+            sumMax = Math.max(sumMax, this.getStackHeightSum(stack))
         }
 
-       
-        const parent = this.$parent as BarChart
-        parent.setmaxY = Math.max(parent.setmaxY, max)
-        parent.setminY = Math.min(parent.setminY, min)
+
+        const parent = this.$parent as BarChart        
+        parent.overrideMinMax(sumMin, sumMax)
 
         return result
     }
 
 
-    getStackHeightSum(stack : Array<any>) : number {
+    getStackHeightSum(stack: Array<any>): number {
 
         let result = 0
 
-        for(const item of stack) {
+        for (const item of stack) {
 
             result += item.height
         }
 
         return result
     }
+
 
     getStyle(dataset: Dataset): any {
 
@@ -120,29 +139,33 @@ export default class StackedBars extends AbstractChartElement {
         }
     }
 
+    getTooltip(point : any) : string{
+        return point.dataset.label + ': <strong>' + formatNumberString(point.height,2) + "</strong>"
+    }
+
 
     getX(x: number): number {
         // ATTENTION: The +1 is required to align the bars with the x axis label steps. Without it,
         // all bars are shifted 1 step to the left
-        return this.w2sX(x+1) - (this.barWidth / 2)
+        return this.w2sX(x + 1) - (this.barWidth / 2)
     }
 
 
- 
+
     onMouseOver(evt: MouseEvent) {
         // NOTE: This brings the element under the mouse to the front by moving all other siblings
         // above the element in the DOM
-      
+
         let el = evt.target as SVGRectElement
 
         let parent = el.parentElement as Element
 
-        for(let elem of parent.children) {
-          
+        for (let elem of parent.children) {
+
             if (elem != el) {
                 parent.removeChild(elem)
                 parent.prepend(elem)
             }
-        }   
+        }
     }
 }
