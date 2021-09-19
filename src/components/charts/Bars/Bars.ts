@@ -9,7 +9,7 @@ import WithRender from './Bars.html';
 @Component({
 
     components: {
-     
+
     }
 })
 export default class Bars extends AbstractChartElement {
@@ -21,18 +21,25 @@ export default class Bars extends AbstractChartElement {
 
     //########## END Props ##########
 
-    get maxY(): number {
-        return 0
+    @Watch('data')
+    onDataChange() {
+        this.prepareData()
     }
 
 
-    getBarWidth() : number {
-        return this.barWidth /this.data.datasets.length
+    mounted() {
+        this.prepareData()
     }
 
-   
 
-    getStyle(dataset : Dataset): any {
+
+    getBarWidth(): number {
+        return this.barWidth / this.data.datasets.length
+    }
+
+
+
+    getStyle(dataset: Dataset): any {
 
         let color = "#000"
 
@@ -42,15 +49,15 @@ export default class Bars extends AbstractChartElement {
 
         return {
             "fill": color,
-            "--color" : color
+            "--color": color
         }
 
-        
+
     }
 
 
-    getX(point: DataPoint, index : number): number {
-       return this.w2sX(point.x) - (this.barWidth / 2) + (index * this.getBarWidth())
+    getX(point: DataPoint, index: number): number {
+        return this.w2sX(point.x) - (this.barWidth / 2) + (index * this.getBarWidth())
     }
 
 
@@ -62,5 +69,23 @@ export default class Bars extends AbstractChartElement {
         else {
             return this.w2sY(0)
         }
+    }
+
+
+    prepareData() {
+
+        let min = Number.POSITIVE_INFINITY
+        let max = Number.NEGATIVE_INFINITY
+
+        for (const dataset of this.data.datasets) {
+            for (let point of dataset.points) {
+                max = Math.max(max, point.y)
+                min = Math.min(min, point.y)
+            }
+        }
+
+        // Send min/max to parent:           
+        this.parent.overrideMinMax(min, max)
+
     }
 }

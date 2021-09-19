@@ -41,11 +41,11 @@ export default class BarChart extends Vue {
 
     //############ END Props #############
 
-    size = new Vector2(850, 450)
+    size = new Vector2(500, 450)
 
 
-    overrideMax =  Number.NEGATIVE_INFINITY
-    overrideMin = Number.POSITIVE_INFINITY
+    overrideMaxY = Number.NEGATIVE_INFINITY
+    overrideMinY = Number.POSITIVE_INFINITY
 
     // top, right, bottom, left
     // NOTE: padding right and padding left currently have no effect.
@@ -64,8 +64,8 @@ export default class BarChart extends Vue {
 
     @Watch("config")
     onConfigChange() {
-        this.overrideMax = Number.NEGATIVE_INFINITY
-        this.overrideMin = Number.POSITIVE_INFINITY
+        this.overrideMaxY = Number.NEGATIVE_INFINITY
+        this.overrideMinY = Number.POSITIVE_INFINITY
     }
 
 
@@ -127,8 +127,9 @@ export default class BarChart extends Vue {
         // NOTE: Setting 0 as the "maximal minimum" here is specific to bar charts, because
         // bar charts should always go all the way down to zero. 
         // For e.g. a line chart, something different may be used!
+        // TODO: Move this logic to bar chart component
         if (!this.cropToYRange) {
-            minY = Math.min(0, minY)
+            //minY = Math.min(0, minY)
         }
 
         const max = this.getMaxY()
@@ -179,54 +180,41 @@ export default class BarChart extends Vue {
     }
 
 
-    getDisplayMinX() {
-        return this.getMinX()
-    }
-
 
     getDisplayMaxX() {
         return this.getMaxX()
     }
 
-
-    getDisplayMinY() {
-
-        // NOTE: Setting 0 as the "maximal minimum" here is specific to bar charts, because
-        // bar charts should always go all the way down to zero. 
-        // For e.g. a line chart, something different may be used!
-
-        let minY = this.getMinY()
-
-        if (!this.cropToYRange) {
-            minY = Math.min(0, minY)
-        }
-
-
-        if (this.overrideMin != Number.POSITIVE_INFINITY) {
-            minY = Math.min(minY, this.overrideMin)
-        }
-
-        const a = this.getAxisLabelStepY()
-
-        const result = Math.floor(minY / a) * a
-
-        return result
-
+    getDisplayMinX() {
+        return this.getMinX()
     }
 
 
     getDisplayMaxY() {
-        let max = this.getMaxY()
+        let maxY = this.getMaxY()
+     
+        const a = this.getAxisLabelStepY()
 
-        if (this.overrideMax != Number.NEGATIVE_INFINITY) {
-            max = Math.max(max, this.overrideMax)
+        return Math.ceil(maxY / a) * a
+    }
+
+
+    getDisplayMinY() {
+
+        let minY = this.getMinY()
+
+        // NOTE: Setting 0 as the "maximal minimum" here is specific to bar charts, because
+        // bar charts should always go all the way down to zero. 
+        // For e.g. a line chart, something different may be used!
+        
+        if (!this.cropToYRange) {
+            //minY = Math.min(0, minY)
         }
 
         const a = this.getAxisLabelStepY()
 
-        return Math.ceil(max / a) * a
+        return Math.floor(minY / a) * a        
     }
-
 
 
     getMaxX() {
@@ -251,14 +239,14 @@ export default class BarChart extends Vue {
             }
         }
 
-        result = Math.min(result, this.overrideMin)
-
         return result
     }
 
 
     getMaxY() {
-        
+
+        //return this.overrideMaxY
+
         let result = Number.MIN_VALUE
 
         for (const dataset of this.config.datasets) {
@@ -267,14 +255,13 @@ export default class BarChart extends Vue {
             }
         }
 
-
-        result = Math.max(result, this.overrideMax)
-       
-        return result
+        return Math.max(result, this.overrideMaxY)
     }
 
 
     getMinY() {
+
+        //return this.overrideMinY
         let result = Number.MAX_VALUE
 
         for (const dataset of this.config.datasets) {
@@ -283,14 +270,14 @@ export default class BarChart extends Vue {
             }
         }
 
-        return result
+       return Math.min(result, this.overrideMinY)
     }
 
 
-    overrideMinMax(newmin : number, newmax: number) {
-        
-        this.overrideMax = Math.max(this.overrideMax,newmax)
-        this.overrideMin = Math.min(this.overrideMin,newmin)        
+    overrideMinMax(newmin: number, newmax: number) {
+
+        this.overrideMaxY = Math.max(this.overrideMaxY, newmax)
+        this.overrideMinY = Math.min(this.overrideMinY, newmin)
     }
     //####################### END This is not generic ########################
 }

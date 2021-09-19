@@ -7,7 +7,7 @@
         -->
 
         <!-- The chart line path: -->
-        <path :d="getPath(dataset)" :style="getLineStyle(dataset)" />
+        <path :d="getPath(dataset)" :style="getLineStyle(dataset)" :data-tooltip="dataset.label" /> />
 
 
 

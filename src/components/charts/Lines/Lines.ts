@@ -10,9 +10,17 @@ import WithRender from './Lines.html';
 @Component({})
 export default class Lines extends AbstractChartElement {
   
-    get maxY(): number {
-       return 0
+
+    @Watch('data')
+    onDataChange() {
+        this.prepareData()
     }
+
+
+    mounted() {
+        this.prepareData()
+    }
+
 
 
     getCircleRadius(dataset : Dataset): number {
@@ -33,6 +41,7 @@ export default class Lines extends AbstractChartElement {
     getTooltip(dataset:any, point : any) : string {
         return dataset.label + ': <strong>' + point.y + "</strong>"
     }
+
 
     getCircleStyle(dataset : Dataset): any {
 
@@ -116,5 +125,20 @@ export default class Lines extends AbstractChartElement {
 
 
 
- 
+    prepareData() {
+
+        let min = Number.POSITIVE_INFINITY
+        let max = Number.NEGATIVE_INFINITY
+
+        for (const dataset of this.data.datasets) {
+            for (let point of dataset.points) {
+                max = Math.max(max, point.y)
+                min = Math.min(min, point.y)
+            }
+        }
+
+        // Send min/max to parent:           
+        this.parent.overrideMinMax(min, max)
+
+    }
 }

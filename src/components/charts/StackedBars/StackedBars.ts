@@ -26,20 +26,7 @@ export default class StackedBars extends AbstractChartElement {
     }
 
 
-    get maxY(): number {
-        //  throw new Error('Method not implemented.');
-        let max = 0
-
-        for (const stack of this.preparedData) {
-            let max2 = this.getStackHeightSum(stack)
-
-            max = Math.max(max, max2)
-        }
-
-        return max
-    }
-
-    created() {
+    mounted() {
         this.onDataChange()
     }
 
@@ -102,11 +89,12 @@ export default class StackedBars extends AbstractChartElement {
             result.push(stack)
 
             sumMax = Math.max(sumMax, this.getStackHeightSum(stack))
+            sumMin = Math.min(sumMin, this.getStackHeightSum(stack))
         }
 
 
-        const parent = this.$parent as BarChart        
-        parent.overrideMinMax(sumMin, sumMax)
+        // Send min/max to parent:        
+        this.parent.overrideMinMax(sumMin, sumMax)
 
         return result
     }
