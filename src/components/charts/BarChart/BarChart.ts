@@ -124,13 +124,7 @@ export default class BarChart extends Vue {
 
         let minY = this.getMinY()
 
-        // NOTE: Setting 0 as the "maximal minimum" here is specific to bar charts, because
-        // bar charts should always go all the way down to zero. 
-        // For e.g. a line chart, something different may be used!
-        // TODO: Move this logic to bar chart component
-        if (!this.cropToYRange) {
-            //minY = Math.min(0, minY)
-        }
+       
 
         const max = this.getMaxY()
 
@@ -192,7 +186,7 @@ export default class BarChart extends Vue {
 
     getDisplayMaxY() {
         let maxY = this.getMaxY()
-     
+
         const a = this.getAxisLabelStepY()
 
         return Math.ceil(maxY / a) * a
@@ -206,14 +200,14 @@ export default class BarChart extends Vue {
         // NOTE: Setting 0 as the "maximal minimum" here is specific to bar charts, because
         // bar charts should always go all the way down to zero. 
         // For e.g. a line chart, something different may be used!
-        
+
         if (!this.cropToYRange) {
-            //minY = Math.min(0, minY)
+            minY = Math.min(0, minY)
         }
 
         const a = this.getAxisLabelStepY()
 
-        return Math.floor(minY / a) * a        
+        return Math.floor(minY / a) * a
     }
 
 
@@ -261,7 +255,7 @@ export default class BarChart extends Vue {
 
     getMinY() {
 
-        //return this.overrideMinY
+        
         let result = Number.MAX_VALUE
 
         for (const dataset of this.config.datasets) {
@@ -270,7 +264,15 @@ export default class BarChart extends Vue {
             }
         }
 
-       return Math.min(result, this.overrideMinY)
+        // NOTE: Setting 0 as the "maximal minimum" here is specific to bar charts, because
+        // bar charts should always go all the way down to zero. 
+        // For e.g. a line chart, something different may be used!
+        // TODO: Move this logic to bar chart component
+        if (!this.cropToYRange) {
+            result = Math.min(0, result)
+        }
+
+        return Math.min(result, this.overrideMinY)
     }
 
 
