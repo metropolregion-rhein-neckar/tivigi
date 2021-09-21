@@ -1,3 +1,5 @@
+// TODO: Don't recalculate min/max each time. Calculate them when the data changes and cache them in variables.
+
 import { Vector2 } from 'tivigi/src/util/Vector2';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import Axis from 'tivigi/src/components/charts/Axis/Axis'
@@ -7,7 +9,7 @@ import Legend from 'tivigi/src/components/charts/Legend/Legend'
 import Lines from 'tivigi/src/components/charts/Lines/Lines'
 import WithRender from './BarChart.html';
 import { AxisLabel, ChartData } from 'tivigi/src/components/charts/chartUtil';
-import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
+
 
 @WithRender
 @Component({
@@ -25,10 +27,7 @@ export default class BarChart extends Vue {
     @Prop({
         default: () => { return new ChartData() }
     })
-    config: any
-
-    @Prop({ default: 100 })
-    scaleX!: number
+    data!: ChartData
 
     @Prop({ default: "bars" })
     displayMode!: string
@@ -47,11 +46,11 @@ export default class BarChart extends Vue {
     overrideMaxY = Number.NEGATIVE_INFINITY
     overrideMinY = Number.POSITIVE_INFINITY
 
-    // top, right, bottom, left
-    // NOTE: padding right and padding left currently have no effect.
 
 
     cfg_fontSize = 15
+    // top, right, bottom, left
+    // NOTE: padding right and padding left currently have no effect.
     cfg_padding = [15, 0, 175, 0]
     cfg_ySteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000]
     cfg_yPixelsPerStep = 50
@@ -62,7 +61,7 @@ export default class BarChart extends Vue {
     }
 
 
-    @Watch("config")
+    @Watch("data")
     onConfigChange() {
         this.overrideMaxY = Number.NEGATIVE_INFINITY
         this.overrideMinY = Number.POSITIVE_INFINITY
@@ -101,20 +100,6 @@ export default class BarChart extends Vue {
     }
 
 
-    w2sX(value: number): number {
-        // ATTENTION: The rounding is required for clean (not anti-aliased where it is unnecessary and undesired) drawing
-        //return value * this.scaleX
-        return Math.floor(value * this.scaleX)
-    }
-
-
-    w2sY(value: number): number {
-        // ATTENTION: The rounding is required for clean (not anti-aliased where it is unnecessary and undesired) drawing
-        //return -value * this.scaleY
-        return Math.floor(-value * this.scaleY)
-    }
-
-
 
     //###################### BEGIN This is not generic ###########################
     getAxisLabelStepY(): number {
@@ -122,13 +107,10 @@ export default class BarChart extends Vue {
 
         const numSteps = this.height / this.cfg_yPixelsPerStep
 
-        let minY = this.getMinY()
+        const minY = this.getMinY()
+        const maxY = this.getMaxY()
 
-       
-
-        const max = this.getMaxY()
-
-        const range = max - minY
+        const range = maxY - minY
 
         let result = Math.ceil(range / numSteps)
 
@@ -147,8 +129,8 @@ export default class BarChart extends Vue {
 
         let result = Array<AxisLabel>()
 
-        for (let ii = 0; ii < this.config.labelsX.length; ii++) {
-            result.push({ pos: ii + 1, text: this.config.labelsX[ii] })
+        for (let ii = 0; ii < this.data.labelsX.length; ii++) {
+            result.push({ pos: ii + 1, text: this.data.labelsX[ii] })
         }
 
         return result
@@ -214,8 +196,8 @@ export default class BarChart extends Vue {
     getMaxX() {
         let result = Number.MIN_VALUE
 
-        for (const dataset of this.config.datasets) {
-            for (let point of dataset.points) {
+        for (const dataset of this.data.datasets) {
+            for (const point of dataset.points) {
                 result = Math.max(result, point.x)
             }
         }
@@ -227,8 +209,8 @@ export default class BarChart extends Vue {
     getMinX() {
         let result = Number.MAX_VALUE
 
-        for (const dataset of this.config.datasets) {
-            for (let point of dataset.points) {
+        for (const dataset of this.data.datasets) {
+            for (const point of dataset.points) {
                 result = Math.min(result, point.x)
             }
         }
@@ -243,8 +225,8 @@ export default class BarChart extends Vue {
 
         let result = Number.MIN_VALUE
 
-        for (const dataset of this.config.datasets) {
-            for (let point of dataset.points) {
+        for (const dataset of this.data.datasets) {
+            for (const point of dataset.points) {
                 result = Math.max(result, point.y)
             }
         }
@@ -255,11 +237,11 @@ export default class BarChart extends Vue {
 
     getMinY() {
 
-        
+
         let result = Number.MAX_VALUE
 
-        for (const dataset of this.config.datasets) {
-            for (let point of dataset.points) {
+        for (const dataset of this.data.datasets) {
+            for (const point of dataset.points) {
                 result = Math.min(result, point.y)
             }
         }
@@ -282,4 +264,24 @@ export default class BarChart extends Vue {
         this.overrideMinY = Math.min(this.overrideMinY, newmin)
     }
     //####################### END This is not generic ########################
+
+
+
+    w2sX(value: number): number {
+               
+        const scaleX = (this.size.x - this.getYLabelsWidth()) / (this.data.labelsX.length+1)
+        
+        // ATTENTION: The rounding is required for clean (not anti-aliased where it is unnecessary and undesired) drawing
+        //return value * this.scaleX       
+        return Math.floor(value * scaleX)
+    }
+
+
+    w2sY(value: number): number {
+        // ATTENTION: The rounding is required for clean (not anti-aliased where it is unnecessary and undesired) drawing
+        //return -value * this.scaleY
+        return Math.floor(-value * this.scaleY)
+    }
+
+
 }
