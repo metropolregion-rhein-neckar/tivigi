@@ -1,5 +1,6 @@
 import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
 import { ChartData, DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
+import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './Bars.html';
@@ -38,6 +39,10 @@ export default class Bars extends AbstractChartElement {
     }
 
 
+    getTooltip(dataset : Dataset, point : DataPoint) : string {
+        return dataset.label + ': ' + formatNumberString(point.y, dataset.numDecimalPlaces)
+    }
+    
 
     getStyle(dataset: Dataset): any {
 

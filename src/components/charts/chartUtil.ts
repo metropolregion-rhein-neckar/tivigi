@@ -15,6 +15,6 @@ export class DataPoint {
 
 
 export class Dataset {
-    constructor(public label : string, public points: Array<DataPoint> = Array<DataPoint>(), public style : any = {}) {}
+    constructor(public label : string, public points: Array<DataPoint> = Array<DataPoint>(), public numDecimalPlaces : number, public style : any) {}
 }
 

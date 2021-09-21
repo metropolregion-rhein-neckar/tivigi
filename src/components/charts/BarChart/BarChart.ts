@@ -41,7 +41,7 @@ export default class BarChart extends Vue {
 
     //############ END Props #############
 
-    size = new Vector2(500, 450)
+    size = new Vector2(650, 450)
 
 
     overrideMaxY = Number.NEGATIVE_INFINITY

@@ -128,7 +128,7 @@ export default class StackedBars extends AbstractChartElement {
     }
 
     getTooltip(point : any) : string{
-        return point.dataset.label + ': <strong>' + formatNumberString(point.height,2) + "</strong>"
+        return point.dataset.label + ': <strong>' + formatNumberString(point.height, point.dataset.numDecimalPlaces) + "</strong>"
     }
 
 

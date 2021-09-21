@@ -14,6 +14,10 @@ export function formatNumberString(value: number, numDecimals: number, decimalSe
         return ""
     }
 
+    if (numDecimals == undefined) {
+        //numDecimals = 2
+    }
+
     let factor = Math.pow(10,numDecimals)
 
     value = Math.round(value * factor) / factor

@@ -1,6 +1,6 @@
 import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
 import BarChart from 'tivigi/src/components/charts/BarChart/BarChart';
-import { Dataset } from 'tivigi/src/components/charts/chartUtil';
+import { DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
@@ -39,8 +39,8 @@ export default class Lines extends AbstractChartElement {
 
 
 
-    getTooltip(dataset:any, point : any) : string {
-        return dataset.label + ': <strong>' + formatNumberString(point.y,2) + "</strong>"
+    getTooltip(dataset: Dataset, point : DataPoint) : string {        
+        return dataset.label + ': <strong>' + formatNumberString(point.y, dataset.numDecimalPlaces) + "</strong>"
     }
 
 
