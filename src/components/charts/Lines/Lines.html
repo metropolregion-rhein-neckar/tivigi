@@ -12,15 +12,26 @@
 
 
         <!-- Circles on data points: -->
-        <g v-for="(point,index) in dataset.points" >
+        <g v-for="(point,index) in dataset.points" ref="point">
 
             <!-- The actually visible circle: -->
-            <circle class="SvgChart__Lines__Dot" :cx="w2sX(point.x)" :cy="w2sY(point.y)" :r="getCircleRadius(dataset)" :style="getCircleStyle(dataset)" :data-tooltip="getTooltip(dataset, point)" />
+            <circle class="SvgChart__Lines__Dot" :cx="w2sX(point.x)" :cy="w2sY(point.y)" 
+            
+            :r="getCircleRadius(dataset)" :style="getCircleStyle(dataset)" :data-tooltip="getTooltip(dataset, point)" />
 
             <!-- Place a larger invisible circle for pointer interaction  (hover events) around the actually drawn circle: -->
-
+            <!-- ATTENTION: If the distance between two points is so small that the sensitive areas of two or more points 
+                overlap, it can be difficult or impossible to hit the covered point(s) with the cursor.
+                
+                A rough idea to solve this is to detect the selected/highlighted state of a point not through mouseover state, 
+                but instead through the distance between the cursor and the point. The point with the smalled distance to 
+                the current cursor position would count as selected. However, this is a bit complicated to solve, especially
+                of multiple <Lines> components are involved.
+            -->
+            
             <!--
-            <circle :cx="w2sX(point.x)" :cy="w2sY(point.y)" r="20" style="fill:transparent;stroke:none" :data-tooltip="dataset.label + ': ' + point.y" />
+            <circle :cx="w2sX(point.x)" :cy="w2sY(point.y)" :r="getCircleRadius(dataset) + 7" style="fill:#fff;stroke:#000" 
+            :data-tooltip="getTooltip(dataset, point)" />
             -->
         </g>
     </g>

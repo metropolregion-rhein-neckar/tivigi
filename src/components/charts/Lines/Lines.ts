@@ -1,5 +1,4 @@
 import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
-import BarChart from 'tivigi/src/components/charts/BarChart/BarChart';
 import { DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
@@ -10,7 +9,8 @@ import WithRender from './Lines.html';
 @WithRender
 @Component({})
 export default class Lines extends AbstractChartElement {
-  
+
+    closestPoint: SVGCircleElement | undefined = undefined
 
     @Watch('data')
     onDataChange() {
@@ -18,13 +18,15 @@ export default class Lines extends AbstractChartElement {
     }
 
 
+
     mounted() {
+        
         this.prepareData()
     }
 
 
 
-    getCircleRadius(dataset : Dataset): number {
+    getCircleRadius(dataset: Dataset): number {
         let result = 5
 
         try {
@@ -39,28 +41,12 @@ export default class Lines extends AbstractChartElement {
 
 
 
-    getTooltip(dataset: Dataset, point : DataPoint) : string {        
+    getTooltip(dataset: Dataset, point: DataPoint): string {
         return dataset.label + ': <strong>' + formatNumberString(point.y, dataset.numDecimalPlaces) + "</strong>"
     }
 
 
-    getCircleStyle(dataset : Dataset): any {
-
-        let strokeColor = "#000"
-
-        if (dataset.style.color) {
-            strokeColor = dataset.style.color
-        }
-
-        return {
-            "--color": strokeColor,
-            "--color-hover": strokeColor,
-            "stroke": strokeColor,          
-            "fill-hover": strokeColor
-        }
-    }
-
-    getLineStyle(dataset : Dataset): any {
+    getCircleStyle(dataset: Dataset): any {
 
         let strokeColor = "#000"
 
@@ -72,13 +58,29 @@ export default class Lines extends AbstractChartElement {
             "--color": strokeColor,
             "--color-hover": strokeColor,
             "stroke": strokeColor,
-            "fill" : "none",
+            "fill-hover": strokeColor
+        }
+    }
+
+    getLineStyle(dataset: Dataset): any {
+
+        let strokeColor = "#000"
+
+        if (dataset.style.color) {
+            strokeColor = dataset.style.color
+        }
+
+        return {
+            "--color": strokeColor,
+            "--color-hover": strokeColor,
+            "stroke": strokeColor,
+            "fill": "none",
             "fill-hover": strokeColor
         }
     }
 
 
-    getPath(dataset : Dataset): string {
+    getPath(dataset: Dataset): string {
         let result = ""
 
 
@@ -101,7 +103,7 @@ export default class Lines extends AbstractChartElement {
     }
 
 
-    getPolygonUnderLine(dataset : Dataset): string {
+    getPolygonUnderLine(dataset: Dataset): string {
         let result = ""
 
         if (dataset == undefined || dataset.points == undefined) {
@@ -126,13 +128,14 @@ export default class Lines extends AbstractChartElement {
 
 
 
+
     prepareData() {
 
         let min = Number.POSITIVE_INFINITY
         let max = Number.NEGATIVE_INFINITY
 
         for (const dataset of this.data.datasets) {
-            for (let point of dataset.points) {
+            for (const point of dataset.points) {
                 max = Math.max(max, point.y)
                 min = Math.min(min, point.y)
             }
