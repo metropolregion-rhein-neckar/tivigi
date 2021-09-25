@@ -19,27 +19,25 @@ export default  class AbstractChartElement extends Vue {
 
 
  
-    get displayMinX(): number {
-        const parent = this.$parent as BarChart
-        return  (this.$parent as BarChart).getDisplayMinX()
+    get displayMinX(): number {        
+        return  this.parent.getDisplayMinX()
     }
 
     
     get displayMaxX(): number {        
-        return (this.$parent as BarChart).getDisplayMaxX()
+        return this.parent.getDisplayMaxX()
     }
 
 
     get displayMinY(): number {
-        const parent = this.$parent as BarChart
-        return parent.getDisplayMinY()
+        
+        return this.parent.getDisplayMinY()
     }
 
  
 
-    get displayMaxY(): number {
-        const parent = this.$parent as BarChart
-        return parent.getDisplayMaxY()
+    get displayMaxY(): number {        
+        return this.parent.getDisplayMaxY()
     }
 
 

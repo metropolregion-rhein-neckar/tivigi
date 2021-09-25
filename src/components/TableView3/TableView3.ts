@@ -21,7 +21,9 @@ export default class TableView3 extends Vue {
     sortAscending = -1
     currentSortFieldIndex = 0
 
+    selectedRowIndex = -1
 
+    selectedRow = undefined
    
     // ATTENTION: "displayData" is NOT the data block that is actually displayed, but a copy of the data passed
     // as the "data" prop, so that it can be re-ordered without changing the original data.
@@ -41,34 +43,6 @@ export default class TableView3 extends Vue {
         // And sort it by the selected field:       
         this.sortBy(this.displayData.fields[this.currentSortFieldIndex])
     }
-
-
-    /*
-    getHeaderButtonStyle(field: FieldConfig): any {
-
-        let result: any = {}
-
-        return result
-        
-        switch (field.textAlign) {
-            case FieldTextAlign.CENTER: {
-                result["text-align"] = "center"
-                break
-            }
-            case FieldTextAlign.RIGHT: {
-                result["text-align"] = "right"
-                break
-            }
-            case FieldTextAlign.LEFT: {
-                result["text-align"] = "left"
-                break
-            }
-        }
-
-        return result
-    }
-    */
-
 
     getDynamicStyle(field: FieldConfig): any {
 
@@ -90,6 +64,16 @@ export default class TableView3 extends Vue {
         }
 
         return result
+    }
+
+
+    getRowClass(row : any) : any {
+
+      
+        return {
+         //   "TableView3__SelectedRow" : this.selectedRowIndex == rowIndex
+         "TableView3__SelectedRow" : this.selectedRow == row
+        }
     }
 
 
@@ -121,6 +105,7 @@ export default class TableView3 extends Vue {
 
 
     onHeaderCellClick(index: number) {
+        console.log("click")
 
         if (index == this.currentSortFieldIndex) {
             this.sortAscending = -this.sortAscending
@@ -129,6 +114,14 @@ export default class TableView3 extends Vue {
         this.currentSortFieldIndex = index
 
         this.sortBy(this.data.fields[index])
+    }
+
+
+    onRowClick(row : any) {
+        this.selectedRow = row
+        
+        // Required:
+        this.$forceUpdate()
     }
 
 

@@ -30,7 +30,7 @@
     <tbody>
 
 
-      <tr v-for="(row,index) in displayData.rows">
+      <tr v-for="(row,index) in displayData.rows" :class="getRowClass(row)" @click="onRowClick(row)">
         <td v-for="field in displayData.fields" :style="getDynamicStyle(field)">
           {{field.display(row)}}
         </td>

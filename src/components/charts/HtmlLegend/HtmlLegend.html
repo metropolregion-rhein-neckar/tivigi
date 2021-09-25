@@ -1,0 +1,8 @@
+<table class="ChartHtmlLegend">
+
+  <tr v-for="(dataset,index) in data.datasets">
+
+    <td><div :style="getSymbolStyle(dataset)"></div></td><td>{{dataset.label}}</td>
+  </tr>
+</table>
+

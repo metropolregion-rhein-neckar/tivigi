@@ -1,5 +1,5 @@
 import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
-import { ChartData, DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
+import {  DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
@@ -56,8 +56,6 @@ export default class Bars extends AbstractChartElement {
             "fill": color,
             "--color": color
         }
-
-
     }
 
 

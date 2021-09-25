@@ -1,7 +1,9 @@
 div.TableView3 {
-    //border:2px dashed #000;
-    overflow:auto;
+    
     max-height:500px;
+    
+    overflow:auto;
+    
     table {
         border-collapse: collapse;
 
@@ -59,7 +61,18 @@ div.TableView3 {
         tbody {
             tr {
                 border-bottom: 1px solid #e5e5e5;
+
+                cursor: pointer;
+                &:hover {
+                    background-color: #ccc;
+                }
             }
         }
     }
+}
+
+
+tr.TableView3__SelectedRow {
+    background-color:#bbb;
+
 }

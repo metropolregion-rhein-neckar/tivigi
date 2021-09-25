@@ -1,7 +1,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
+//import "./CssGridBox.scss"
 import WithRender from './CssGridBox.html';
-import "./CssGridBox.scss"
 
 @WithRender
 @Component({})

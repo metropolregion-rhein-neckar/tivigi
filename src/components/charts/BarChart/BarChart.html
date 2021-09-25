@@ -3,20 +3,16 @@
     <!-- This is a frame around the entire viewBox: -->
     <rect v-if="debug" :x="0" :y="0" :width="size.x" :height="size.y" style="fill:transparent;stroke:#aaa" />
 
-    <g :transform="'translate(' + getYLabelsWidth() + ',' + (height - w2sY(getDisplayMinY()) + cfg_padding[0]) + ')'">
+    <g :transform="'translate(' + cached_yLabelsWidth + ',' + (height - w2sY(getDisplayMinY()) + cfg_padding[0]) + ')'">
 
-        <!-- X-Axis: -->
+
         <Axis dir="x" :labels="getLabelsX()" />
-
-        <!-- Y-Axis: -->
         <Axis dir="y" :labels="getLabelsY()" />
+
 
         <Bars v-if="displayMode == 'bars'" :data="data" />
         <Lines v-if="displayMode == 'lines'" :data="data" />
         <StackedBars v-if="displayMode == 'stackedBars'" :data="data" />
 
     </g>
-
-    <Legend :data="data" transform="translate(0,340)"></Legend>
-
 </svg>
