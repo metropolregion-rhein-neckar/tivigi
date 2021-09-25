@@ -55,7 +55,7 @@ export default class BarChart extends Vue {
     readonly cfg_fontSize = 15
     // top, right, bottom, left
     // NOTE: padding right and padding left currently have no effect.    
-    readonly cfg_padding = [15, 0, 15, 0]
+    readonly cfg_padding = [15, 0, 40, 0]
     readonly cfg_ySteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000]
     readonly cfg_yPixelsPerStep = 50
 
