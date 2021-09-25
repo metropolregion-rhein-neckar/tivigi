@@ -1,10 +1,10 @@
-<div class="TableView2" v-if="displayData != null" ref="outer" @scroll="onScroll">
-  <table ref="table" v-onresize="onResize">
+<div class="TableView3" v-if="displayData != null">
+  <table>
 
     <thead>
       <tr>
         <th v-for="(field,index) in displayData.fields">
-          <button @click="onHeaderCellClick(index)" :style="getHeaderButtonStyle(field)" :title='"Nach \"" + field.label + "\" sortieren"'>
+          <button @click="onHeaderCellClick(index)"  :title='"Nach \"" + field.label + "\" sortieren"'>
 
             <!-- NOTE: Depending on whether the text alignment of the field is left or not (e.g. right or center),
             we put the order icon either *in front of* or *behind* the text label: -->
@@ -21,20 +21,16 @@
             -->
             <span>{{field.label}}</span>
             <img src="tivigi/img/arrow_down2.svg" :style="getSortIconStyle(index)" />
-            
+
           </button>
         </th>
-
       </tr>
     </thead>
 
-    <tbody ref="tbody">
+    <tbody>
 
-      <!-- ######## BEGIN Row with maximmum length entries to ensure constant column widths ####### -->
-      <tr><td class="TableView2_Spacer" v-for="value in maxWidthRow">{{value}}</td></tr>
-      <!-- ######## END Row with maximmum length entries to ensure constant column widths ####### -->
 
-      <tr v-for="(row,index) in prepareData()">
+      <tr v-for="(row,index) in displayData.rows">
         <td v-for="field in displayData.fields" :style="getDynamicStyle(field)">
           {{field.display(row)}}
         </td>
@@ -42,7 +38,4 @@
 
     </tbody>
   </table>
-
-  <div ref="inner" :style="getInnerDynamicStyle()"></div>
-
 </div>

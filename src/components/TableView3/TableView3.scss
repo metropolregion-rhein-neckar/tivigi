@@ -1,51 +1,37 @@
-div.TableView2 {
-    // user-select: none;
-
-    overflow-y: scroll; // IMPORTANT!
-    //border:1px solid #000;
-   height:400px;
-   
+div.TableView3 {
+    //border:2px dashed #000;
+    overflow:auto;
+    max-height:500px;
     table {
         border-collapse: collapse;
 
         width: 100%;
-      
-        position: sticky;
-        top: 0px;
-
-        td.TableView2_Spacer {
-            height: 0px;
-            line-height: 0 !important;
-            overflow: hidden;
-            user-select: none !important;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
 
         thead {
             margin: 0;
             padding: 0;
-                  
+            top:0;
+            position:sticky;
+
             th {
-          
                 padding: 0;
 
                 button {
                     background-color: #ddd;
-                    
+
                     display: block;
                     font-weight: bold;
-                    color:#444;
+                    color: #444;
                     margin: 0;
                     padding: 6px;
-                    border: none;                    
-                    border-right:1px solid #bbb;
-                    
+                    border: none;
+                    border-right: 1px solid #bbb;
+
                     display: block;
                     width: 100%;
                     text-align: left;
                     white-space: nowrap;
-                    
+
                     img {
                         transition: 0.4s;
                         height: 0.8em;
@@ -59,25 +45,20 @@ div.TableView2 {
 
                 &:last-child {
                     button {
-                        border-right:none;
+                        border-right: none;
                     }
                 }
             }
-
-            
         }
 
         td,
-        th {         
+        th {
             padding: 2px 4px;
-            //white-space: nowrap;
-            //overflow:hidden;
-            max-width:400px;
         }
 
         tbody {
             tr {
-                border-bottom:1px solid #e5e5e5;
+                border-bottom: 1px solid #e5e5e5;
             }
         }
     }
