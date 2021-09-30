@@ -23,6 +23,9 @@ export default class RangeSlider extends Vue {
 
     @Prop( { default : ""})
     unit! : string
+
+
+    
     //########### END Props ############
     
 
