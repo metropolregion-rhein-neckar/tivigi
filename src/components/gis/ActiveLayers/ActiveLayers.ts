@@ -32,6 +32,9 @@ export default class ActiveLayers extends Vue {
 
     @Prop({default:true})
     attributesTableButton! : Boolean
+
+    @Prop({default:""})
+    additionalInfo!:string
     //################# END Props #################
 
 
@@ -45,7 +48,6 @@ export default class ActiveLayers extends Vue {
         }
 
         for (let layer of this.map.getLayers().getArray()) {
-
 
             let showLegend = true
 
