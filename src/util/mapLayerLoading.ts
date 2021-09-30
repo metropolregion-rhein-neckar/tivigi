@@ -380,6 +380,42 @@ export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Proje
         //##################### END Style function ########################
 
         layer.setStyle(styleFunc)
+
+        let legend = {
+            "Legend": [
+                {
+                    //"layerName": layerConfig.id,
+                    "title": layerConfig.title,
+                    "rules": [
+                        {
+                            "name": "rule1",
+                            "title": layerConfig.title,
+                            "abstract": "",
+                            "symbolizers": [
+                                {
+                                    "Point": {
+                                        "title": layerConfig.title,
+                                        "abstract": "",
+                                        "url": iconUrl,
+                                        "size": "30",
+                                        "opacity": "1.0",
+                                        "rotation": "0.0",
+                                        "graphics": [
+                                            {
+                                                "external-graphic-url": iconUrl
+                                                //"external-graphic-type": "image/png"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    
+        layer.set('legend', legend);
     }
 
     return layer

@@ -36,11 +36,11 @@ export default class LayerControlPanel extends Vue {
     onLayerChange(now : ol_layer.Layer|undefined, before : ol_layer.Layer|undefined) {
 
      
-        if (before instanceof ol_layer.Layer) {
+        if (before != undefined) {
             before.un("propertychange", this.onLayerPropertyChange)
         }
 
-        if (now instanceof ol_layer.Layer) {
+        if (now != undefined) {
             now.on("propertychange", this.onLayerPropertyChange)
             this.legend = now.get('legend')
         }  
