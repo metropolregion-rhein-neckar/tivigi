@@ -55,9 +55,18 @@ export default class MapLoadingProgressBar extends Vue {
 
 
         for (let source of this.sources) {
-            source.un('tileloadstart', this.onTileLoadStart)
-            source.un('tileloadend', this.onTileLoadEnd)
-            source.un('tileloaderror', this.onTileLoadError)
+            if(source instanceof ol_source.TileWMS){
+                source.un('tileloadstart', this.onTileLoadStart)
+                source.un('tileloadend', this.onTileLoadEnd)
+                source.un('tileloaderror', this.onTileLoadError)
+            }
+
+            if(source instanceof ol_source.ImageWMS){
+                source.un('imageloadstart', this.onTileLoadStart)
+                source.un('imageloadend', this.onTileLoadEnd)
+                source.un('imageloaderror', this.onTileLoadError)
+
+            }
         }
     }
 
@@ -126,10 +135,20 @@ export default class MapLoadingProgressBar extends Vue {
 
         if (source != null) {
             this.sources.add(source)
+            
+            if(source instanceof ol_source.TileWMS){
+                source.on('tileloadstart', this.onTileLoadStart)
+                source.on('tileloadend', this.onTileLoadEnd)
+                source.on('tileloaderror', this.onTileLoadError)
+            }
 
-            source.on('tileloadstart', this.onTileLoadStart)
-            source.on('tileloadend', this.onTileLoadEnd)
-            source.on('tileloaderror', this.onTileLoadError)
+            if(source instanceof ol_source.ImageWMS){
+                source.on('imageloadstart', this.onTileLoadStart)
+                source.on('imageloadend', this.onTileLoadEnd)
+                source.on('imageloaderror', this.onTileLoadError)
+
+            }
+
         }
     }
 
