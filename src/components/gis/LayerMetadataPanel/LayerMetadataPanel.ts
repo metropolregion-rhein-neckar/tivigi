@@ -3,7 +3,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import * as ol_layer from 'ol/layer'
 
 //################# BEGIN Tivigi imports #################
-import AttributesTable from 'tivigi/src/components/gis/AttributesTable/AttributesTable'
+
 import PopupMenu from 'tivigi/src/components/PopupMenu/PopupMenu'
 import FloatingWindow from 'tivigi/src/components/FloatingWindow/FloatingWindow'
 import Legend from 'tivigi/src/components/gis/Legend/Legend'
@@ -21,7 +21,7 @@ import WithRender from './LayerMetadataPanel.html';
 @WithRender
 @Component({
     components: {
-        AttributesTable,
+        
         FloatingWindow,
         Legend,
         PopupMenu,

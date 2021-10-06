@@ -11,7 +11,6 @@ import { TileWMS } from 'ol/source';
 
 //################# BEGIN Tivigi imports #################
 import Collapsible from 'tivigi/src/components/Collapsible/Collapsible'
-import AttributesTable from 'tivigi/src/components/gis/AttributesTable/AttributesTable'
 import PopupMenu from 'tivigi/src/components/PopupMenu/PopupMenu'
 import FloatingWindow from 'tivigi/src/components/FloatingWindow/FloatingWindow'
 import Legend from 'tivigi/src/components/gis/Legend/Legend'
@@ -30,7 +29,7 @@ import WithRender from './LayerControlPanel.html';
 @WithRender
 @Component({
     components: {
-        AttributesTable,
+        
         Collapsible,       
         FloatingWindow,
         LayerLegend,
