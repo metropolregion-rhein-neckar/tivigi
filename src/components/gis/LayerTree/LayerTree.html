@@ -1,4 +1,4 @@
 <div class="LayerTree">
-    <DataLayerTree name="rootNode" :map="map" :treeDef="treeDef" :layerDef="layerDef" />
-    <Tree :rootNode="local.rootNode" :showFilterInput="showFilterInput" />
+    <DataLayerTree :data.sync="rootNode" :map="map" :treeDef="treeDef" :layerDef="layerDef" />
+    <Tree :rootNode="rootNode" :showFilterInput="showFilterInput" />
 </div>

@@ -4,12 +4,12 @@ import * as ol from 'ol'
 import * as ol_layer from 'ol/layer'
 
 import { createLayerFromConfig } from 'tivigi/src/util/mapLayerLoading';
-import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
+import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
 
 @Component({
     components: {}
 })
-export default class DataMapLayer extends AbstractRenderlessComponent {
+export default class DataMapLayer extends AbstractData {
 
     //############# BEGIN Props ##############
     @Prop({})
@@ -29,9 +29,6 @@ export default class DataMapLayer extends AbstractRenderlessComponent {
 
     @Prop()
     layerId!: any
-
-    @Prop()
-    data!: ol_layer.Layer
     //############# END Props ##############
 
 

@@ -2,6 +2,7 @@ import * as lzutf8 from 'lzutf8'
 
 
 export function getUrlState(): any {
+  
     //################### BEGIN Get current state object #######################
     let currentUrl = new URL(location.href);
 
@@ -28,6 +29,8 @@ export function getUrlState(): any {
 
 
 export function setUrlState(state: any) {
+
+   
     //###################### BEGIN Set updated URL state #####################
     
     let state_json = lzutf8.compress(JSON.stringify(state), {outputEncoding:"Base64"})

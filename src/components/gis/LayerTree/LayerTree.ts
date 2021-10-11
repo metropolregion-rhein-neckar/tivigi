@@ -38,5 +38,5 @@ export default class LayerTree extends Vue {
 
 
     filter = ""
-    local = {}
+  
 }

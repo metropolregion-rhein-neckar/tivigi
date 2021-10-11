@@ -1,15 +1,15 @@
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import * as ol from 'ol'
 import * as ol_interaction from 'ol/interaction'
 import { getUrlState, setUrlState } from 'tivigi/src/util/urlStateKeeping';
 import { DragPan, MouseWheelZoom, defaults } from 'ol/interaction';
 import { platformModifierKeyOnly } from 'ol/events/condition';
 import { Attribution, defaults as defaultControls } from 'ol/control';
-import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
+import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
 
 
 @Component({})
-export default class DataMap extends AbstractRenderlessComponent {
+export default class DataMap extends AbstractData {
 
     //############## BEGIN Props ###############
     @Prop({ default: 17 })
@@ -49,6 +49,11 @@ export default class DataMap extends AbstractRenderlessComponent {
 
     setup() {
 
+        if (this.data != undefined) {
+            return
+        }
+
+
         // See https://openlayers.org/en/latest/examples/two-finger-pan-scroll.html
 
         // TODO: 3 Perhaps remove setting of interactions from here and do it in MapPanel only?
@@ -73,7 +78,7 @@ export default class DataMap extends AbstractRenderlessComponent {
             collapsible: false,
         });
 
-        //######################## BEGIN Create object ########################
+        //######################## BEGIN Create map object ########################
         this.map = new ol.Map({
 
             interactions: interactions_default,
@@ -85,7 +90,9 @@ export default class DataMap extends AbstractRenderlessComponent {
 
             })
         })
-        //######################## END Create object ########################
+        //######################## END Create map object ########################
+
+
 
         // This is required for URL status synchronization:
         this.map.set("name", this.name);

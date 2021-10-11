@@ -81,11 +81,6 @@ export default class LocationSearch2 extends Vue {
     }
 
 
-    mounted() {
-        console.log("here we gooo")
-    }
-
-
     onEntryClick(entry: any) {
         this.$emit('locationSelect', entry)
 

@@ -5,14 +5,14 @@ import * as ol_layer from 'ol/layer'
 
 
 import { FeatureLike } from 'ol/Feature';
-import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
+import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
 
 
 
 @Component({
     components: {}
 })
-export default class DataFeaturesInMapExtent extends AbstractRenderlessComponent {
+export default class DataFeaturesInMapExtent extends AbstractData {
 
     //################# BEGIN Props #################
     @Prop()

@@ -1,11 +1,13 @@
+import AbstractRenderlessComponent from 'tivigi/src/components/AbstractRenderlessComponent/AbstractRenderlessComponent';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
-import WithRender from './AbstractData.html'
 
-@WithRender
 @Component({})
-export default class AbstractData extends Vue {
+export default class AbstractData extends AbstractRenderlessComponent {
 
+    @Prop()
+    data!: any
 
+    /*
     @Prop()
     name!: string;
 
@@ -60,4 +62,5 @@ export default class AbstractData extends Vue {
 
         parent.local[this.name] = value      
     }
+    */
 }

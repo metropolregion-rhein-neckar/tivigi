@@ -25,9 +25,6 @@ export default class DataLayerTree extends AbstractData {
 
     @Prop()
     map!: ol.Map;
-
-    @Prop()
-    data! : TreeNodeData
     //############## END Props ##############
 
 
@@ -51,6 +48,9 @@ export default class DataLayerTree extends AbstractData {
         this.setup()
     }
 
+    mounted() {
+        this.setup()
+    }
 
     setup() {
 
@@ -70,7 +70,7 @@ export default class DataLayerTree extends AbstractData {
         this.rootNode.sortChildren()
 
         // Old way:
-        this.register(this.rootNode)
+        //this.register(this.rootNode)
 
         // New way:
         this.$emit("update:data", this.rootNode)
