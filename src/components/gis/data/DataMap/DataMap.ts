@@ -50,7 +50,7 @@ export default class DataMap extends AbstractData {
     setup() {
 
         if (this.data != undefined) {
-            return
+           return
         }
 
 

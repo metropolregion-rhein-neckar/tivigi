@@ -7,6 +7,7 @@ import * as ol from 'ol'
 
 
 import WithRender from './LayerTree.html';
+import { TreeNodeData } from 'tivigi/src/treeUtil/TreeNodeData';
 
 
 @WithRender
@@ -36,6 +37,7 @@ export default class LayerTree extends Vue {
     showFilterInput!: boolean
     //############# END Props #############
 
+    rootNode = new TreeNodeData("-")
 
     filter = ""
   
