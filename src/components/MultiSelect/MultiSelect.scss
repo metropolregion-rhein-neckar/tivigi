@@ -14,13 +14,13 @@ div.MultiSelect  {
         padding:3px 4px;
 
         &:hover {
-          //  color:#888;
+            background-color:#ddd;
         }
     }
 
     button.MultiSelect__Option--selected {
 
-        background-color:#ddd;
+        background-color:#ccc;
         
     }
 }

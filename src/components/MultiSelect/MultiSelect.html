@@ -1,12 +1,9 @@
 <div class="MultiSelect">
   
-  <button v-for="option in options" @click="toggleSelect(option)" :class="getDynamicClass(option)">
+  <button v-if="matches(option)" v-for="option in options" @click="toggleSelect(option)" :class="getDynamicClass(option)">
 
-    <template v-if="labelFunc">      
-      {{labelFunc(option)}}
-    </template>
-    <template v-else>
-      {{option}}
-    </template>
+    
+      {{getLabel(option)}}
+    
   </button>
 </div>

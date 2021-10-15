@@ -11,6 +11,9 @@ import WithRender from './MultiSelect.html';
 })
 export default class MultiSelect extends Vue {
 
+    @Prop({default : ""})
+    filterString!: string
+
     @Prop()
     labelFunc!: Function
 
@@ -39,6 +42,16 @@ export default class MultiSelect extends Vue {
             "MultiSelect__Option": true,
             "MultiSelect__Option--selected": this.selected.includes(option)
         }
+    }
+
+    getLabel(option : any) : string {
+
+        return this.labelFunc ? this.labelFunc(option) : option
+      
+    }
+
+    matches(option : any) : boolean {
+        return this.getLabel(option).toLocaleLowerCase().includes(this.filterString.toLocaleLowerCase())
     }
 
 
