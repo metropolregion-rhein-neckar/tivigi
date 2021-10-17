@@ -7,8 +7,24 @@ import WithRender from './CssGridBox.html';
 @Component({})
 export default class CssGridBox extends Vue {
 
+    @Prop() 
+    rowSpan : number|undefined
     
+
+    mounted() {
+        if (this.rowSpan != undefined) {
+            const el = this.$el as HTMLDivElement
+
+            el.style.gridRow = "span " + this.rowSpan    
+        }
+    }
+
+
     onResize() {
+
+        if (this.rowSpan != undefined) {
+            return
+        }
         
         const parent = (this.$el as HTMLElement).parentElement
 

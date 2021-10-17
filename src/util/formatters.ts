@@ -8,14 +8,10 @@ export class FormatNumberStringOptions {
 
 
 // TODO: Change this function and all calls of it to use FormatNumberStringOptions
-export function formatNumberString(value: number, numDecimals: number, decimalSeparator : string = ",", thousandsSeparator : string = ".", unit : string = "") {
+export function formatNumberString(value: number, numDecimals: number = 0, decimalSeparator : string = ",", thousandsSeparator : string = ".", unit : string = "") {
 
     if (isNaN(value)) {
         return ""
-    }
-
-    if (numDecimals == undefined) {
-        //numDecimals = 2
     }
 
     let factor = Math.pow(10,numDecimals)
