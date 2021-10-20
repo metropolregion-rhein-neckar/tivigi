@@ -5,7 +5,7 @@ import Bars from 'tivigi/src/components/charts/Bars/Bars'
 import StackedBars from 'tivigi/src/components/charts/StackedBars/StackedBars';
 import Lines from 'tivigi/src/components/charts/Lines/Lines'
 import WithRender from './SvgChart.html';
-import { AxisLabel, ChartData } from 'tivigi/src/components/charts/chartUtil';
+import { AxisLabel, ChartData, SvgChartOptions } from 'tivigi/src/components/charts/chartUtil';
 
 
 @WithRender
@@ -25,6 +25,7 @@ export default class SvgChart extends Vue {
     })
     data!: ChartData
 
+    // TODO: Move "displayMode" and some other props to "options"
     @Prop({ default: "bars" })
     displayMode!: string
 
@@ -33,6 +34,9 @@ export default class SvgChart extends Vue {
 
     @Prop({ default: false })
     cropToYRange!: boolean
+
+    @Prop({default : () => {return new SvgChartOptions()}})
+    options! : SvgChartOptions
 
     //############ END Props #############
 

@@ -1,3 +1,4 @@
+import { Style } from 'ol/style';
 import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
 import { DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
 import { formatNumberString } from 'tivigi/src/util/formatters';
@@ -29,13 +30,14 @@ export default class Lines extends AbstractChartElement {
     getCircleRadius(dataset: Dataset): number {
         let result = 5
 
+        /*
         try {
             if (dataset.style.circleRadius != undefined) {
                 result = dataset.style.circleRadius
             }
         }
         catch { }
-
+        */
         return result
     }
 
@@ -75,7 +77,8 @@ export default class Lines extends AbstractChartElement {
             "--color-hover": strokeColor,
             "stroke": strokeColor,
             "fill": "none",
-            "fill-hover": strokeColor
+            "fill-hover": strokeColor,
+            "stroke-dasharray" : dataset.style.strokeDasharray
         }
     }
 
