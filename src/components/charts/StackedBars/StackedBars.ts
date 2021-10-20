@@ -1,5 +1,5 @@
 import AbstractChartElement from 'tivigi/src/components/charts/AbstractChartElement/AbstractChartElement';
-import BarChart from 'tivigi/src/components/charts/BarChart/BarChart';
+import SvgChart from 'tivigi/src/components/charts/SvgChart/SvgChart';
 import { DataPoint, Dataset } from 'tivigi/src/components/charts/chartUtil';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Prop, Watch } from 'vue-property-decorator';

@@ -1,4 +1,4 @@
-import BarChart from 'tivigi/src/components/charts/BarChart/BarChart';
+import SvgChart from 'tivigi/src/components/charts/SvgChart/SvgChart';
 import { ChartData } from 'tivigi/src/components/charts/chartUtil';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
@@ -41,8 +41,8 @@ export default  class AbstractChartElement extends Vue {
     }
 
 
-    get parent() : BarChart {
-        return this.$parent as BarChart        
+    get parent() : SvgChart {
+        return this.$parent as SvgChart        
     }
 
     

@@ -4,7 +4,7 @@ import Axis from 'tivigi/src/components/charts/Axis/Axis'
 import Bars from 'tivigi/src/components/charts/Bars/Bars'
 import StackedBars from 'tivigi/src/components/charts/StackedBars/StackedBars';
 import Lines from 'tivigi/src/components/charts/Lines/Lines'
-import WithRender from './BarChart.html';
+import WithRender from './SvgChart.html';
 import { AxisLabel, ChartData } from 'tivigi/src/components/charts/chartUtil';
 
 
@@ -17,7 +17,7 @@ import { AxisLabel, ChartData } from 'tivigi/src/components/charts/chartUtil';
         StackedBars
     }
 })
-export default class BarChart extends Vue {
+export default class SvgChart extends Vue {
 
     //############ BEGIN Props #############
     @Prop({
