@@ -1,10 +1,10 @@
-import { TableData } from 'tivigi/src/components/TableView3/TableData';
-import { FieldConfig, FieldTextAlign } from 'tivigi/src/components/TableView3/FieldConfig';
+import { TableData } from './TableData';
+import { FieldConfig, FieldTextAlign } from './FieldConfig';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
-import WithRender from './TableView3.html';
+import WithRender from './TableView.html';
 
-import "./TableView3.scss"
+import "./TableView.scss"
 
 @WithRender
 @Component({
@@ -12,7 +12,7 @@ import "./TableView3.scss"
 
     }
 })
-export default class TableView3 extends Vue {
+export default class TableView extends Vue {
 
     @Prop()
     data!: { rows: Array<any>, fields: Array<FieldConfig> }
