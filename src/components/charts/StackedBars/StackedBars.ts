@@ -47,11 +47,7 @@ export default class StackedBars extends AbstractChartElement {
 
         let result = []
 
-
-        // TODO: 1 Do we need to start at 0 or 1 here?
-
-        for (let ii = 0; ii <= this.data.labelsX.length; ii++) {
-
+        for (let ii = 0; ii < this.data.labelsX.length; ii++) {
 
             let negativeY = 0
             let positiveY = 0
@@ -141,6 +137,7 @@ export default class StackedBars extends AbstractChartElement {
 
 
     onMouseOver(evt: MouseEvent) {
+        /*
         // NOTE: This brings the element under the mouse to the front by moving all other siblings
         // above the element in the DOM
 
@@ -155,5 +152,6 @@ export default class StackedBars extends AbstractChartElement {
                 parent.prepend(elem)
             }
         }
+        */
     }
 }
