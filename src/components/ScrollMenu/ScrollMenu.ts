@@ -1,4 +1,3 @@
-import { commonJSAvailable } from 'tivigi/node_modules/lzutf8';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './ScrollMenu.html';
