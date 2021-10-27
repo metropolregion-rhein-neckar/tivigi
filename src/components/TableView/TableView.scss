@@ -1,12 +1,11 @@
-div.TableView3 {
-    
-    max-height:500px;
+div.TableView {
     
     overflow:auto;
     
+    font-size:15px;
     table {
         border-collapse: collapse;
-
+        
         width: 100%;
 
         thead {
@@ -17,10 +16,10 @@ div.TableView3 {
 
             th {
                 padding: 0;
-
+                
                 button {
                     background-color: #ddd;
-
+                    font-size:14px;
                     display: block;
                     font-weight: bold;
                     color: #444;
