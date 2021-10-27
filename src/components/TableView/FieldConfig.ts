@@ -7,7 +7,7 @@ export enum FieldTextAlign {
 export class FieldConfig {
 
     // TODO: 3 Specify function signatures for 'display' and 'raw'
-    constructor(public label: string, public display: Function, public raw : Function, public textAlign : FieldTextAlign) {
+    constructor(public label: string, public shortLabel : string|undefined, public display: Function, public raw : Function, public textAlign : FieldTextAlign) {
 
     }
 }

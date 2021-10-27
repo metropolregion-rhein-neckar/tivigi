@@ -3,7 +3,7 @@ div.Tooltip {
     position:fixed;    
     background-color:#fff;
     border-radius:4px;
-    z-index:1000;    
+    z-index:99999;    
     padding:10px;
     transition: 0.4s;
     transition-property: opacity;

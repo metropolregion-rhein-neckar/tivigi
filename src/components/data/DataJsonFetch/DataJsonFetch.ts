@@ -26,6 +26,10 @@ export default class DataJsonFetch extends AbstractData {
 
     @Watch("url")
     async setup() {
+        
+        if (this.url == undefined || this.url == "") {
+            return
+        }
 
         const t0 = performance.now()
 

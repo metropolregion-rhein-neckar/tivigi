@@ -19,7 +19,7 @@
               <span>{{field.label}}</span>              
             </template>
             -->
-            <span>{{field.label}}</span>
+            <span :data-tooltip="field.label">{{field.shortLabel}}</span>
             <img src="tivigi/img/arrow_down2.svg" :style="getSortIconStyle(index)" />
 
           </button>

@@ -16,7 +16,7 @@ import WithRender from './Bars.html';
 export default class Bars extends AbstractChartElement {
 
     //########## BEGIN Props ##########
-    @Prop({ default: 25 })
+    @Prop({ default: 45 })
     barWidth!: number
 
 
@@ -40,7 +40,7 @@ export default class Bars extends AbstractChartElement {
 
 
     getTooltip(dataset : Dataset, point : DataPoint) : string {
-        return dataset.label + ': ' + formatNumberString(point.y, dataset.numDecimalPlaces)
+        return dataset.label + ': <strong>' + formatNumberString(point.y, dataset.numDecimalPlaces) + "</strong>"
     }
     
 

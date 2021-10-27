@@ -1,8 +1,19 @@
-<table class="ChartHtmlLegend">
+<div class="ChartHtmlLegend">
+<!--
+  <table>
 
-  <tr v-for="(dataset,index) in data.datasets">
+    <tr v-for="(dataset,index) in data.datasets">
 
-    <td><div :style="getSymbolStyle(dataset)"></div></td><td>{{dataset.label}}</td>
-  </tr>
-</table>
+      <td>
+        <div :style="getSymbolStyle(dataset)" :data-tooltip="dataset.label"></div>
+      </td>
+      <td :data-tooltip="dataset.label">{{dataset.shortLabel}}</td>
+    </tr>
+  </table>
 
+-->
+  <div v-for="(dataset,index) in data.datasets" class="ChartHtmlLegend__Entry">
+    <div class="ChartHtmlLegend__Symbol" :style="getSymbolStyle(dataset)" :data-tooltip="dataset.label"></div>
+    <div :data-tooltip="dataset.label">{{dataset.shortLabel}}</div>
+  </div>
+</div>
