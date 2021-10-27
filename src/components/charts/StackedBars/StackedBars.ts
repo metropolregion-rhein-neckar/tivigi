@@ -5,6 +5,7 @@ import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './StackedBars.html';
+import { getHeight } from 'ol/extent';
 
 
 @WithRender
@@ -31,19 +32,10 @@ export default class StackedBars extends AbstractChartElement {
     }
 
 
-    getBarWidth() {
-        return 10
-    }
 
 
 
     prepareData(): any {
-
-        let sumMin = Number.POSITIVE_INFINITY
-        let sumMax = Number.NEGATIVE_INFINITY
-
-        let min = Number.POSITIVE_INFINITY
-        let max = Number.NEGATIVE_INFINITY
 
         let result = []
 
@@ -59,7 +51,6 @@ export default class StackedBars extends AbstractChartElement {
                 for (const point of dataset.points) {
 
                     if (point.x != ii) {
-
                         continue
                     }
 
@@ -72,9 +63,6 @@ export default class StackedBars extends AbstractChartElement {
                         stack.push({ "dataset": dataset, "y": negativeY, "height": point.y })
                         negativeY += point.y
                     }
-
-                    max = Math.max(max, positiveY)
-                    min = Math.min(min, negativeY)
                 }
             }
 
@@ -83,30 +71,36 @@ export default class StackedBars extends AbstractChartElement {
             }
 
             result.push(stack)
-
-            sumMax = Math.max(sumMax, this.getStackHeightSum(stack))
-            sumMin = Math.min(sumMin, this.getStackHeightSum(stack))
         }
 
+        let min = Number.POSITIVE_INFINITY
+        let max = Number.NEGATIVE_INFINITY
+
+        for (const stack of result) {
+            let positive = 0
+            let negative = 0
+
+            for(const element of stack) {
+                if (element.height < 0) {
+                    negative += element.height
+                }
+                else {
+                    positive += element.height
+                }
+            }
+
+            max = Math.max(max, positive)
+            min = Math.min(min, negative)
+        }
+        
 
         // Send min/max to parent:        
-        this.parent.overrideMinMax(sumMin, sumMax)
+        this.parent.overrideMinMax(min, max)
 
         return result
     }
 
 
-    getStackHeightSum(stack: Array<any>): number {
-
-        let result = 0
-
-        for (const item of stack) {
-
-            result += item.height
-        }
-
-        return result
-    }
 
 
     getStyle(dataset: Dataset): any {
@@ -123,7 +117,7 @@ export default class StackedBars extends AbstractChartElement {
         }
     }
 
-    getTooltip(point : any) : string{
+    getTooltip(point: any): string {
         return point.dataset.label + ': <strong>' + formatNumberString(point.height, point.dataset.numDecimalPlaces) + "</strong>"
     }
 
@@ -136,22 +130,4 @@ export default class StackedBars extends AbstractChartElement {
 
 
 
-    onMouseOver(evt: MouseEvent) {
-        /*
-        // NOTE: This brings the element under the mouse to the front by moving all other siblings
-        // above the element in the DOM
-
-        let el = evt.target as SVGRectElement
-
-        let parent = el.parentElement as Element
-
-        for (let elem of parent.children) {
-
-            if (elem != el) {
-                parent.removeChild(elem)
-                parent.prepend(elem)
-            }
-        }
-        */
-    }
 }
