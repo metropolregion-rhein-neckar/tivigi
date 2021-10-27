@@ -8,7 +8,7 @@ import Lines from '../Lines/Lines'
 import { AxisLabel, ChartData, SvgChartOptions } from '../chartUtil';
 
 
-import WithRender from './SvgChart.html';
+import WithRender from './SvgMultiStackChart.html';
 
 @WithRender
 @Component({
@@ -20,7 +20,7 @@ import WithRender from './SvgChart.html';
         StackedBars
     }
 })
-export default class SvgChart extends Vue {
+export default class SvgMultiStackChart extends Vue {
 
     //############ BEGIN Props #############
     @Prop({

@@ -1,5 +1,6 @@
 <g>
   <g class="SvgChart__Bars" v-for="(dataset,datasetIndex) of data.datasets">
+    <!-- TODO: Bar height: What if y axis starts somewhere higher than 0 ?-->
     <rect v-for="(point,pointIndex) in dataset.points" :data-tooltip="getTooltip(dataset,point)" :x="getX(point, datasetIndex) + 1" :y="getY(point.y)" :style="getStyle(dataset)" :width="getBarWidth() - 2" :height="Math.abs(w2sY(point.y))" />
   </g>
 </g>

@@ -42,7 +42,16 @@ export default  class AbstractChartElement extends Vue {
 
 
     get parent() : SvgChart {
-        return this.$parent as SvgChart        
+
+        let parent = this.$parent
+
+        while (!(parent instanceof SvgChart)) {
+            parent = parent.$parent
+
+            // TODO: Loop break condition?
+        }
+
+        return parent as SvgChart        
     }
 
     

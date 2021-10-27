@@ -5,7 +5,6 @@ import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './StackedBars.html';
-import { getHeight } from 'ol/extent';
 
 
 @WithRender
@@ -93,6 +92,7 @@ export default class StackedBars extends AbstractChartElement {
             min = Math.min(min, negative)
         }
         
+        console.log(max)
 
         // Send min/max to parent:        
         this.parent.overrideMinMax(min, max)
