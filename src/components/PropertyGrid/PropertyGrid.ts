@@ -91,7 +91,7 @@ export default class PropertyGrid extends Vue {
                 }
             }
         }
-   
+        console.log(type)
 
         switch (type) {
             case 'email': {
@@ -121,9 +121,22 @@ export default class PropertyGrid extends Vue {
                 break;
             }
 
-
+            
             case 'url': {
                 return '<a href="' + this.urlHrefString(this.value[key]) + '" target="new" title="Webseite in neuem Tab öffnen">' + this.urlLabelString(this.value[key]) + '</a>'
+                break;
+            }
+            case 'url-list':{
+                let values: Array<string> = this.value[key].split(',')
+                let result: string = ""
+
+                for(let url of values){
+
+                    result += '<a href="' + this.urlHrefString(url) + '" target="new" title="Webseite in neuem Tab öffnen">' + this.urlLabelString(url) + '</a>, '
+
+                }
+
+                return result.substring(0, result.length - 2);
                 break;
             }
 

@@ -303,6 +303,7 @@ $minitoolbar_button_bgcolor_active: #ccc;
     a {
         white-space: pre-wrap;
         overflow-wrap: break-word;
+        word-break: break-all;
     }
 
     th {
