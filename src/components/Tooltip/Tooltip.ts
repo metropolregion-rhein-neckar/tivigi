@@ -15,8 +15,7 @@ export default class Tooltips extends Vue {
     x = 0
     y = 0
 
-    prevX = 0
-    prevY = 0
+  
 
     show = false
 
@@ -25,16 +24,16 @@ export default class Tooltips extends Vue {
     timeout_show = 0
 
 
-    get dynamicStyle(): any {
+    getDynamicStyle(): any {
 
         let top = 0
         let left = 0
 
-        let el = this.$el as HTMLElement
+        let tooltipElement = this.$el as HTMLElement
 
-        if (el != null) {
-            top = this.y - el.offsetHeight - 10
-            left = this.x - el.offsetWidth / 2
+        if (tooltipElement != null) {
+            top = this.y - tooltipElement.offsetHeight - 10
+            left = this.x - tooltipElement.offsetWidth / 2
         }
 
         return {
@@ -48,53 +47,43 @@ export default class Tooltips extends Vue {
     beforeDestroy() {
         window.removeEventListener("mousemove", this.onMouseMove)
         window.removeEventListener("scroll", this.onScroll)
-
     }
 
 
     mounted() {
         window.addEventListener("mousemove", this.onMouseMove)
         window.addEventListener("scroll", this.onScroll)
-
     }
 
 
     onMouseMove(evt: MouseEvent) {
 
-        let dx = evt.clientX - this.prevX
-        let dy = evt.clientY - this.prevY
-
-        let dist = Math.sqrt(dx * dx + dy * dy)
-
-        this.prevX = evt.clientX
-        this.prevY = evt.clientY
-
-
+        // Update tooltip position:
         this.x = evt.clientX
         this.y = evt.clientY
 
-
         let element : HTMLElement|null = evt.target as HTMLElement
 
-        let tta = null
+        let text = null
 
-        while (tta == null && element != null) {
-            tta = element.getAttribute("data-tooltip")
+        while (text == null && element != null) {
+            text = element.getAttribute("data-tooltip")
 
             element = element.parentElement
         }
 
-        if (tta == null) {
+        if (text == null) {
             this.show = false
         }
         else {
-            this.tooltipText = tta
+            this.tooltipText = text
             this.show = true
         }
     }
 
 
     onScroll(evt: Event) {
+        
         window.clearTimeout(this.timeout_show)
         window.clearTimeout(this.timeout_hide)
         this.show = false

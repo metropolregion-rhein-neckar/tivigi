@@ -4,7 +4,7 @@
     <thead>
       <tr>
         <th v-for="(field,index) in displayData.fields">
-          <button @click="onHeaderCellClick(index)" :data-tooltip='"Nach <strong>" + field.label + "</strong> sortieren"'>
+          <button @click="onHeaderCellClick(index)" :data-tooltip='"Sortieren nach: <strong>" + field.label + "</strong>"'>
 
             <!-- NOTE: Depending on whether the text alignment of the field is left or not (e.g. right or center),
             we put the order icon either *in front of* or *behind* the text label: -->
