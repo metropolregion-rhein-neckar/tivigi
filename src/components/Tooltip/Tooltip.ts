@@ -32,9 +32,9 @@ export default class Tooltips extends Vue {
 
         let el = this.$el as HTMLElement
 
-        if (el != null) {            
+        if (el != null) {
             top = this.y - el.offsetHeight - 10
-            left = this.x - el.offsetWidth / 2        
+            left = this.x - el.offsetWidth / 2
         }
 
         return {
@@ -48,19 +48,19 @@ export default class Tooltips extends Vue {
     beforeDestroy() {
         window.removeEventListener("mousemove", this.onMouseMove)
         window.removeEventListener("scroll", this.onScroll)
- 
+
     }
 
 
     mounted() {
         window.addEventListener("mousemove", this.onMouseMove)
         window.addEventListener("scroll", this.onScroll)
-    
+
     }
 
 
     onMouseMove(evt: MouseEvent) {
-    
+
         let dx = evt.clientX - this.prevX
         let dy = evt.clientY - this.prevY
 
@@ -74,11 +74,17 @@ export default class Tooltips extends Vue {
         this.y = evt.clientY
 
 
-        let target = evt.target as HTMLElement
+        let element : HTMLElement|null = evt.target as HTMLElement
 
-        let tta = target.getAttribute("data-tooltip")
+        let tta = null
 
-        if (tta == null) {            
+        while (tta == null && element != null) {
+            tta = element.getAttribute("data-tooltip")
+
+            element = element.parentElement
+        }
+
+        if (tta == null) {
             this.show = false
         }
         else {
