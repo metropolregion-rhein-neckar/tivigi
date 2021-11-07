@@ -26,4 +26,5 @@ export class SvgChartOptions {
 export class SvgChartDatasetStyle {
     color : string|undefined = "#000"
     strokeDasharray : string|undefined = "0"
+    lineType = "line"
 }

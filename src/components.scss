@@ -391,6 +391,7 @@ g.SvgChart__Lines {
         fill: none;
     }
 
+    line,
     path,
     circle {
         stroke-width: 3;
@@ -408,8 +409,9 @@ g.SvgChart__Lines {
     }
 
     &:hover {
-        > path,
-        circle {
+         path,
+         line,
+         circle {
             stroke-width: 5;
         }
     }

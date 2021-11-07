@@ -1,24 +1,28 @@
 <g>
 
-    <g class="SvgChart__Lines" v-for="dataset of data.datasets">
+    <g class="SvgChart__Lines" v-for="(dataset, datasetIndex) of data.datasets">
+
+        <!-- The chart line path: -->
+
+        <!-- Bars: -->
+        <!-- TODO: Bar height: What if y axis starts somewhere higher than 0 ?-->
+        <rect v-if="getLineType(dataset) == 'bars'" v-for=" (point,pointIndex) in dataset.points" :data-tooltip="getTooltip(dataset,point)" :x="getX(point, datasetIndex) + 1" :y="getY(point.y)" :style="getStyle(dataset)" :width="barWidth" :height="Math.abs(w2sY(point.y))" />
+
+
+        <path v-if="getLineType(dataset) == 'line'" :d="getPath(dataset)" :style="getLineStyle(dataset)" :data-tooltip="dataset.label" />
         <!-- Colored area under the chart line path: -->
         <!--
         <polygon class="SvgChart__Lines__Area" :points="getPolygonUnderLine(dataset)" />
         -->
 
-        <!-- The chart line path: -->
-        <path :d="getPath(dataset)" :style="getLineStyle(dataset)" :data-tooltip="dataset.label" /> />
-
-
-
-        <!-- Circles on data points: -->
-        <g v-for="(point,index) in dataset.points" ref="point">
+        <!--############### BEGIN Circles on data points ############### -->
+        <g v-if="getLineType(dataset) == 'line'" v-for=" (point,index) in dataset.points" ref="point">
 
             <!-- The actually visible circle: -->
-            <circle class="SvgChart__Lines__Dot" :cx="w2sX(point.x)" :cy="w2sY(point.y)" 
             
+            <circle class="SvgChart__Lines__Dot" :cx="w2sX(point.x)" :cy="w2sY(point.y)" 
             :r="getCircleRadius(dataset)" :style="getCircleStyle(dataset)" :data-tooltip="getTooltip(dataset, point)" />
-
+            
             <!-- Place a larger invisible circle for pointer interaction  (hover events) around the actually drawn circle: -->
             <!-- ATTENTION: If the distance between two points is so small that the sensitive areas of two or more points 
                 overlap, it can be difficult or impossible to hit the covered point(s) with the cursor.
@@ -28,12 +32,23 @@
                 the current cursor position would count as selected. However, this is a bit complicated to solve, especially
                 of multiple <Lines> components are involved.
             -->
-            
+
             <!--
             <circle :cx="w2sX(point.x)" :cy="w2sY(point.y)" :r="getCircleRadius(dataset) + 7" style="fill:#fff;stroke:#000" 
             :data-tooltip="getTooltip(dataset, point)" />
             -->
         </g>
+        <!--############### END Circles on data points ############### -->
+
+
+        <!--############### BEGIN Crosses on data points ############### -->
+        <g v-if="getLineType(dataset) == 'crosses'" v-for="(point,index) in dataset.points" ref="point">
+
+            <line :x1="w2sX(point.x) - crossSize" :y1="w2sY(point.y) - crossSize" :x2="w2sX(point.x) + crossSize" :y2="w2sY(point.y) + crossSize" :style="getCircleStyle(dataset)" />
+            <line :x1="w2sX(point.x) - crossSize" :y1="w2sY(point.y) + crossSize" :x2="w2sX(point.x) + crossSize" :y2="w2sY(point.y) - crossSize" :style="getCircleStyle(dataset)" />
+
+        </g>
+        <!--############### END Crosses on data points ############### -->
     </g>
 
 </g>

@@ -92,8 +92,7 @@ export default class StackedBars extends AbstractChartElement {
             min = Math.min(min, negative)
         }
         
-        console.log(max)
-
+        
         // Send min/max to parent:        
         this.parent.overrideMinMax(min, max)
 
@@ -127,7 +126,4 @@ export default class StackedBars extends AbstractChartElement {
         // all bars are shifted 1 step to the left
         return this.w2sX(x + 1) - (this.barWidth / 2)
     }
-
-
-
 }

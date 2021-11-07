@@ -19,12 +19,31 @@ export default class Lines extends AbstractChartElement {
     }
 
 
+    crossSize = 7
+    barWidth = 15
 
     mounted() {
         
         this.prepareData()
     }
 
+
+    getLineType(dataset : Dataset) : string {
+        
+        if (dataset.style == undefined) {
+            return "line"
+        }
+
+        //@ts-ignore
+
+        let result = dataset.style.lineType
+
+        if (result == undefined) {
+            result = "line"
+        }
+
+        return result
+    }
 
 
     getCircleRadius(dataset: Dataset): number {
@@ -52,14 +71,14 @@ export default class Lines extends AbstractChartElement {
 
         let strokeColor = "#000"
 
-        if (dataset.style.color) {
+        if (dataset.style != undefined && dataset.style.color) {
             strokeColor = dataset.style.color
         }
 
         return {
             "--color": strokeColor,
             "--color-hover": strokeColor,
-            "stroke": strokeColor,
+            "stroke": strokeColor,            
             "fill-hover": strokeColor
         }
     }
@@ -82,6 +101,26 @@ export default class Lines extends AbstractChartElement {
         }
     }
 
+    // For bars:
+    getStyle(dataset: Dataset): any {
+
+        let color = "#000"
+
+        if (dataset.style.color) {
+            color = dataset.style.color
+        }
+
+        return {
+            "fill": color,
+            "--color": color
+        }
+    }
+
+
+    // For bars:
+    getX(point: DataPoint, index: number): number {
+        return this.w2sX(point.x) - (this.barWidth / 2)// + (index * this.barWidth)
+    }
 
     getPath(dataset: Dataset): string {
         let result = ""
@@ -103,6 +142,18 @@ export default class Lines extends AbstractChartElement {
 
 
         return result
+    }
+
+
+    // For bars:
+    getY(value: number): number {
+
+        if (value >= 0) {
+            return this.w2sY(value)
+        }
+        else {
+            return this.w2sY(0)
+        }
     }
 
 

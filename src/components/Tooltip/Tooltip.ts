@@ -39,7 +39,7 @@ export default class Tooltips extends Vue {
         return {
             "left": left + "px",
             "top": top + "px",
-            "opacity": this.show && this.tooltipText != "" ? '1' : '0'
+            "opacity": this.show && this.tooltipText != "" ? '1' : '0'            
         }
     }
 
