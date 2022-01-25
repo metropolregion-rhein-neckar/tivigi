@@ -51,7 +51,7 @@ select {
 }
 
 .padded {
-    padding: 14px;
+    padding: 15px;
 }
 
 //###################### BEGIN Cursor classes ######################
@@ -433,14 +433,6 @@ g.SvgChart__Axis__X {
         fill: #666;
         text-anchor: middle;
     }
-}
-
-
-line.SvgChart__Axis__X--Zero {
-    
-    stroke-dasharray: none !important;
-    stroke-width: 1 !important;
-    stroke:#444 !important;
 }
 
 g.SvgChart__Axis__Y {
