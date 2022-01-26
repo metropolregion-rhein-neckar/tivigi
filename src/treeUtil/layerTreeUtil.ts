@@ -9,6 +9,7 @@ import { LayerTreeNodeData } from 'tivigi/src/treeUtil/LayerTreeNodeData'
 export enum LayerTreeNodeType {
     WMS_CAPABILITIES = "wms-capabilities",
     WFS_CAPABILITIES = "wfs-capabilities",
+    WMS_STATISTICS = "wms-statistics",
     GEOJSON = "geojson"
 }
 

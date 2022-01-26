@@ -32,7 +32,7 @@ export default class Tooltips extends Vue {
         let tooltipElement = this.$el as HTMLElement
 
         if (tooltipElement != null) {
-            top = Math.max(0, this.y - tooltipElement.offsetHeight - 10)
+            top = Math.max(0, this.y - tooltipElement.offsetHeight - 20)
             left = Math.max(0, this.x - tooltipElement.offsetWidth / 2)
         }
 

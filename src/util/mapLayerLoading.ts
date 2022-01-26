@@ -31,6 +31,7 @@ import { quantilesStyleFactory } from 'tivigi/src/olVectorLayerStyling/quantiles
 import { manualClassificationStyleFactory } from 'tivigi/src/olVectorLayerStyling/manualClassificationStyle'
 import { createWfsLayerFromCapabilities, getWfs100UrlFunction } from 'tivigi/src/util/wfsFunctions'
 import { FilterableVectorSource } from 'tivigi/src/util/FilterableVectorSource'
+import BaseEvent from 'ol/events/Event'
 
 
 
@@ -594,6 +595,8 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
         case "wms-capabilities": {
 
+            console.log(layerConfig.capabilities)
+
             layer = createWmsLayerFromCapabilities(layerConfig.capabilities)
 
 
@@ -606,7 +609,72 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
             }
             break;
         }
+        case "wms-statistics":{
+            layer = createWmsLayerFromCapabilities(layerConfig.capabilities)
 
+
+            if (layer != null) {
+
+
+                let style: any = tryToRead(layerConfig, "style", undefined)
+                let source: any = layer.getSource()
+
+                if(style != undefined){
+                    // check for attributModifiers in layerConfig, if available overwrite styleString
+                    let attributes = tryToRead(layerConfig.style, "attributes", undefined)
+
+                    if (!(attributes instanceof Array)) {
+                        attributes = Array<string>()
+                    }
+
+                    //################### BEGIN Backward-compatibility fallback ######################
+                    let attribute = tryToRead(layerConfig.style, "attribute", undefined);
+                    let attributeModifiers = tryToRead(layerConfig.style, "attributeModifiers", undefined);
+
+                    if (attribute != undefined && attributeModifiers instanceof Array) {
+
+                        for (let a of attributeModifiers) {
+                            attributes.push(attribute + "_" + a)
+                        }
+                    }
+                    //#################### END Backward-compatibility fallback ######################
+                    
+                    if (attributes.length > 0) {
+                        layer.set("attribute", attributes[0])
+                        source.updateParams({"STYLES":attributes[0]})
+                    }
+
+                    layer.set("attributes", attributes)
+                    //#################### BEGIN On source change, recalculate quantiles and update legend ##################
+                    let onSourceChange = function (e: BaseEvent) {
+
+                        if (source.getState() != 'ready') {
+                            return
+                        }
+                        // Recalculate quantiles:
+                        let styleString: string = layer!.get('attribute')
+                        source.updateParams({"STYLES":styleString})
+
+                        // Update legend:
+                        async_loadWmsLegend(layer!)
+                    }
+                //############# BEGIN Create source object ##############
+
+                source.on('change', onSourceChange)
+                //#################### END On source change, recalculate quantiles and update legend ##################
+
+                }
+
+                if (layerConfig.legend_url == undefined) {
+                    async_loadWmsLegend(layer)
+                }
+                console.log(layer)
+            }
+
+
+            break;
+
+        }
 
         case "wms-tiled": {
 
