@@ -41,7 +41,7 @@ export default class PropertyGrid extends Vue {
                 blubb = entry.trim()
             }
 
-            if (blubb == "" || blubb == null || blubb == undefined) {
+            if (blubb === "" || blubb === null || blubb === undefined) {
                 continue
             }
 
