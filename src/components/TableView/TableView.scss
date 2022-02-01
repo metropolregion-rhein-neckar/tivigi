@@ -13,41 +13,73 @@ div.TableView {
             padding: 0;
             top:0;
             position:sticky;
+            height:100%;
+         
+            tr {
+                height:100%;
+            }
 
             th {
                 padding: 0;
+                background-color: #ddd;
+                border-right: 1px solid #bbb;
+                height:100%;
                 
+                // ATTENTION: Setting the height to 0em seems strange (and it is),
+                // but it isn't actually rendered like that, and is appears that setting the
+                // height to *any* explicit value (could as well be  e.g. '1em') is required
+                // for the "height:100%" setting for the nested <button> to take effect.
+                
+                //height: 0em !important;
+
                 button {
-                    background-color: #ddd;
+                    background-position: right 4px center;
+                    background-size:0.8em;
+                    background-repeat: no-repeat;
+                    
+                   
+                 
+                   background-color: transparent;
                     font-size:14px;
                     display: block;
+                    
                     font-weight: bold;
                     color: #444;
                     margin: 0;
                     padding: 6px;
+                    // Space for the sort icon:
+                    padding-right:22px;
                     border: none;
-                    border-right: 1px solid #bbb;
+                    //border:1px solid #000;
+                    
 
-                    display: block;
+                    
                     width: 100%;
+                    
+                    height:100%;
+                    
                     text-align: left;
-                    white-space: nowrap;
+                    //white-space: nowrap;
 
+                    /*
                     img {
                         transition: 0.4s;
                         height: 0.8em;
                         margin-left: 4px;
                     }
+                    */
+                 
+                }
 
-                    &:hover {
-                        background-color: #ccc;
-                    }
+                
+                &:hover {
+                    background-color: #c0c0c0;
                 }
 
                 &:last-child {
-                    button {
+                    
                         border-right: none;
-                    }
+                    
                 }
             }
         }

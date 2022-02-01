@@ -99,6 +99,34 @@ export default class TableView extends Vue {
     }
 
 
+    getButtonStyle(index : number) {
+
+        
+        let imageUrl = "tivigi/img/arrow_down2.svg"
+        let size = 0
+
+        if (this.currentSortFieldIndex == index) {
+
+            imageUrl = "tivigi/img/arrow_down2.svg"
+            size = 0.8
+
+            if (this.sortAscending == -1) {
+                
+                imageUrl = "tivigi/img/arrow_up2.svg"
+            }
+
+            // NOTE: If sortAscending != -1, the returned object is empty, 
+            // i.e. no special styles are assigned. This is correct.
+        }
+
+
+        return {
+        //    "border": "1px solid #000",
+            "background-image": `url(${imageUrl})`,
+            "background-size": size + "em"
+        }
+    }
+
     created() {
         this.onDataChange()
     }
