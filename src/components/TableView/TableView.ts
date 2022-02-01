@@ -121,7 +121,7 @@ export default class TableView extends Vue {
 
 
         return {
-        //    "border": "1px solid #000",
+            
             "background-image": `url(${imageUrl})`,
             "background-size": size + "em"
         }
@@ -132,8 +132,7 @@ export default class TableView extends Vue {
     }
 
 
-    onHeaderCellClick(index: number) {
-        console.log("click")
+    onHeaderCellClick(index: number) {      
 
         if (index == this.currentSortFieldIndex) {
             this.sortAscending = -this.sortAscending
@@ -144,6 +143,13 @@ export default class TableView extends Vue {
         this.sortBy(this.data.fields[index])
     }
 
+    onKeyPress(index : number, event : KeyboardEvent) {
+        
+
+        if (event.code == "Space" || event.code == "Enter") {
+            this.onHeaderCellClick(index)
+        }
+    }
 
     onRowClick(row : any) {
         this.selectedRow = row

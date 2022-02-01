@@ -1,43 +1,71 @@
 div.TableView {
-    
-    overflow:auto;
-    
-    font-size:15px;
+    overflow: auto;
+
+    font-size: 15px;
     table {
         border-collapse: collapse;
-        
+
         width: 100%;
 
         thead {
             margin: 0;
             padding: 0;
-            top:0;
-            position:sticky;
+            top: 0;
+            position: sticky;
+
+            /*
             height:100%;
          
             tr {
                 height:100%;
             }
+            */
 
             th {
                 padding: 0;
                 background-color: #ddd;
-                border-right: 1px solid #bbb;
-                height:100%;
-                
+
                 // ATTENTION: Setting the height to 0em seems strange (and it is),
                 // but it isn't actually rendered like that, and is appears that setting the
                 // height to *any* explicit value (could as well be  e.g. '1em') is required
                 // for the "height:100%" setting for the nested <button> to take effect.
-                
-                //height: 0em !important;
 
+                background-position: right 4px center;
+                background-size: 0.8em;
+                background-repeat: no-repeat;
+
+                height: 100%;
+                //vertical-align: top;
+
+                font-size: 14px;
+
+                font-weight: bold;
+                color: #444;
+                margin: 0;
+                padding: 6px;
+                // Space for the sort icon:
+                padding-right: 22px;
+                border: none;
+                //   border:1px solid #000;
+
+                user-select: none;
+
+                text-align: left;
+                //white-space: nowrap;
+
+                border-right: 1px solid #bbb;
+
+                background-position: right 4px center;
+                //background-position: right 4px top 8px;
+                background-size: 0.8em;
+                background-repeat: no-repeat;
+                /*
                 button {
                     background-position: right 4px center;
                     background-size:0.8em;
                     background-repeat: no-repeat;
                     
-                   
+                   height:100%;
                  
                    background-color: transparent;
                     font-size:14px;
@@ -50,7 +78,7 @@ div.TableView {
                     // Space for the sort icon:
                     padding-right:22px;
                     border: none;
-                    //border:1px solid #000;
+                    border:1px solid #000;
                     
 
                     
@@ -61,25 +89,18 @@ div.TableView {
                     text-align: left;
                     //white-space: nowrap;
 
-                    /*
-                    img {
-                        transition: 0.4s;
-                        height: 0.8em;
-                        margin-left: 4px;
-                    }
-                    */
+                  
                  
                 }
+                */
 
-                
                 &:hover {
                     background-color: #c0c0c0;
+                    cursor: pointer;
                 }
 
                 &:last-child {
-                    
-                        border-right: none;
-                    
+                    border-right: none;
                 }
             }
         }
@@ -102,8 +123,6 @@ div.TableView {
     }
 }
 
-
 tr.TableView3__SelectedRow {
-    background-color:#bbb;
-
+    background-color: #bbb;
 }

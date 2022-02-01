@@ -3,15 +3,43 @@
 
     <thead>
       <tr>
+
+
+        <template v-for="(field,index) in displayData.fields">
+
+
+
+          <th @keydown="onKeyPress(index, $event)" @click="onHeaderCellClick(index)" tabindex="0" v-html="field.shortLabel" 
+          :data-tooltip='"Sortieren nach: <strong>" + field.label + "</strong>"' :style="getButtonStyle(index)">
+          </th>
+
+
+        </template>
+
+        <!--
+        <template v-for="(field,index) in displayData.fields">
+          <th>
+
+
+            <button v-html="field.shortLabel" @click="onHeaderCellClick(index)" :style="getButtonStyle(index)" :data-tooltip='"Sortieren nach: <strong>" + field.label + "</strong>"'>
+
+            </button>
+
+          </th>
+        </template>
+
+      -->
+        <!--
         <th v-for="(field,index) in displayData.fields">
 
-          <!-- ATTENTION: We use "v-html" here instead of {{text}} in order to 
-          enable parsing of text elements like e.g. the soft hyphen "&shy;" for invisible word break points. -->
+        
+        
           <button v-html="field.shortLabel" @click="onHeaderCellClick(index)" :style="getButtonStyle(index)" :data-tooltip='"Sortieren nach: <strong>" + field.label + "</strong>"'>
 
           </button>
-
+-->
         </th>
+
       </tr>
     </thead>
 
