@@ -74,6 +74,7 @@ export class LayerTreeNodeData extends TreeNodeData {
             //######## BEGIN if layer does not yet exist in the map, load it ##########
             switch (this.dataChild.layerconfig.type) {
                 case LayerTreeNodeType.WMS_CAPABILITIES:
+                case LayerTreeNodeType.WMS_STATISTICS:
                 case LayerTreeNodeType.WFS_CAPABILITIES: {
 
                     proxyfetch(this.dataChild.layerconfig.baseUrl).then((response) => {
