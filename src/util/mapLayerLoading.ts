@@ -28,6 +28,8 @@ import { tryToRead } from 'tivigi/src/util/tryToRead'
 import { vectorPointStyleFactory } from 'tivigi/src/olVectorLayerStyling/miscStyleFunctions'
 import { multiStyleFunctionFactory, addStyleFunctionToLayer } from 'tivigi/src/olVectorLayerStyling/styleUtils'
 import { quantilesStyleFactory } from 'tivigi/src/olVectorLayerStyling/quantilesStyle'
+import { jenksStyleFactory} from 'tivigi/src/olVectorLayerStyling/jenksStyle'
+import { statisticsStyleFactory } from 'tivigi/src/olVectorLayerStyling/statisticsStyle'
 import { manualClassificationStyleFactory } from 'tivigi/src/olVectorLayerStyling/manualClassificationStyle'
 import { createWfsLayerFromCapabilities, getWfs100UrlFunction } from 'tivigi/src/util/wfsFunctions'
 import { FilterableVectorSource } from 'tivigi/src/util/FilterableVectorSource'
@@ -529,8 +531,126 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
                 layer.set("attribute", attributes[0])
 
                 // Quantiles style:
+                let statisticsStyleFunction = statisticsStyleFactory(layer as ol_layer.Vector, layerConfig.style);
+                addStyleFunctionToLayer(vectorLayer, "statistics", statisticsStyleFunction)
+            }
+
+            layer.set("attributes", attributes)
+
+
+
+            let labelTemplate = tryToRead(layerConfig, "tooltipTemplate", "<<ATTRIBUTE>>")
+            layer.set('tooltipTemplate', labelTemplate)
+
+            //addStyleFunctionToLayer(vectorLayer, "hover", hoverStyleFunction)
+
+            //############## END Set available styling attributes and initially active styling attribute #############
+
+            break;
+        }
+        case "geojson-quantiles": {
+
+            // ATTENTION: 
+            // For the statistics layers, we MUST load all features at once! NO partial loading based on map extent!
+            // This means, no WFS, at least not with the bounding box loading strategy!
+            // This is required to make sure that the statistical values for e.g. styling are calculated correctly!
+
+            layer = createGeoJsonLayerFromConfig(layerConfig, projection)
+
+            let vectorLayer = layer as ol_layer.Vector
+
+            // Apply multi-style function to the layer.
+            // This will merge all style functions in the array layer.get('stylefunctions'):
+            let multiStyleFunction = multiStyleFunctionFactory(vectorLayer);
+            vectorLayer.setStyle(multiStyleFunction)
+
+
+            //############## BEGIN Set available styling attributes and initially active styling attribute #############
+
+            let attributes = tryToRead(layerConfig.style, "attributes", undefined)
+
+            if (!(attributes instanceof Array)) {
+                attributes = Array<string>()
+            }
+
+            //################### BEGIN Backward-compatibility fallback ######################
+            let attribute = tryToRead(layerConfig.style, "attribute", undefined);
+            let attributeModifiers = tryToRead(layerConfig.style, "attributeModifiers", undefined);
+
+            if (attribute != undefined && attributeModifiers instanceof Array) {
+
+                for (let a of attributeModifiers) {
+                    attributes.push(attribute + "_" + a)
+                }
+            }
+            //#################### END Backward-compatibility fallback ######################
+
+
+            if (attributes.length > 0) {
+                layer.set("attribute", attributes[0])
+
+                // Quantiles style:
                 let quantilesStyleFunction = quantilesStyleFactory(layer as ol_layer.Vector, layerConfig.style);
                 addStyleFunctionToLayer(vectorLayer, "quantiles", quantilesStyleFunction)
+            }
+
+            layer.set("attributes", attributes)
+
+
+
+            let labelTemplate = tryToRead(layerConfig, "tooltipTemplate", "<<ATTRIBUTE>>")
+            layer.set('tooltipTemplate', labelTemplate)
+
+            //addStyleFunctionToLayer(vectorLayer, "hover", hoverStyleFunction)
+
+            //############## END Set available styling attributes and initially active styling attribute #############
+
+            break;
+        }
+        case "geojson-jenks": {
+
+            // ATTENTION: 
+            // For the statistics layers, we MUST load all features at once! NO partial loading based on map extent!
+            // This means, no WFS, at least not with the bounding box loading strategy!
+            // This is required to make sure that the statistical values for e.g. styling are calculated correctly!
+
+            layer = createGeoJsonLayerFromConfig(layerConfig, projection)
+
+            let vectorLayer = layer as ol_layer.Vector
+
+            // Apply multi-style function to the layer.
+            // This will merge all style functions in the array layer.get('stylefunctions'):
+            let multiStyleFunction = multiStyleFunctionFactory(vectorLayer);
+            vectorLayer.setStyle(multiStyleFunction)
+
+
+            //############## BEGIN Set available styling attributes and initially active styling attribute #############
+
+            let attributes = tryToRead(layerConfig.style, "attributes", undefined)
+
+            if (!(attributes instanceof Array)) {
+                attributes = Array<string>()
+            }
+
+            //################### BEGIN Backward-compatibility fallback ######################
+            let attribute = tryToRead(layerConfig.style, "attribute", undefined);
+            let attributeModifiers = tryToRead(layerConfig.style, "attributeModifiers", undefined);
+
+            if (attribute != undefined && attributeModifiers instanceof Array) {
+
+                for (let a of attributeModifiers) {
+                    attributes.push(attribute + "_" + a)
+                }
+            }
+            //#################### END Backward-compatibility fallback ######################
+
+
+            if (attributes.length > 0) {
+                layer.set("attribute", attributes[0])
+
+                // Quantiles style:
+                let jenksStyleFunction = jenksStyleFactory(layer as ol_layer.Vector, layerConfig.style);
+                addStyleFunctionToLayer(vectorLayer, "jenks", jenksStyleFunction)
             }
 
             layer.set("attributes", attributes)

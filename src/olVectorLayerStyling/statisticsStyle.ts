@@ -9,11 +9,11 @@ import BaseEvent from 'ol/events/Event'
 import { ColorRGBA } from 'tivigi/src/util/ColorRGBA'
 import { tryToRead } from 'tivigi/src/util/tryToRead'
 
-import {makeStatisticLayerLegend, computeQuantiles, computeJenks,
+import {makeStatisticLayerLegend, computeQuantiles, computeJenks, 
         assignStyleToFeature, createColorRamp} from 'tivigi/src/olVectorLayerStyling/statisticStyleUtils'
 
 
-export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any = {}): StyleFunction {
+export function statisticsStyleFactory(layer: ol_layer.Vector, styleConfig: any = {}): StyleFunction {
 
     //############# BEGIN Try to read style parameters from config ############         
 
@@ -57,8 +57,13 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
 
         // Recalculate quantiles:
         quantiles = computeQuantiles(layer, numQuantiles)
+        // try quantiles else use jenks
+        if(quantiles[0] == quantiles[1]){
+            
+            quantiles = computeJenks(layer, numQuantiles + 1)
+        }
+        
 
-        console.log(quantiles)
         // Update legend:
         let legend = makeStatisticLayerLegend(quantiles, colors, noDataColor, lineColor, lineWidth)
 
@@ -70,7 +75,7 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
 
 
 
-    let quantilesStyleFunction = function (feature: any): ol_style.Style[] {
+    let statisticsStyleFunction = function (feature: any): ol_style.Style[] {
 
         let actualLineWidth = lineWidth
 
@@ -82,6 +87,10 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
         if (quantiles == undefined) {
             quantiles = computeQuantiles(layer, numQuantiles)
 
+            if(quantiles[0] == quantiles[1]){
+                // try quantiles else use jenks
+                quantiles = computeJenks(layer, numQuantiles + 1)
+            }
         }
 
         // ATTENTION: When quantilesStylesFactory() is called, the features are not loaded yet. The HTTP request to
@@ -117,7 +126,7 @@ export function quantilesStyleFactory(layer: ol_layer.Vector, styleConfig: any =
     };
 
 
-    return quantilesStyleFunction
+    return statisticsStyleFunction
 }
 
 
