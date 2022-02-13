@@ -49,3 +49,11 @@ export function formatNumberString(value: number, numDecimals: number = 0, decim
   
     return result;
 }
+
+
+
+
+
+export function zeroPad(num :number, places : number) {
+    return String(num).padStart(places, '0')
+} 
