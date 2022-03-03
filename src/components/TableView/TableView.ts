@@ -66,13 +66,19 @@ export default class TableView extends Vue {
         return result
     }
 
+    getCellClass(field : FieldConfig, row : any) : any {
+      
+        return {         
+         "TableView__ClickableCell" : typeof field.onClickHandler == "function"
+        }
+    }
+
+
 
     getRowClass(row : any) : any {
-
       
-        return {
-         //   "TableView3__SelectedRow" : this.selectedRowIndex == rowIndex
-         "TableView3__SelectedRow" : this.selectedRow == row
+        return {         
+         "TableView__SelectedRow" : this.selectedRow == row
         }
     }
 
@@ -121,7 +127,7 @@ export default class TableView extends Vue {
 
 
         return {
-            
+            "cursor" : "pointer",
             "background-image": `url(${imageUrl})`,
             "background-size": size + "em"
         }
@@ -150,6 +156,18 @@ export default class TableView extends Vue {
             this.onHeaderCellClick(index)
         }
     }
+
+    onCellClick(field : FieldConfig, row: any) {
+
+        
+        
+        if (typeof field.onClickHandler == "function") {
+
+            field.onClickHandler(row)
+        }
+        
+    }
+
 
     onRowClick(row : any) {
         this.selectedRow = row

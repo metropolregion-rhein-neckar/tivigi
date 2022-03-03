@@ -13,17 +13,12 @@ div.TableView {
             top: 0;
             position: sticky;
 
-            /*
-            height:100%;
          
-            tr {
-                height:100%;
-            }
-            */
 
             th {
                 padding: 0;
                 background-color: #ddd;
+                
 
                 // ATTENTION: Setting the height to 0em seems strange (and it is),
                 // but it isn't actually rendered like that, and is appears that setting the
@@ -59,44 +54,11 @@ div.TableView {
                 //background-position: right 4px top 8px;
                 background-size: 0.8em;
                 background-repeat: no-repeat;
-                /*
-                button {
-                    background-position: right 4px center;
-                    background-size:0.8em;
-                    background-repeat: no-repeat;
-                    
-                   height:100%;
-                 
-                   background-color: transparent;
-                    font-size:14px;
-                    display: block;
-                    
-                    font-weight: bold;
-                    color: #444;
-                    margin: 0;
-                    padding: 6px;
-                    // Space for the sort icon:
-                    padding-right:22px;
-                    border: none;
-                    border:1px solid #000;
-                    
-
-                    
-                    width: 100%;
-                    
-                    height:100%;
-                    
-                    text-align: left;
-                    //white-space: nowrap;
-
-                  
-                 
-                }
-                */
+              
 
                 &:hover {
                     background-color: #c0c0c0;
-                    cursor: pointer;
+                 //   cursor: pointer;
                 }
 
                 &:last-child {
@@ -110,11 +72,13 @@ div.TableView {
             padding: 2px 4px;
         }
 
+
+        
         tbody {
             tr {
                 border-bottom: 1px solid #e5e5e5;
 
-                cursor: pointer;
+               // cursor: pointer;
                 &:hover {
                     background-color: #ccc;
                 }
@@ -123,6 +87,11 @@ div.TableView {
     }
 }
 
-tr.TableView3__SelectedRow {
+tr.TableView__SelectedRow {
     background-color: #bbb;
+}
+
+
+td.TableView__ClickableCell {
+    cursor:pointer;
 }
