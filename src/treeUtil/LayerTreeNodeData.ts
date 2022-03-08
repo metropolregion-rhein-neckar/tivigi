@@ -165,9 +165,10 @@ export class LayerTreeNodeData extends TreeNodeData {
 
 
     
-    filter(filter: string, filterMode: TreeNodeFilterMode): boolean {
+    /*
+    filter(filter: Function|undefined, filterMode: TreeNodeFilterMode): boolean {
 
-        if (filter == "") {
+        if (filter == undefined) {
             return true
         }
 
@@ -200,7 +201,7 @@ export class LayerTreeNodeData extends TreeNodeData {
 
         return result_baseClass || result_tags
     }
-
+    */
 
     onCapabilitiesResponseTextFulfilled = (responseText: string) => {
 

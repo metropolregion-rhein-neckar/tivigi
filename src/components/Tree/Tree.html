@@ -1,14 +1,14 @@
 <div class="Tree">
 
     <div class="Tree__Filter" v-if="showFilterInput">
-        <Superinput placeholder="Filter" v-model="filter" />
+        <Superinput placeholder="Filter" v-model="filterString" />
     </div>
 
-    <TreeNode v-if="showRootNode" class="Tree__Root" :node="rootNode" :filter="filter" :highlightFilterMatches="highlightFilterMatches" />
+    <TreeNode v-if="showRootNode" class="Tree__Root" :node="rootNode" :filter="getFilterFunc()" :highlightFilterMatches="highlightFilterMatches" />
 
     <ul v-else class="Tree__RootChildren">
         <li v-for="child in rootNode.children">
-            <TreeNode :node="child" :filter="filter" :highlightFilterMatches="highlightFilterMatches" />
+            <TreeNode :node="child" :filter="getFilterFunc()" :highlightFilterMatches="highlightFilterMatches" />
         </li>
     </ul>
 </div>

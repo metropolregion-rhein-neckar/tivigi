@@ -21,8 +21,8 @@ export default class TreeNode extends Vue {
     @Prop({ default: () => {return new TreeNodeData("Missing root node")} })
     node!: TreeNodeData
 
-    @Prop({ default: "" })
-    filter!: string
+    @Prop({ default: undefined })
+    filter!: Function|undefined
 
     @Prop({ default: false })
     showOverride!: boolean
@@ -33,8 +33,8 @@ export default class TreeNode extends Vue {
 
 
     get collapsed(): boolean {
-
-        if (this.filter == "") {
+        
+        if (this.filter == undefined) {
             return true
         }
 
@@ -46,13 +46,15 @@ export default class TreeNode extends Vue {
 
         return {
             "TreeNode": true,
-            "TreeNode--filter-match": this.filter != "" && this.match_node_only && this.highlightFilterMatches
+            "TreeNode--filter-match": this.filter != undefined && this.match_node_only && this.highlightFilterMatches
         }
     }
+
 
     get match_node_only(): boolean {
         return this.node.filter(this.filter, TreeNodeFilterMode.NODE_ONLY)
     }
+
 
     get match_node_or_child(): boolean {
         return this.node.filter(this.filter, TreeNodeFilterMode.NODE_OR_CHILD)

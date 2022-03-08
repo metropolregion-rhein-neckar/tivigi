@@ -2,7 +2,8 @@
 
     <Collapsible v-if="node.children.length > 0" :collapsed="collapsed" :title="node.label">
         <ul class="TreeNode__Children">
-            <TreeNode v-for="child in node.children" :node="child" :filter="filter" :highlightFilterMatches="highlightFilterMatches" :showOverride="match_node_only || showOverride" />
+            <TreeNode v-for="child in node.children" :node="child" :filter="filter" 
+            :highlightFilterMatches="highlightFilterMatches" :showOverride="match_node_only || showOverride" />
         </ul>
     </Collapsible>
 

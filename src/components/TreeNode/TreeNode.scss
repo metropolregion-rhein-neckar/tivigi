@@ -7,6 +7,10 @@ div.TreeNode {
     // 1 px is enough though.
     padding-right:10px;
 
+    button {
+        padding:1px 0px;
+    }
+
     .Collapsible__Header > button > span {
         color: #000;
         font-weight: normal;

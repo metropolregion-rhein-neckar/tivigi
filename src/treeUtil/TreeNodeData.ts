@@ -39,23 +39,16 @@ export class TreeNodeData {
         }
     }
 
-    cleanString(s: string): string {
+   
 
-        if (s == undefined) {
-            return ""
-        }
+    filter(filter: Function | undefined, filterMode: TreeNodeFilterMode): boolean {
 
-        return s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-    }
-
-
-    filter(filter: string, filterMode: TreeNodeFilterMode): boolean {
-
-        if (filter == "") {
+        if (filter == undefined) {
             return true
         }
 
         //######################## BEGIN Check node itself #######################
+        /*
         let result_node = true
 
         let filter_pieces = filter.split(' ')
@@ -78,13 +71,18 @@ export class TreeNodeData {
             return result_node
         }
         //######################## END Check node itself #######################
+        */
+        let result_node = filter(this)
 
+        if (filterMode == TreeNodeFilterMode.NODE_ONLY || this.children.length == 0) {
+            return result_node
+        }
 
         //######################## BEGIN Check children #######################
         let result_children = false
-        
+
         // Check subtree recursively:
-        for (let child of this.children) {
+        for (const child of this.children) {
             if (child.filter(filter, filterMode)) {
                 result_children = true
                 break
@@ -100,7 +98,7 @@ export class TreeNodeData {
         return result_node || result_children
     }
 
-    
+
     onClick() {
 
     }
@@ -109,9 +107,9 @@ export class TreeNodeData {
     removeAllChildren() {
         this.children = []
     }
-    
 
-    removeChild(child : TreeNodeData) {
+
+    removeChild(child: TreeNodeData) {
         let index = this.children.indexOf(child)
 
         if (index == -1) {
