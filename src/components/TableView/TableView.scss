@@ -16,31 +16,19 @@ div.TableView {
          
 
             th {
-                padding: 0;
-                background-color: #ddd;
                 
-
-                // ATTENTION: Setting the height to 0em seems strange (and it is),
-                // but it isn't actually rendered like that, and is appears that setting the
-                // height to *any* explicit value (could as well be  e.g. '1em') is required
-                // for the "height:100%" setting for the nested <button> to take effect.
-
-                background-position: right 4px center;
-                background-size: 0.8em;
-                background-repeat: no-repeat;
-
-                height: 100%;
-                //vertical-align: top;
-
+                //height: 100%;
+              
                 font-size: 14px;
 
                 font-weight: bold;
                 color: #444;
                 margin: 0;
-                padding: 6px;
+
+                padding: 6px;                
                 // Space for the sort icon:
                 padding-right: 22px;
-                border: none;
+                
                 //   border:1px solid #000;
 
                 user-select: none;
@@ -48,10 +36,11 @@ div.TableView {
                 text-align: left;
                 //white-space: nowrap;
 
+                border: none;
                 border-right: 1px solid #bbb;
 
-                background-position: right 4px center;
-                //background-position: right 4px top 8px;
+                background-color: #ddd;
+                background-position: right 6px center;                
                 background-size: 0.8em;
                 background-repeat: no-repeat;
               
