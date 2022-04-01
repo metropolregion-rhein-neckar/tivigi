@@ -85,6 +85,46 @@ export function getAllYears(entity: any, attrNames: Array<string>): Array<string
 
 
 
+
+export function getFirstYear(entity: any, indicatorCodes: Array<string>): string | undefined {
+
+    if (!(indicatorCodes instanceof Array)) {
+        indicatorCodes = [indicatorCodes]
+    }
+
+
+    let years = getAllYears(entity, indicatorCodes)
+
+    if (years == undefined || years.length == 0) {
+        return undefined
+    }
+
+    return years[0]
+}
+
+
+
+export function getLastYear(entity: any, indicatorCodes: Array<string>): string | undefined {
+
+    if (!(indicatorCodes instanceof Array)) {
+        indicatorCodes = [indicatorCodes]
+    }
+
+
+    let years = getAllYears(entity, indicatorCodes)
+
+
+    if (years == undefined || years.length == 0) {
+        return undefined
+    }
+
+    return years[years.length - 1]
+}
+
+
+
+
+
 export function sortKeysAlphabetically(object: any): any {
 
     return Object.keys(object).sort(
