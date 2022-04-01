@@ -15,6 +15,7 @@ import HtmlLegend from '../../charts/DiscreteChart/HtmlLegend/HtmlLegend';
 
 import WithRender from './AndromedaDiscreteTimeSeriesPanel.html';
 import './AndromedaDiscreteTimeSeriesPanel.scss'
+import { AcroFormPasswordField } from 'jspdf';
 
 @WithRender
 @Component({
@@ -74,8 +75,6 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     @Watch("attributes", { deep: true })
     async onAttributesChange() {
-
-
         await this.init()
     }
 
@@ -105,8 +104,8 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         this.chartData = this.prepareChartData()
     }
 
-    prepareChartData(): ChartData {
 
+    prepareChartData(): ChartData {
 
         let result = new ChartData()
 
@@ -154,7 +153,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
         const numDecimalPlaces = 2
 
-
+/*
         //#region Stacked bars
         if (this.chartMode == "stacks") {
 
@@ -165,13 +164,17 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
             for (const attrDef of this.attributes) {
 
-                const style = styles_main[styleIndex]
+                let style = styles_main[styleIndex]
+
+                if (attrDef.compare) {                   
+                    style = styles_compare[styleIndex]
+                }
+
+
 
                 const attrPath = attrDef.entityId + "/" + attrDef.attrName
 
                 const data = this.loader.data.data[attrPath]
-
-
 
                 const timeseries = data.timeseries
 
@@ -183,7 +186,6 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                     const date = new Date(parseInt(ts))
 
                     const year = date.getFullYear().toString()
-
 
                     let dataPointLabel = year
 
@@ -213,9 +215,9 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
             result.datasetBuckets.push(bucket)
         }
         //#endregion Stacked bars
+*/
 
-
-
+        /*
         //#region Stacked bars for primary and compare
         else if (this.chartMode == "compare_stacks") {
 
@@ -247,7 +249,11 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                         continue
                     }
 
-                    const style = styles_main[styleIndex]
+                    let style = styles_main[styleIndex]
+
+                    if (attrDef.compare) {                   
+                        style = styles_compare[styleIndex]
+                    }
 
                     const attrPath = attrDef.entityId + "/" + attrDef.attrName
 
@@ -296,28 +302,42 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
             }
         }
         //#endregion Stacked bars for primary and compare
-
+        */
 
 
         //#region Bars next to each other
-        else {
-
+     //   else {
 
             let styleIndex = 0
+
+
+            let buckets = Array<DatasetBucket>()
 
             //################# BEGIN Loop over indicators #####################
             for (const attrDef of this.attributes) {
 
-                const bucket = new DatasetBucket()
+                let bucketId = attrDef.bucket
+                
+                if (bucketId == undefined) {
+                    bucketId = 0
+                }
 
-                const style = styles_main[styleIndex]
+                if (!(bucketId in buckets)) {
+                    buckets[bucketId] = new DatasetBucket()                    
+                }
+
+                const bucket = buckets[bucketId]
+
+                let style = styles_main[styleIndex]
+
+                if (attrDef.compare) {                   
+                    style = styles_compare[styleIndex]
+                }
 
 
                 const attrPath = attrDef.entityId + "/" + attrDef.attrName
 
                 const data = this.loader.data.data[attrPath]
-
-
 
                 const timeseries = data.timeseries
 
@@ -329,7 +349,6 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                     const date = new Date(parseInt(ts))
 
                     const year = date.getFullYear().toString()
-
 
                     let dataPointLabel = year
 
@@ -354,13 +373,16 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                 bucket.datasets.push(dataset)
 
 
-                result.datasetBuckets.push(bucket)
+               // result.datasetBuckets.push(bucket)
 
                 styleIndex++
             }
             //################# END Loop over indicators #####################
 
-        }
+            for(const bucket of buckets) {
+                result.datasetBuckets.push(bucket)
+            }
+    //    }
         //#endregion Bars next to each other
 
 
@@ -371,10 +393,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     // Years as rows, indicators as columns:
     prepareTableData(): TableData {
 
-
         const result = new TableData()
-
-
 
         //############### BEGIN Create year field #############
         const displayFunc = (row: any) => row.year
@@ -435,14 +454,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                 }
 
                 row[attrPath] = data.timeseries[ts]
-
-
             }
 
         }
 
         return result
-
     }
 }
-

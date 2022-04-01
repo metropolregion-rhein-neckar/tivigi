@@ -23,10 +23,13 @@ export async function getAttributeMetadata(brokerBaseUrl : string) {
 
 export interface AndromedaAttributeDefinition {
 
+    bucket: number,
     entityId : string,
     attrName : string,
     label : string,
-    shortLabel :string
+    shortLabel :string,
+    // Quick & dirty:
+    compare: boolean
 
 }
 
