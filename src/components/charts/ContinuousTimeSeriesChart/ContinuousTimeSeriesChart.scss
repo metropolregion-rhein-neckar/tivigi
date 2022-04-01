@@ -1,0 +1,77 @@
+div.ContinuousTimeSeriesChart {
+    svg {
+        aborder: 1px solid #888;
+        user-select: none;        
+
+        circle {
+            fill: #fff;
+            stroke: #000;
+            stroke-width: 2px;
+        }
+
+        circle.ContinousTimeSeriesChart__ClosestValueMarker {
+            fill: #fff;
+            stroke:#000;
+            stroke-width: 3px;
+        }
+
+        g.ContinousTimeSeriesChart__DataSeriesHoverCatcher {
+            stroke: transparent;
+            stroke-width: 20px;
+            fill: none;
+
+            &:hover {
+                cursor: pointer;
+                path.ContinousTimeSeriesChart__DataSeries {
+                    // stroke-width: 3px;
+                    stroke-width: 3px;
+                }
+            }
+
+            path.ContinousTimeSeriesChart__DataSeries--selected {
+                stroke-width: 3px;
+            }
+
+            path.ContinousTimeSeriesChart__DataSeries--not-selected {
+                opacity: 0.35;
+            }
+        }
+
+        path.ContinousTimeSeriesChart__DataSeries {
+            stroke: #000;
+            //stroke:#888;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        g.ContinousTimeSeriesChart__VertexInfo {
+            rect {                
+                fill: #fafafa;
+                stroke:#ccc;
+                stroke-width: 0.5px;
+
+                //filter: drop-shadow( 0px 1px 2px rgba(0, 0, 0, .4));
+            }
+
+            text {
+                text-anchor: middle;
+                fill:#000;
+                dominant-baseline:central;
+            }
+
+            text.ContinousTimeSeriesChart__ClosestValueMarker__Time {
+            //    font-weight:bold;
+                font-size:13px;
+            }
+
+                
+            text.ContinousTimeSeriesChart__ClosestValueMarker__Value {
+               
+                font-weight:bold;
+                font-size:13px;
+            }
+
+            pointer-events: none;            
+        }
+    }
+}

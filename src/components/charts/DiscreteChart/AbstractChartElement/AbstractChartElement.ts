@@ -1,5 +1,5 @@
-import SvgChart from 'tivigi/src/components/charts/SvgChart/SvgChart';
-import { ChartData } from 'tivigi/src/components/charts/chartUtil';
+import SvgChart from '../SvgChart/SvgChart';
+import { ChartData } from '../chartUtil';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './AbstractChartElement.html';

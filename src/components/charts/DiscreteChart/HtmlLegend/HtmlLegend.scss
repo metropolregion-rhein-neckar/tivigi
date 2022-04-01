@@ -1,0 +1,22 @@
+div.ChartHtmlLegend2 {
+  display: flex;
+  
+  > div {
+   // font-size: 15px;
+    
+    //margin: 4px;
+    width: 50%;
+    //display: flex;
+    //flex-wrap: wrap;
+  }
+}
+
+div.ChartHtmlLegend2__Entry {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.ChartHtmlLegend__Symbol {
+  margin-right: 6px;
+}

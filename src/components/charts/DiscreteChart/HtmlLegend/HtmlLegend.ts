@@ -1,4 +1,4 @@
-import { ChartData, Dataset } from 'tivigi/src/components/charts/chartUtil';
+import { ChartData, Dataset, getDatasetStyle } from '../chartUtil';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 
 import WithRender from './HtmlLegend.html';
@@ -26,5 +26,11 @@ export default class HtmlLegend extends Vue {
         result["background-color"] = fillColor
         
         return result
+    }
+
+
+   
+    getDatasetStyle(dataset: Dataset, strokeWidth: number): any {
+        return getDatasetStyle(dataset, strokeWidth, "#000")
     }
 }
