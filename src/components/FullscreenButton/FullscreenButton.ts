@@ -10,7 +10,7 @@ import WithRender from './FullscreenButton.html';
         SmartButton
     }
 })
-export default class Smartbutton extends Vue {
+export default class FullscreenButton extends Vue {
 
     is_fullscreen : boolean = false
 

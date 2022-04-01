@@ -22,7 +22,7 @@
     
       <Smartbutton v-model="expanded" :set="true" :unset="false" data-tooltip="Vollbild"><img src="img/expand.png" /><span>Tabelle</span></Smartbutton>
       <Smartbutton v-model="showInfoPanel" :set="true" :unset="false" data-tooltip="Informationen"><img src="img/info.svg" /><span>Tabelle</span></Smartbutton>
-      <Smartbutton data-tooltip="Informationen"><img src="img/info.svg" /><span>Tabelle</span></Smartbutton>
+
       
     </div>
   </div>
@@ -31,9 +31,11 @@
   <slot name="main"/>
 
   <!--############## BEGIN Info sidebar panel ##############-->
+  
   <SidebarPanel :show.sync="showInfoPanel" :title="getInfoPanelTitle()">
     <slot name="infoPanel"></slot>
   </SidebarPanel>
+  
   <!--############## END Info sidebar panel ##############-->
 
 </div>

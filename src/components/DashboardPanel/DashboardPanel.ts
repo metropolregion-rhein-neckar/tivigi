@@ -1,6 +1,6 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import SidebarPanel from 'tivigi/src/components/SidebarPanel/SidebarPanel';
-import Smartbutton from 'tivigi/src/components/FullscreenButton/FullscreenButton';
+import Smartbutton from 'tivigi/src/components/SmartButton/SmartButton';
 
 
 import WithRender from './DashboardPanel.html';

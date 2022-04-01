@@ -1,24 +1,9 @@
- /*
-div.DashboardPanel {
-
-    *.DashboardPanel__divider {
-        border-right:1.5px solid #ddd;
-    }     
-}
-*/     
-
 
 div.DashboardPanel--expanded {
     background-color: #fff;
     position: fixed;
     
-    /*
-    border:1px solid #000;
-    top: 20px;
-    left: 20px;    
-    right:20px;
-    bottom:20px;
-    */
+   
     
     top:0;
     left:0;
@@ -57,7 +42,7 @@ div.DashboardPanel__Header {
         font-size:1em;
         font-weight:normal;
     }
-    
+
     button {
         background-color: #fff;
         //border: 1px solid #000;
