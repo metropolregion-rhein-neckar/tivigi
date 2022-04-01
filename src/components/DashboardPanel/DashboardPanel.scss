@@ -1,0 +1,94 @@
+ /*
+div.DashboardPanel {
+
+    *.DashboardPanel__divider {
+        border-right:1.5px solid #ddd;
+    }     
+}
+*/     
+
+
+div.DashboardPanel--expanded {
+    background-color: #fff;
+    position: fixed;
+    
+    /*
+    border:1px solid #000;
+    top: 20px;
+    left: 20px;    
+    right:20px;
+    bottom:20px;
+    */
+    
+    top:0;
+    left:0;
+    height: 100vh;
+    width: 100vw;
+    
+    margin: 0px !important;    
+    padding: 20px;
+    z-index: 999;
+}
+
+
+div.DashboardPanel__InfoText {
+
+    line-height: 1.3em;
+}
+
+
+
+div.DashboardPanel__Header {
+    display: flex;   
+   
+    margin-bottom:16px;
+    
+    h2 {
+        color: #444;
+        margin: 0;
+        
+        margin-bottom: 4px;
+        font-size: 1.3em;
+    }
+
+    h3 {
+        margin:0;
+        color:#777;
+        font-size:1em;
+        font-weight:normal;
+    }
+    button {
+        background-color: #fff;
+        //border: 1px solid #000;
+        margin:0px 1px;
+        padding: 3px 1px;
+        border-radius: 4px !important;
+      
+        display: flex;
+        align-items: center;
+        color: #000 !important;
+        &:hover {
+            background-color: #ddd;
+        }
+ 
+        > * {
+            display: block;
+            padding: 0px 2px;
+        }
+
+        > span {
+            display: none;
+        }
+        img {
+            height: 16px;
+        }
+    }
+
+    button.Smartbutton--checked {
+        background-color: #e0e0e0;
+    }
+
+    div.DashboardPanel__Header__Spacer {
+        flex: 1;
+    }
+}
