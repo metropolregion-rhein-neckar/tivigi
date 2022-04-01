@@ -1,8 +1,11 @@
 <DashboardPanel :title="title" :subtitle="subtitle">
 
   <template v-slot:headerButtons>
-    <SmartButton v-model="displayMode" :set="0" data-tooltip="Diagramm"><img src="tivigi/img/barchart32.png" /><span>Diagramm</span></Smartbutton>
-    <SmartButton v-model="displayMode" :set="1" data-tooltip="Tabelle"><img src="tivigi/img/table.svg" /><span>Tabelle</span></Smartbutton>
+    <SmartButton v-model="displayMode" :set="0" data-tooltip="Diagramm">
+      <img src="tivigi/img/barchart32.png" /><span>Diagramm</span>
+    </Smartbutton>
+    <SmartButton v-model="displayMode" :set="1" data-tooltip="Tabelle">
+      <img src="tivigi/img/table.svg" /><span>Tabelle</span></Smartbutton>
   </template>
 
   <template v-slot:main>
@@ -21,17 +24,13 @@
   </template>
 
 
+  <template v-slot:infoPanel>
+    <div class="padded">
+      <slot name="infoPanelText"></slot>
 
-  <!--
-    <template v-slot:infoPanel>
-      <div class="padded">
-        <slot name="infoPanelText"></slot>
-  
-        <h2 style="margin-top:30px;">Indikatoren:</h2>
-  
-  
-        <IndicatorsInfoPanel :indicators="indicators" />
-      </div>
-    </template>
-  -->
+      <h2 style="margin-top:30px;">Indikatoren:</h2>
+      <IndicatorsInfoPanel :indicators="indicators" />
+    </div>
+  </template>
+
 </DashboardPanel>

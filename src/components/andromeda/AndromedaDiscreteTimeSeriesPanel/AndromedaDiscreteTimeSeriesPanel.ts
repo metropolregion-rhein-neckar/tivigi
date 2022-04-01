@@ -15,7 +15,6 @@ import HtmlLegend from '../../charts/DiscreteChart/HtmlLegend/HtmlLegend';
 
 import WithRender from './AndromedaDiscreteTimeSeriesPanel.html';
 import './AndromedaDiscreteTimeSeriesPanel.scss'
-import { AcroFormPasswordField } from 'jspdf';
 
 @WithRender
 @Component({
@@ -153,238 +152,79 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
         const numDecimalPlaces = 2
 
-/*
-        //#region Stacked bars
-        if (this.chartMode == "stacks") {
+     
+        let styleIndex = 0
 
 
-            let styleIndex = 0
+        let buckets = Array<DatasetBucket>()
 
-            const bucket = new DatasetBucket()
+        //################# BEGIN Loop over indicators #####################
+        for (const attrDef of this.attributes) {
 
-            for (const attrDef of this.attributes) {
+            let bucketId = attrDef.bucket
 
-                let style = styles_main[styleIndex]
-
-                if (attrDef.compare) {                   
-                    style = styles_compare[styleIndex]
-                }
-
-
-
-                const attrPath = attrDef.entityId + "/" + attrDef.attrName
-
-                const data = this.loader.data.data[attrPath]
-
-                const timeseries = data.timeseries
-
-                const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimalPlaces, style)
-
-                //#region Iterate over time series entries (temporal attribute instances)
-                for (const ts in timeseries) {
-
-                    const date = new Date(parseInt(ts))
-
-                    const year = date.getFullYear().toString()
-
-                    let dataPointLabel = year
-
-                    // Add label:
-                    if (!result.labelsX.includes(dataPointLabel)) {
-                        result.labelsX.push(dataPointLabel)
-                    }
-
-                    let index = 0;
-
-                    for (let label of result.labelsX) {
-                        if (label == dataPointLabel) {
-                            break
-                        }
-                        index++
-                    }
-
-                    dataset.points.push({ x: index + 1, y: timeseries[ts] })
-                }
-                //#endregion Iterate over time series entries (temporal attribute instances)
-
-                bucket.datasets.push(dataset)
-
-                styleIndex++
+            if (bucketId == undefined) {
+                bucketId = 0
             }
 
+            if (!(bucketId in buckets)) {
+                buckets[bucketId] = new DatasetBucket()
+            }
+
+            const bucket = buckets[bucketId]
+
+            let style = styles_main[styleIndex]
+
+            if (attrDef.compare) {
+                style = styles_compare[styleIndex]
+            }
+
+
+            const attrPath = attrDef.entityId + "/" + attrDef.attrName
+
+            const data = this.loader.data.data[attrPath]
+
+            const timeseries = data.timeseries
+
+            const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimalPlaces, style)
+
+            //#region Iterate over time series entries (temporal attribute instances)
+            for (const ts in timeseries) {
+
+                const date = new Date(parseInt(ts))
+
+                const year = date.getFullYear().toString()
+
+                let dataPointLabel = year
+
+                // Add label:
+                if (!result.labelsX.includes(dataPointLabel)) {
+                    result.labelsX.push(dataPointLabel)
+                }
+
+                let index = 0;
+
+                for (let label of result.labelsX) {
+                    if (label == dataPointLabel) {
+                        break
+                    }
+                    index++
+                }
+
+                dataset.points.push({ x: index + 1, y: timeseries[ts] })
+            }
+            //#endregion Iterate over time series entries (temporal attribute instances)
+
+            bucket.datasets.push(dataset)
+
+            styleIndex++
+        }
+        //################# END Loop over indicators #####################
+
+        for (const bucket of buckets) {
             result.datasetBuckets.push(bucket)
         }
-        //#endregion Stacked bars
-*/
-
-        /*
-        //#region Stacked bars for primary and compare
-        else if (this.chartMode == "compare_stacks") {
-
-            const entityIds = Array<string>()
-
-            const attrNames = Array<string>()
-
-
-            for (const attrDef of this.attributes) {
-
-                if (!entityIds.includes(attrDef.entityId)) {
-                    entityIds.push(attrDef.entityId)
-                }
-
-                if (!attrNames.includes(attrDef.attrName)) {
-                    attrNames.push(attrDef.attrName)
-                }
-            }
-
-            let styleIndex = 0
-
-            for (const entityId of entityIds) {
-
-                const bucket = new DatasetBucket()
-
-                for (const attrDef of this.attributes) {
-
-                    if (attrDef.entityId != entityId) {
-                        continue
-                    }
-
-                    let style = styles_main[styleIndex]
-
-                    if (attrDef.compare) {                   
-                        style = styles_compare[styleIndex]
-                    }
-
-                    const attrPath = attrDef.entityId + "/" + attrDef.attrName
-
-                    const data = this.loader.data.data[attrPath]
-
-
-
-                    const timeseries = data.timeseries
-
-                    const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimalPlaces, style)
-
-                    //#region Iterate over time series entries (temporal attribute instances)
-                    for (const ts in timeseries) {
-
-                        const date = new Date(parseInt(ts))
-
-                        const year = date.getFullYear().toString()
-
-
-                        let dataPointLabel = year
-
-                        // Add label:
-                        if (!result.labelsX.includes(dataPointLabel)) {
-                            result.labelsX.push(dataPointLabel)
-                        }
-
-                        let index = 0;
-
-                        for (let label of result.labelsX) {
-                            if (label == dataPointLabel) {
-                                break
-                            }
-                            index++
-                        }
-
-                        dataset.points.push({ x: index + 1, y: timeseries[ts] })
-                    }
-                    //#endregion Iterate over time series entries (temporal attribute instances)
-
-                    bucket.datasets.push(dataset)
-
-                    styleIndex++
-                }
-
-                result.datasetBuckets.push(bucket)
-            }
-        }
-        //#endregion Stacked bars for primary and compare
-        */
-
-
-        //#region Bars next to each other
-     //   else {
-
-            let styleIndex = 0
-
-
-            let buckets = Array<DatasetBucket>()
-
-            //################# BEGIN Loop over indicators #####################
-            for (const attrDef of this.attributes) {
-
-                let bucketId = attrDef.bucket
-                
-                if (bucketId == undefined) {
-                    bucketId = 0
-                }
-
-                if (!(bucketId in buckets)) {
-                    buckets[bucketId] = new DatasetBucket()                    
-                }
-
-                const bucket = buckets[bucketId]
-
-                let style = styles_main[styleIndex]
-
-                if (attrDef.compare) {                   
-                    style = styles_compare[styleIndex]
-                }
-
-
-                const attrPath = attrDef.entityId + "/" + attrDef.attrName
-
-                const data = this.loader.data.data[attrPath]
-
-                const timeseries = data.timeseries
-
-                const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimalPlaces, style)
-
-                //#region Iterate over time series entries (temporal attribute instances)
-                for (const ts in timeseries) {
-
-                    const date = new Date(parseInt(ts))
-
-                    const year = date.getFullYear().toString()
-
-                    let dataPointLabel = year
-
-                    // Add label:
-                    if (!result.labelsX.includes(dataPointLabel)) {
-                        result.labelsX.push(dataPointLabel)
-                    }
-
-                    let index = 0;
-
-                    for (let label of result.labelsX) {
-                        if (label == dataPointLabel) {
-                            break
-                        }
-                        index++
-                    }
-
-                    dataset.points.push({ x: index + 1, y: timeseries[ts] })
-                }
-                //#endregion Iterate over time series entries (temporal attribute instances)
-
-                bucket.datasets.push(dataset)
-
-
-               // result.datasetBuckets.push(bucket)
-
-                styleIndex++
-            }
-            //################# END Loop over indicators #####################
-
-            for(const bucket of buckets) {
-                result.datasetBuckets.push(bucket)
-            }
-    //    }
-        //#endregion Bars next to each other
-
+     
 
         return result
     }
@@ -417,7 +257,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
             const rawFunc = (row: any) => row[attrPath]
 
-            const field = new FieldConfig(attrDef.label, attrDef.shortLabel, displayFunc, rawFunc, FieldTextAlign.LEFT, undefined, undefined, true)
+            const field = new FieldConfig(attrDef.label, attrDef.shortLabel, displayFunc, rawFunc, FieldTextAlign.RIGHT, undefined, undefined, true)
 
             result.fields.push(field)
             //############### END Create attribute field #############
