@@ -1,6 +1,5 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { AndromedaTimeSeriesLoader } from '@/andromedaUtil/AndromedaTimeSeriesLoader';
-//import ContinuousTimeSeriesChart from '@/components/charts/ContinuousTimeSeriesChart/ContinuousTimeSeriesChart';
+import { AndromedaTimeSeriesLoader } from '../../../andromedaUtil/AndromedaTimeSeriesLoader';
 import { TableData } from 'tivigi/src/components/TableView/TableData';
 import { ChartData, Dataset, DatasetBucket, SvgChartDatasetStyle } from '../../charts/DiscreteChart/chartUtil';
 import { ColorRGBA } from 'tivigi/src/util/ColorRGBA';
@@ -20,7 +19,6 @@ import './AndromedaDiscreteTimeSeriesPanel.scss'
 @WithRender
 @Component({
     components: {
-        //ContinuousTimeSeriesChart,
         DashboardPanel,
         HtmlLegend,
         SmartButton,
@@ -74,9 +72,20 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     tableData: TableData = new TableData()
     chartData: ChartData = new ChartData()
 
+    @Watch("attributes", { deep: true })
+    async onAttributesChange() {
+
+
+        await this.init()
+    }
+
 
     async created() {
+        await this.init()
+    }
 
+
+    async init() {
         const attrNames = Array<string>()
 
         for (const attrDef of this.attributes) {
@@ -94,12 +103,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         this.tableData = this.prepareTableData()
 
         this.chartData = this.prepareChartData()
-
-        //this.$forceUpdate()
-
     }
-
-
 
     prepareChartData(): ChartData {
 
@@ -148,11 +152,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         }
 
 
-
-
         const numDecimalPlaces = 2
-
-
 
 
         //#region Stacked bars
@@ -441,140 +441,8 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
         }
 
-
-
-
-
         return result
 
-        /*
-        let entities = [entity, compareEntity]
-
-
-        if (!indicators || indicators.length == 0) {
-            return result
-        }
-
-
-        //############### BEGIN Create year name field #############
-        const displayFunc = (yearRow: any) => {
-            try {
-                return yearRow.year
-            }
-            catch {
-                return ""
-            }
-        }
-
-
-        const rawFunc = (yearRow: any) => {
-            try {
-                return yearRow.year
-            }
-            catch {
-                return ""
-            }
-        }
-
-        const nameField = new FieldConfig("Jahr", "Jahr", displayFunc, rawFunc, FieldTextAlign.LEFT, undefined, undefined, true)
-
-        result.fields.push(nameField)
-        //############### END Create indicator name field ###############
-        let attributes = []
-
-        for (const indi of indicators) {
-            attributes.push(indi.code)
-        }
-
-        // TODO: 1 Get years for all entities
-
-        let years = getAllYears(entities[0], attributes)
-
-        if (years == undefined) {
-            return result
-        }
-
-        for (let year_string of years) {
-
-
-            const year = year_string
-
-            if (firstYear != undefined && year < firstYear) {
-                continue
-            }
-
-            if (lastYear != undefined && year > lastYear) {
-                continue
-            }
-
-            result.rows.push({ year: year })
-        }
-
-        for (const entity of entities) {
-
-            if (entity == undefined) {
-
-                // NOTE: This happens if the entity is not loaded yet. 
-                // It is not a problem because this code is called again each time the props 
-                // "entity", "compareEntity" or "indicators" change (e.g. when they are loaded).
-
-                continue
-            }
-
-            for (const indicator of indicators) {
-
-                //############### BEGIN Create year name field #############
-                const displayFunc = (yearRow: any) => {
-
-                    try {
-                        for (const instance of entity[indicator.code].value) {
-
-                            if (instance.year == yearRow.year) {
-                                return formatNumberString(instance.value, indicator.numDecimalPlaces)
-                            }
-                        }
-
-                    }
-                    catch {
-                        return ""
-                    }
-                }
-
-
-                const rawFunc = (yearRow: any) => {
-                    try {
-                        for (const instance of entity[indicator.code].value) {
-
-                            if (instance.year == yearRow.year) {
-                                return instance.value
-                            }
-                        }
-
-                    }
-                    catch {
-                        return ""
-                    }
-                }
-
-
-                let label = indicator.label
-                let shortLabel = indicator.shortLabel
-
-                if (entity == compareEntity) {
-                    label += " (Vgl.)"
-                    shortLabel += " (Vgl.)"
-                }
-
-
-                const indicatorValueField = new FieldConfig(label, shortLabel, displayFunc, rawFunc, FieldTextAlign.RIGHT, undefined, undefined, true)
-
-                result.fields.push(indicatorValueField)
-                //############### END Create indicator name field ###############
-            }
-
-        }
-        return result
-*/
     }
 }
 
