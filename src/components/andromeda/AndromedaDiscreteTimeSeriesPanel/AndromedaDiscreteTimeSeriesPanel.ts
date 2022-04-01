@@ -1,17 +1,17 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { AndromedaTimeSeriesLoader } from '@/andromedaUtil/AndromedaTimeSeriesLoader';
-import ContinuousTimeSeriesChart from '@/components/ContinuousTimeSeriesChart/ContinuousTimeSeriesChart';
+//import ContinuousTimeSeriesChart from '@/components/charts/ContinuousTimeSeriesChart/ContinuousTimeSeriesChart';
 import { TableData } from 'tivigi/src/components/TableView/TableData';
-import { ChartData, Dataset, DatasetBucket, SvgChartDatasetStyle } from '../DiscreteChart/chartUtil';
+import { ChartData, Dataset, DatasetBucket, SvgChartDatasetStyle } from '../../charts/DiscreteChart/chartUtil';
 import { ColorRGBA } from 'tivigi/src/util/ColorRGBA';
 import { FieldConfig, FieldTextAlign } from 'tivigi/src/components/TableView/FieldConfig';
-import { AndromedaAttributeDefinition, getAllYears } from '@/AndromedaDashboardUtil';
+import { AndromedaAttributeDefinition, getAllYears } from '../../../andromedaUtil/andromedaUtil';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import TableView from 'tivigi/src/components/TableView/TableView'
-import DashboardPanel from '../DashboardSpeyer/DashboardPanel/DashboardPanel';
+import DashboardPanel from '../../DashboardPanel/DashboardPanel';
 import SmartButton from 'tivigi/src/components/SmartButton/SmartButton';
-import SvgChart from '../DiscreteChart/SvgChart/SvgChart';
-import HtmlLegend from '../DiscreteChart/HtmlLegend/HtmlLegend';
+import SvgChart from '../../charts/DiscreteChart/SvgChart/SvgChart';
+import HtmlLegend from '../../charts/DiscreteChart/HtmlLegend/HtmlLegend';
 
 
 import WithRender from './AndromedaDiscreteTimeSeriesPanel.html';
@@ -20,7 +20,7 @@ import './AndromedaDiscreteTimeSeriesPanel.scss'
 @WithRender
 @Component({
     components: {
-        ContinuousTimeSeriesChart,
+        //ContinuousTimeSeriesChart,
         DashboardPanel,
         HtmlLegend,
         SmartButton,

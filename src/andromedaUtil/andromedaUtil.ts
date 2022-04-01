@@ -19,3 +19,84 @@ export async function getAttributeMetadata(brokerBaseUrl : string) {
 }
 
 
+
+
+export interface AndromedaAttributeDefinition {
+
+    entityId : string,
+    attrName : string,
+    label : string,
+    shortLabel :string
+
+}
+
+
+export function getAllYears(entity: any, attrNames: Array<string>): Array<string> | undefined {
+
+    if (entity == undefined) {
+        return undefined
+    }
+
+    const years = Array<string>()
+
+    for (const attrName of attrNames) {
+
+        let attr = entity[attrName]
+
+        if (attr == undefined || attr == null) {
+            alert(`Entity ${entity.id}: Fehlendes Attribut: ${attrName}`)
+            continue
+        }
+
+        
+
+
+
+        if (!(attr.value instanceof Array)) {
+            
+            console.log("ERROR")
+            console.log(entity.id)
+            console.log(attrName)
+            console.log(attr)
+            console.log(attr.value)
+            return []
+        }
+
+        //########## BEGIN Iterate over all attribute instances ##########
+        for (const instance of attr.value) {
+          
+            let year = instance.year
+
+            if (year == undefined) {
+                continue
+            }
+
+            if (!years.includes(year)) {
+                years.push(year)
+            }
+        }
+        //########## END Iterate over all attribute instances ##########
+    }
+
+    years.sort()
+
+    return years
+}
+
+
+
+export function sortKeysAlphabetically(object: any): any {
+
+    return Object.keys(object).sort(
+
+        (a, b) => { return a.toLowerCase().localeCompare(b.toLowerCase()); }
+
+    ).reduce(
+        (obj: any, key: string) => {
+            obj[key] = object[key];
+            return obj;
+        },
+        {}
+    );
+}
+

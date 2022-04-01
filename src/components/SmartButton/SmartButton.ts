@@ -51,6 +51,7 @@ export default class SmartButton extends Vue {
 
     onClick(evt: MouseEvent) {
 
+        
         if (!this.getChecked()) {
             // If the button is not checked, fire input event (which *might* check it, if it has state):
             this.$emit('input', this.set)            

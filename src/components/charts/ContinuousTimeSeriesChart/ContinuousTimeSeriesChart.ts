@@ -569,8 +569,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
         // TODO: What if endtime < starttime?
 
         //#region set end (right edge) time
-        if (this.endTime != undefined) {
-            console.log(this.endTime)
+        if (this.endTime != undefined) {            
 
 
             const endTime_unix = new Date(this.endTime)

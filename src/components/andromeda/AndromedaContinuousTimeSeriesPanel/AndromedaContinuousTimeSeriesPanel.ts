@@ -1,8 +1,8 @@
 import { getAttributeMetadata } from '@/andromedaUtil/andromedaUtil';
 import { AndromedaTimeSeriesLoader } from '@/andromedaUtil/AndromedaTimeSeriesLoader';
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import DashboardPanel from '../DashboardSpeyer/DashboardPanel/DashboardPanel';
-import ContinuousTimeSeriesChart from '@/components/ContinuousTimeSeriesChart/ContinuousTimeSeriesChart';
+import DashboardPanel from '../../DashboardPanel/DashboardPanel';
+import ContinuousTimeSeriesChart from '../../charts/ContinuousTimeSeriesChart/ContinuousTimeSeriesChart';
 
 import WithRender from './AndromedaContinuousTimeSeriesPanel.html';
 import './AndromedaContinuousTimeSeriesPanel.scss'
