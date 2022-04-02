@@ -29,8 +29,10 @@ import './AndromedaDiscreteTimeSeriesPanel.scss'
 export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     //#region Properties
-    @Prop({ default: () => Array<string>() })
-    attributes!: Array<AndromedaAttributeDefinition>
+
+    @Prop()
+    attributes!: Array<Array<AndromedaAttributeDefinition>>
+
 
     @Prop()
     brokerBaseUrl!: string
@@ -40,18 +42,6 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     @Prop()
     endTime!: string
-
-    @Prop()
-    chartMode!: string
-
-    @Prop({ default: false })
-    chartCropToYRange!: boolean
-
-    @Prop()
-    firstYear!: string | undefined
-
-    @Prop()
-    lastYear!: string | undefined
 
     @Prop({ default: 0 })
     initialDisplayMode!: number
@@ -72,13 +62,18 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     tableData: TableData = new TableData()
     chartData: ChartData = new ChartData()
 
-    @Watch("attributes", { deep: true })
+    @Watch("attributes")
     async onAttributesChange() {
         await this.init()
     }
 
 
     async created() {
+
+        if (this.initialDisplayMode) {
+            this.displayMode = this.initialDisplayMode
+        }
+
         await this.init()
     }
 
@@ -86,8 +81,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     async init() {
         const attrNames = Array<string>()
 
-        for (const attrDef of this.attributes) {
-            attrNames.push(attrDef.entityId + "/" + attrDef.attrName)
+        for (const bucketDef of this.attributes) {
+            for (const attrDef of bucketDef) {
+                attrNames.push(attrDef.entityId + "/" + attrDef.attrName)
+            }
         }
 
         this.loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl, attrNames)
@@ -103,131 +100,112 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         this.chartData = this.prepareChartData()
     }
 
+   
+
 
     prepareChartData(): ChartData {
 
         let result = new ChartData()
-
-        let styles_main: Array<SvgChartDatasetStyle> = []
-
-        let styles_compare: Array<SvgChartDatasetStyle> = []
-
-        const colorStart_main = new ColorRGBA([255, 255, 255, 255])
-        const colorEnd_main = new ColorRGBA([50, 50, 220, 255])
-
-        const colorStart_compare = new ColorRGBA([220, 220, 100, 255])
-        const colorEnd_compare = new ColorRGBA([60, 60, 60, 255])
-
-
-        //########## BEGIN Create colors array ##########
-
-        let colorDiff_main = colorEnd_main.sub(colorStart_main)
-        let colorDiff_compare = colorEnd_compare.sub(colorStart_compare)
-
-        for (let ii = 0; ii <= this.attributes.length; ii++) {
-
-            const color_main = colorStart_main.add(colorDiff_main.mult((1.0 / this.attributes.length) * ii)).round()
-            const color_compare = colorStart_compare.add(colorDiff_compare.mult((1.0 / this.attributes.length) * ii)).round()
-
-            styles_main.push(
-                {
-                    color: color_main.toHexString(),
-                    strokeDasharray: "0",
-                    chartType: "bars"
-                })
-
-            styles_compare.push(
-                {
-                    color: color_compare.toHexString(),
-                    strokeDasharray: "0",
-                    chartType: "crosses"
-                })
-        }
-        //########## END Create colors array ############
 
         if (this.attributes.length == 0) {
             return result
         }
 
 
+
+        const colors = Array<any>()
+
+        colors.push({start:new ColorRGBA([255, 255, 255, 255]), end: new ColorRGBA([50, 50, 220, 255])})
+        colors.push({start:new ColorRGBA([220, 220, 100, 255]), end: new ColorRGBA([60, 60, 60, 255])})
+
+        //########## BEGIN Create colors array ##########
+
+       
+
+
+
         const numDecimalPlaces = 2
 
-     
-        let styleIndex = 0
 
+        
+        for (let bucketIndex = 0; bucketIndex < this.attributes.length; bucketIndex++) {
 
-        let buckets = Array<DatasetBucket>()
+            const bucketDef = this.attributes[bucketIndex]
 
-        //################# BEGIN Loop over indicators #####################
-        for (const attrDef of this.attributes) {
+            const bucket = new DatasetBucket()
 
-            let bucketId = attrDef.bucket
+            let colorEnd = colors[bucketIndex].end
+            let colorStart = colors[bucketIndex].start
 
-            if (bucketId == undefined) {
-                bucketId = 0
-            }
+            const colorDiff = colorEnd.sub(colorStart)
+           
 
-            if (!(bucketId in buckets)) {
-                buckets[bucketId] = new DatasetBucket()
-            }
+            for (let attrIndex = 0; attrIndex < bucketDef.length; attrIndex++) {
 
-            const bucket = buckets[bucketId]
+                const attrDef = bucketDef[attrIndex]
 
-            let style = styles_main[styleIndex]
-
-            if (attrDef.compare) {
-                style = styles_compare[styleIndex]
-            }
-
-
-            const attrPath = attrDef.entityId + "/" + attrDef.attrName
-
-            const data = this.loader.data.data[attrPath]
-
-            const timeseries = data.timeseries
-
-            const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimalPlaces, style)
-
-            //#region Iterate over time series entries (temporal attribute instances)
-            for (const ts in timeseries) {
-
-                const date = new Date(parseInt(ts))
-
-                const year = date.getFullYear().toString()
-
-                let dataPointLabel = year
-
-                // Add label:
-                if (!result.labelsX.includes(dataPointLabel)) {
-                    result.labelsX.push(dataPointLabel)
+                const color_main = colorStart.add(colorDiff.mult((1.0 / bucketDef.length) * attrIndex)).round()
+               
+                const style =
+                {
+                    color: color_main.toHexString(),
+                    strokeDasharray: "0",
+                    chartType: "bars"
                 }
 
-                let index = 0;
+             
+                if (attrDef.compare) {                    
+                    style.chartType = "crosses"
+                }
 
-                for (let label of result.labelsX) {
-                    if (label == dataPointLabel) {
-                        break
+
+
+                const attrPath = attrDef.entityId + "/" + attrDef.attrName
+
+                const data = this.loader.data.data[attrPath]
+
+                const timeseries = data.timeseries
+
+                const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimalPlaces, style)
+
+                //#region Iterate over time series entries (temporal attribute instances)
+                for (const ts in timeseries) {
+
+                    const date = new Date(parseInt(ts))
+
+                    const year = date.getFullYear().toString()
+
+                    let dataPointLabel = year
+
+                    // Add label:
+                    if (!result.labelsX.includes(dataPointLabel)) {
+                        result.labelsX.push(dataPointLabel)
                     }
-                    index++
+
+                    let index = 0;
+
+                    for (let label of result.labelsX) {
+                        if (label == dataPointLabel) {
+                            break
+                        }
+                        index++
+                    }
+
+                    dataset.points.push({ x: index + 1, y: timeseries[ts] })
                 }
+                //#endregion Iterate over time series entries (temporal attribute instances)
 
-                dataset.points.push({ x: index + 1, y: timeseries[ts] })
+                bucket.datasets.push(dataset)
             }
-            //#endregion Iterate over time series entries (temporal attribute instances)
 
-            bucket.datasets.push(dataset)
-
-            styleIndex++
-        }
-        //################# END Loop over indicators #####################
-
-        for (const bucket of buckets) {
             result.datasetBuckets.push(bucket)
         }
-     
+
+
 
         return result
     }
+
 
 
     // Years as rows, indicators as columns:
@@ -248,21 +226,22 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         const numDecimalPlaces = 2
 
         //for (const attrPath in this.loader.data.data) {
-        for (const attrDef of this.attributes) {
+        for (const bucketDef of this.attributes) {
+            for (const attrDef of bucketDef) {
 
-            const attrPath = attrDef.entityId + "/" + attrDef.attrName
+                const attrPath = attrDef.entityId + "/" + attrDef.attrName
 
-            //############### BEGIN Create attribute field #############
-            const displayFunc = (row: any) => formatNumberString(row[attrPath], numDecimalPlaces)
+                //############### BEGIN Create attribute field #############
+                const displayFunc = (row: any) => formatNumberString(row[attrPath], numDecimalPlaces)
 
-            const rawFunc = (row: any) => row[attrPath]
+                const rawFunc = (row: any) => row[attrPath]
 
-            const field = new FieldConfig(attrDef.label, attrDef.shortLabel, displayFunc, rawFunc, FieldTextAlign.RIGHT, undefined, undefined, true)
+                const field = new FieldConfig(attrDef.label, attrDef.shortLabel, displayFunc, rawFunc, FieldTextAlign.RIGHT, undefined, undefined, true)
 
-            result.fields.push(field)
-            //############### END Create attribute field #############
+                result.fields.push(field)
+                //############### END Create attribute field #############
+            }
         }
-
 
         for (const attrPath in this.loader.data.data) {
 

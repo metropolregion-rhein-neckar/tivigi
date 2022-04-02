@@ -12,7 +12,7 @@
 
     <div class="AndromedaDiscreteTimeSeriesPanel">
       <div v-show="displayMode == 0">
-        <SvgChart :cropToYRange="chartCropToYRange" :displayMode="chartMode" :data="chartData" />
+        <SvgChart :data="chartData" />
 
         <HtmlLegend :data="chartData" />
 
@@ -29,7 +29,9 @@
       <slot name="infoPanelText"></slot>
 
       <h2 style="margin-top:30px;">Indikatoren:</h2>
+      <!--
       <IndicatorsInfoPanel :indicators="indicators" />
+      -->
     </div>
   </template>
 
