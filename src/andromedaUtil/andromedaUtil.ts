@@ -2,6 +2,20 @@ const attrMetadata : any = {}
 
 
 
+export interface AndromedaAttributeDefinition {
+
+    bucket: number,
+    entityId : string,
+    attrName : string,
+    label : string,
+    shortLabel :string,
+    numDecimals : number,
+    // Quick & dirty:
+    compare: boolean
+
+}
+
+
 export async function getAttributeMetadata(brokerBaseUrl : string) {
 
     if (attrMetadata[brokerBaseUrl] == undefined) {
@@ -19,19 +33,6 @@ export async function getAttributeMetadata(brokerBaseUrl : string) {
 }
 
 
-
-
-export interface AndromedaAttributeDefinition {
-
-    bucket: number,
-    entityId : string,
-    attrName : string,
-    label : string,
-    shortLabel :string,
-    // Quick & dirty:
-    compare: boolean
-
-}
 
 
 export function getAllYears(entity: any, attrNames: Array<string>): Array<string> | undefined {

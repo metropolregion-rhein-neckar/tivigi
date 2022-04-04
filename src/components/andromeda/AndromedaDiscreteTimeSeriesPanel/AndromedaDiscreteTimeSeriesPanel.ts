@@ -33,7 +33,6 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     @Prop()
     attributes!: Array<Array<AndromedaAttributeDefinition>>
 
-
     @Prop()
     brokerBaseUrl!: string
 
@@ -57,6 +56,8 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     loader!: AndromedaTimeSeriesLoader
 
     displayMode = 0
+
+    numDecimalsDefault = 2
 
 
     tableData: TableData = new TableData()
@@ -100,7 +101,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         this.chartData = this.prepareChartData()
     }
 
-   
+
 
 
     prepareChartData(): ChartData {
@@ -115,19 +116,11 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
         const colors = Array<any>()
 
-        colors.push({start:new ColorRGBA([255, 255, 255, 255]), end: new ColorRGBA([50, 50, 220, 255])})
-        colors.push({start:new ColorRGBA([220, 220, 100, 255]), end: new ColorRGBA([60, 60, 60, 255])})
-
-        //########## BEGIN Create colors array ##########
-
-       
+        colors.push({ start: new ColorRGBA([255, 255, 255, 255]), end: new ColorRGBA([50, 50, 220, 255]) })
+        colors.push({ start: new ColorRGBA([220, 220, 100, 255]), end: new ColorRGBA([60, 60, 60, 255]) })
 
 
 
-        const numDecimalPlaces = 2
-
-
-        
         for (let bucketIndex = 0; bucketIndex < this.attributes.length; bucketIndex++) {
 
             const bucketDef = this.attributes[bucketIndex]
@@ -138,14 +131,14 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
             let colorStart = colors[bucketIndex].start
 
             const colorDiff = colorEnd.sub(colorStart)
-           
+
 
             for (let attrIndex = 0; attrIndex < bucketDef.length; attrIndex++) {
 
                 const attrDef = bucketDef[attrIndex]
 
                 const color_main = colorStart.add(colorDiff.mult((1.0 / bucketDef.length) * attrIndex)).round()
-               
+
                 const style =
                 {
                     color: color_main.toHexString(),
@@ -153,11 +146,16 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                     chartType: "bars"
                 }
 
-             
-                if (attrDef.compare) {                    
+
+                if (attrDef.compare) {
                     style.chartType = "crosses"
                 }
 
+                let numDecimals = this.numDecimalsDefault
+
+                if (typeof attrDef.numDecimals == "number") {
+                    numDecimals = attrDef.numDecimals
+                }
 
 
                 const attrPath = attrDef.entityId + "/" + attrDef.attrName
@@ -166,7 +164,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
                 const timeseries = data.timeseries
 
-                const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimalPlaces, style)
+                const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimals, style)
 
                 //#region Iterate over time series entries (temporal attribute instances)
                 for (const ts in timeseries) {
@@ -223,16 +221,22 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         //############### END Create year field #############
 
 
-        const numDecimalPlaces = 2
 
         //for (const attrPath in this.loader.data.data) {
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
 
+                let numDecimals = this.numDecimalsDefault
+
+                if (typeof attrDef.numDecimals == "number") {
+                    numDecimals = attrDef.numDecimals
+                }
+
+
                 const attrPath = attrDef.entityId + "/" + attrDef.attrName
 
                 //############### BEGIN Create attribute field #############
-                const displayFunc = (row: any) => formatNumberString(row[attrPath], numDecimalPlaces)
+                const displayFunc = (row: any) => formatNumberString(row[attrPath], numDecimals)
 
                 const rawFunc = (row: any) => row[attrPath]
 
