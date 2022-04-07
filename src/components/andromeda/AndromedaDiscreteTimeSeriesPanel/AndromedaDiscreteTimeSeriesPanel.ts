@@ -162,6 +162,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
                 const data = this.loader.data.data[attrPath]
 
+                if (data == undefined) {
+                    continue
+                }
+
                 const timeseries = data.timeseries
 
                 const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimals, style)
