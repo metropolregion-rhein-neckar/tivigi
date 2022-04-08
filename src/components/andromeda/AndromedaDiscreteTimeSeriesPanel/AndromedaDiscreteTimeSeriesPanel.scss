@@ -1,4 +1,8 @@
 div.AndromedaDiscreteTimeSeriesPanel {
     user-select: none;
+    .SvgChart {
+            
+        max-height:500px;
+    }
     
 }
