@@ -1,12 +1,11 @@
 <DashboardPanel :title="title" :subtitle="subtitle">
 
   <template v-slot:main>
-  <ContinuousTimeSeriesChart :data="loader.data" style="height:210px;aborder:1px solid #ddd" @dataRequest="onDataRequest" 
-  
-  :startTime="startTime" :endTime="endTime" />
+    <ContinuousTimeSeriesChart :data="loader.data" style="height:210px;"
+      @dataRequest="onDataRequest" :startTime="startTime" :endTime="endTime" />
 
 
-  <!--
+    <!--
   <div style="margin-top:10px;" astyle="position:absolute;right:0;top:0;margin:4px;padding:4px;background-color:#fff;border:1px solid #ccc;">
     <div v-for="(timeseries,attrKey) in loader.data.data" style="margin:2px 0px;">
 
@@ -14,7 +13,7 @@
     </div>
   </div>
   -->
-</template>
+  </template>
 
 
 </DashboardPanel>

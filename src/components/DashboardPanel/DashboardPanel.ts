@@ -19,9 +19,6 @@ import './DashboardPanel.scss'
 export default class DashboardPanel extends Vue {
 
     //############### BEGIN Properties ###############
-
-    @Prop()
-    diffDisplayMode!: string
  
     @Prop()
     subtitle!: string
@@ -35,16 +32,12 @@ export default class DashboardPanel extends Vue {
     showInfoPanel = false
 
 
-
-
     getDynamicClass() {
         return {
             "DashboardPanel": true,
             "DashboardPanel--expanded": this.expanded
         }
     }
-
-
 
 
     getInfoPanelTitle(): string {

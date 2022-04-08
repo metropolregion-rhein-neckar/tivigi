@@ -1,5 +1,3 @@
-import { renderDeclutterItems } from "ol/render"
-
 class TimeFrame {
     out = false
     constructor(public begin: number, public end: number) {
