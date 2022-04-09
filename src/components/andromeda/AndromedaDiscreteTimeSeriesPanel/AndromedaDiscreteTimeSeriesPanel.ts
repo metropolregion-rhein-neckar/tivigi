@@ -4,7 +4,7 @@ import { TableData } from 'tivigi/src/components/TableView/TableData';
 import { ChartData, Dataset, DatasetBucket, SvgChartDatasetStyle } from '../../charts/DiscreteChart/chartUtil';
 import { ColorRGBA } from 'tivigi/src/util/ColorRGBA';
 import { FieldConfig, FieldTextAlign } from 'tivigi/src/components/TableView/FieldConfig';
-import { AndromedaAttributeDefinition, getAllYears } from '../../../andromedaUtil/andromedaUtil';
+import { AndromedaAttributeDefinition, getAttributeMetadata } from '../../../andromedaUtil/andromedaUtil';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import TableView from 'tivigi/src/components/TableView/TableView'
 import DashboardPanel from '../../DashboardPanel/DashboardPanel';
@@ -52,6 +52,8 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     subtitle!: string
     //#endregion
 
+    attributeMetadata: any = undefined
+
 
     loader!: AndromedaTimeSeriesLoader
 
@@ -71,6 +73,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     async created() {
 
+
         if (this.initialDisplayMode) {
             this.displayMode = this.initialDisplayMode
         }
@@ -79,7 +82,30 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     }
 
 
+ 
+
+
     async init() {
+
+        
+
+        //this.attributeMetadata = await getAttributeMetadata(this.brokerBaseUrl)
+
+        for (const bucketDef of this.attributes) {
+            for (const attrDef of bucketDef) {
+          
+                /*
+                if (attrDef.label == undefined) {                    
+                    attrDef.label = this.attributeMetadata[attrDef.attrName].metadata.label
+                }
+                else {
+                    attrDef.label = attrDef.label.replaceAll("%%LABEL%%", this.attributeMetadata[attrDef.attrName].metadata.label)
+                }
+                */
+            }
+        }
+
+
         const attrNames = Array<string>()
 
         for (const bucketDef of this.attributes) {
@@ -146,9 +172,14 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                     chartType: "bars"
                 }
 
+                let label = attrDef.label
+                let shortLabel = attrDef.shortLabel
 
                 if (attrDef.compare) {
                     style.chartType = "crosses"
+
+                    label += " (Vergleich)"
+                    shortLabel += " (Vgl.)"
                 }
 
                 let numDecimals = this.numDecimalsDefault
@@ -168,7 +199,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
                 const timeseries = data.timeseries
 
-                const dataset = new Dataset(attrDef.label, attrDef.shortLabel, [], numDecimals, style)
+                const dataset = new Dataset(label, shortLabel, [], numDecimals, style)
 
                 //#region Iterate over time series entries (temporal attribute instances)
                 for (const ts in timeseries) {
