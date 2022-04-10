@@ -1,7 +1,4 @@
-const attrMetadata : any = {}
-
-
-
+const requestPromises : any = {}
 
 export interface AndromedaAttributeDefinition {
 
@@ -19,19 +16,23 @@ export interface AndromedaAttributeDefinition {
 
 export async function getAttributeMetadata(brokerBaseUrl : string) {
 
-    if (attrMetadata[brokerBaseUrl] == undefined) {
-        
+    if (requestPromises[brokerBaseUrl] == undefined) {
+
         const url = brokerBaseUrl + "/attributes/?dictionary=true"
         
-        const res  = await fetch(url)
-
-        console.log(res.status)
-        if (res.status == 200) {
-            attrMetadata[brokerBaseUrl] = await res.json()
-        }                
+        
+        requestPromises[brokerBaseUrl]  = new Promise((resolve, reject) => {
+            fetch(url).then((res) => {
+                
+                res.json().then(data => {
+                    resolve(data)
+                })
+            })
+        })
     }
 
-    return attrMetadata[brokerBaseUrl]
+
+    return requestPromises[brokerBaseUrl]
 }
 
 

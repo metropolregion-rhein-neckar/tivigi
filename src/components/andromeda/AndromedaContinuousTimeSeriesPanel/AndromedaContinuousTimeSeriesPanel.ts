@@ -41,7 +41,7 @@ export default class AndromedaContinuousTimeSeriesPanel extends Vue {
 
     attrMeta: any = undefined
 
-    loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl,this.attributes)
+    loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl)
 
 
     getAttrLabel(attrKey: string): string {
@@ -75,13 +75,13 @@ export default class AndromedaContinuousTimeSeriesPanel extends Vue {
 
 
     async mounted() {    
-        this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)     
+       // this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)     
     }
 
 
     async onDataRequest(evt : any) {
    
-        await this.loader.load(evt.left, evt.right)     
+        await this.loader.load(this.attributes, evt.left, evt.right)     
     }
 }
 

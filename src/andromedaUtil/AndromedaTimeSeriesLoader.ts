@@ -22,26 +22,16 @@ export class AndromedaTimeSeriesLoader {
     loaded = Array<TimeFrame>()
 
 
-    constructor(public brokerBaseUrl: string, public attributes: Array<string>) { }
+    constructor(public brokerBaseUrl: string) {
+        if (this.brokerBaseUrl == undefined) {
+            console.error("Anromeda Time Series Loader: Broker base URL is undefined")
+        }
+    }
 
 
-    async load(startTime: number, endTime: number) {
+    async load(attributes: Array<string>, startTime: number, endTime: number) {
 
-        /*
-        //this.requested.push(new TimeFrame(startTime, endTime))
-        this.requested.push(new TimeFrame(startTime, endTime))
 
-        this.requested = this.mergeTimeFrames(this.requested)
-
-        const diff = this.getTimeFramesDiff(this.requested, this.loaded)
-
-        console.log(diff)
-
-        for (const tf of diff) {
-               const dateStart = new Date(tf.begin)
-            const dateEnd = new Date(tf.end)
-
-*/
 
         const dateStart = new Date(startTime)
         const dateEnd = new Date(endTime)
@@ -53,7 +43,7 @@ export class AndromedaTimeSeriesLoader {
 
         const einkaufszettel: any = {}
 
-        for (const attrSourceString of this.attributes) {
+        for (const attrSourceString of attributes) {
 
             const offset = attrSourceString.lastIndexOf("/")
             const entityId = attrSourceString.substring(0, offset)
@@ -63,7 +53,12 @@ export class AndromedaTimeSeriesLoader {
                 einkaufszettel[entityId] = []
             }
 
-            einkaufszettel[entityId].push(attrName)
+            if (attrName == undefined) {
+                console.error("Undefined attribute name, skipping")
+            }
+            else {
+                einkaufszettel[entityId].push(attrName)
+            }
         }
 
 
@@ -195,6 +190,8 @@ export class AndromedaTimeSeriesLoader {
     }
 
 
+
+
     async parseResponses(responses: Array<Response>) {
 
         const promises = []
@@ -202,6 +199,92 @@ export class AndromedaTimeSeriesLoader {
         for (const res of responses) {
 
             if (res.status == 200) {
+
+                //promises.push(res.text())
+                let text = await res.text()
+
+
+
+                let entityFragment: any = undefined
+
+                try {
+                    entityFragment = JSON.parse(text)
+                }
+                catch (e) {
+                    console.log("Failed to parse response from: " + res.url)
+                    continue
+                }
+
+
+                for (const attrName in entityFragment) {
+
+                    if (entityFragment[attrName].type != "Property") {
+                        continue
+                    }
+
+
+                    const attrKey = entityFragment.id + "/" + attrName
+
+                    if (this.data.data[attrKey] == undefined) {
+                        this.data.data[attrKey] = {
+                            timeseries: {}
+                        }
+                    }
+
+                    const foo = this.data.data[attrKey].timeseries
+
+
+                    let responseMinTime = Number.MAX_VALUE
+                    let responseMaxTime = Number.MIN_VALUE
+
+
+                    for (const kvp of entityFragment[attrName].values) {
+
+                        const date = new Date(kvp[0])
+
+                        const milliseconds = date.getTime()
+
+                        responseMinTime = Math.min(responseMinTime, milliseconds)
+                        responseMaxTime = Math.max(responseMaxTime, milliseconds)
+
+                        foo[milliseconds] = kvp[1]
+                    }
+
+                    this.loaded.push(new TimeFrame(responseMinTime, responseMaxTime))
+
+                    this.loaded = this.mergeTimeFrames(this.loaded)
+
+                    // console.log(JSON.stringify(this.loaded))
+
+
+
+
+                    this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
+
+                    // NOTE: We cache the keys array here because it is often needed, and if the there are
+                    // many entries, generating the keys array takes a lot of time.
+                    this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
+
+                    this.updateMinMaxByAttrKey(attrKey)
+                }
+            }
+        }
+
+
+    }
+
+
+    /*
+
+    
+    async parseResponses(responses: Array<Response>) {
+
+        const promises = []
+
+        for (const res of responses) {
+
+            if (res.status == 200) {
+                                
                 promises.push(res.text())
             }
         }
@@ -209,8 +292,7 @@ export class AndromedaTimeSeriesLoader {
         const responses2 = await Promise.all(promises)
         await this.parseResponses2(responses2)
     }
-
-
+    
     async parseResponses2(responseBodies: Array<string>) {
 
         for (const dataString of responseBodies) {
@@ -221,6 +303,7 @@ export class AndromedaTimeSeriesLoader {
                 entityFragment = JSON.parse(dataString)
             }
             catch (e) {
+                console.log("Failed to parse entity fragment JSON: " + dataString)
                 continue
             }
 
@@ -268,14 +351,7 @@ export class AndromedaTimeSeriesLoader {
 
                 // console.log(JSON.stringify(this.loaded))
 
-                /*
-                // Add random data for performance testing:
-                for(let ii = 0; ii < 100000;ii++) {
-                   let ts = lastMs - Math.round(Math.random() * 1000000000)
-                   foo[ts] = Math.random() * 10
-                }
-                */
-
+                
 
 
 
@@ -291,7 +367,7 @@ export class AndromedaTimeSeriesLoader {
 
         this.updateGlobalMinMax()
     }
-
+    */
 
     updateMinMaxByAttrKey(attrKey: string) {
 

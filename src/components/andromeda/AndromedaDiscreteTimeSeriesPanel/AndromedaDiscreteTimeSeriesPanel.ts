@@ -12,7 +12,6 @@ import SmartButton from 'tivigi/src/components/SmartButton/SmartButton';
 import SvgChart from '../../charts/DiscreteChart/SvgChart/SvgChart';
 import HtmlLegend from '../../charts/DiscreteChart/HtmlLegend/HtmlLegend';
 
-
 import WithRender from './AndromedaDiscreteTimeSeriesPanel.html';
 import './AndromedaDiscreteTimeSeriesPanel.scss'
 
@@ -52,11 +51,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     subtitle!: string
     //#endregion
 
-    attributeMetadata: any = undefined
-
-
-    loader!: AndromedaTimeSeriesLoader
-
+   
+   
+    loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl)
+    
     displayMode = 0
 
     numDecimalsDefault = 2
@@ -73,7 +71,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     async created() {
 
-
+       
         if (this.initialDisplayMode) {
             this.displayMode = this.initialDisplayMode
         }
@@ -82,26 +80,22 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     }
 
 
- 
-
-
+     
     async init() {
-
-        
-
-        //this.attributeMetadata = await getAttributeMetadata(this.brokerBaseUrl)
-
+       
+        const attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
+       
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
           
-                /*
+                
                 if (attrDef.label == undefined) {                    
-                    attrDef.label = this.attributeMetadata[attrDef.attrName].metadata.label
+                    attrDef.label = attrMeta[attrDef.attrName].metadata.label
                 }
                 else {
-                    attrDef.label = attrDef.label.replaceAll("%%LABEL%%", this.attributeMetadata[attrDef.attrName].metadata.label)
+                    attrDef.label = attrDef.label.replaceAll("%%LABEL%%", attrDef.label = attrMeta[attrDef.attrName].metadata.label)
                 }
-                */
+                
             }
         }
 
@@ -114,13 +108,13 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
             }
         }
 
-        this.loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl, attrNames)
+        
 
         const left = Date.parse(this.startTime)
         const right = Date.parse(this.endTime)
 
 
-        await this.loader.load(left, right)
+        await this.loader.load(attrNames, left, right)
 
         this.tableData = this.prepareTableData()
 
@@ -178,8 +172,8 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                 if (attrDef.compare) {
                     style.chartType = "crosses"
 
-                    label += " (Vergleich)"
-                    shortLabel += " (Vgl.)"
+                   // label += " (Vergleich)"
+                   // shortLabel += " (Vgl.)"
                 }
 
                 let numDecimals = this.numDecimalsDefault
