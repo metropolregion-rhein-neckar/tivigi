@@ -41,6 +41,7 @@ export class AndromedaTimeSeriesLoader {
         const endTimeAt = dateEnd.toISOString()
         const timerel = "between"
 
+        /*
         const einkaufszettel: any = {}
 
         for (const attrSourceString of attributes) {
@@ -67,8 +68,32 @@ export class AndromedaTimeSeriesLoader {
         for (const entityId in einkaufszettel) {
 
             const url = `${this.brokerBaseUrl}/temporal/entities/${entityId}?attrs=${einkaufszettel[entityId].join(",")}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
+        
             promises.push(fetch(url))
         }
+        */
+
+        
+
+        const promises = []
+
+        for (const attrSourceString of attributes) {
+
+            const offset = attrSourceString.lastIndexOf("/")
+            const entityId = attrSourceString.substring(0, offset)
+            const attrName = attrSourceString.substring(offset + 1)
+
+            const url = `${this.brokerBaseUrl}/entities/${entityId}/attrs/${attrName}/history?timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
+        
+            console.log(url)
+            promises.push(fetch(url))   
+        }
+
+
+        
+
+           
+        
 
         const responses = await Promise.all(promises)
 
