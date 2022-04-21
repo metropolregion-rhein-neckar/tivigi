@@ -15,7 +15,7 @@
     </thead>
 
     <tbody>
-      <tr v-for="(row,index) in displayData.rows" :class="getRowClass(row)" @click="onRowClick(row)">
+      <tr v-for="(row,index) in displayData.rows" :class="getRowClass(row)" :style="row._tableViewCss" @click="onRowClick(row)">
         <td v-for="field in displayData.fields" :style="getDynamicStyle(field)" 
         :class="getCellClass(field,row)"
         v-html="field.display(row)" @click="onCellClick(field,row)"

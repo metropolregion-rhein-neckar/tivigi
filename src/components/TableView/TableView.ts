@@ -72,6 +72,8 @@ export default class TableView extends Vue {
         return result
     }
 
+
+
     getCellClass(field: FieldConfig, row: any): any {
 
         return {
