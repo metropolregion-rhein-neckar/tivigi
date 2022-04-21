@@ -24,10 +24,10 @@ export default class TableView extends Vue {
     selectedRowIndex = -1
 
     selectedRow = undefined
-   
+
     // ATTENTION: "displayData" is NOT the data block that is actually displayed, but a copy of the data passed
     // as the "data" prop, so that it can be re-ordered without changing the original data.
-    displayData : TableData = { rows: Array<any>(), fields: Array<FieldConfig>() }
+    displayData: TableData = { rows: Array<any>(), fields: Array<FieldConfig>() }
 
 
 
@@ -41,8 +41,14 @@ export default class TableView extends Vue {
         this.displayData.rows.push(... this.data.rows)
 
         // And sort it by the selected field:       
-        this.sortBy(this.displayData.fields[this.currentSortFieldIndex])
+        const sortField = this.displayData.fields[this.currentSortFieldIndex]
+
+
+        if (sortField != undefined && sortField.allowSorting) {
+            this.sortBy(this.displayData.fields[this.currentSortFieldIndex])
+        }
     }
+
 
     getDynamicStyle(field: FieldConfig): any {
 
@@ -66,19 +72,19 @@ export default class TableView extends Vue {
         return result
     }
 
-    getCellClass(field : FieldConfig, row : any) : any {
-      
-        return {         
-         "TableView__ClickableCell" : typeof field.onClickHandler == "function"
+    getCellClass(field: FieldConfig, row: any): any {
+
+        return {
+            "TableView__ClickableCell": typeof field.onClickHandler == "function"
         }
     }
 
 
 
-    getRowClass(row : any) : any {
-      
-        return {         
-         "TableView__SelectedRow" : this.selectedRow == row
+    getRowClass(row: any): any {
+
+        return {
+            "TableView__SelectedRow": this.selectedRow == row
         }
     }
 
@@ -105,9 +111,9 @@ export default class TableView extends Vue {
     }
 
 
-    getButtonStyle(index : number) {
+    getButtonStyle(index: number) {
 
-        
+
         let imageUrl = "tivigi/img/arrow_down2.svg"
         let size = 0
 
@@ -117,7 +123,7 @@ export default class TableView extends Vue {
             size = 0.8
 
             if (this.sortAscending == -1) {
-                
+
                 imageUrl = "tivigi/img/arrow_up2.svg"
             }
 
@@ -127,7 +133,7 @@ export default class TableView extends Vue {
 
 
         return {
-            "cursor" : "pointer",
+            "cursor": "pointer",
             "background-image": `url(${imageUrl})`,
             "background-size": size + "em"
         }
@@ -138,7 +144,7 @@ export default class TableView extends Vue {
     }
 
 
-    onHeaderCellClick(index: number) {      
+    onHeaderCellClick(index: number) {
 
         if (index == this.currentSortFieldIndex) {
             this.sortAscending = -this.sortAscending
@@ -149,29 +155,29 @@ export default class TableView extends Vue {
         this.sortBy(this.data.fields[index])
     }
 
-    onKeyPress(index : number, event : KeyboardEvent) {
-        
+    onKeyPress(index: number, event: KeyboardEvent) {
+
 
         if (event.code == "Space" || event.code == "Enter") {
             this.onHeaderCellClick(index)
         }
     }
 
-    onCellClick(field : FieldConfig, row: any) {
+    onCellClick(field: FieldConfig, row: any) {
 
-        
-        
+
+
         if (typeof field.onClickHandler == "function") {
 
             field.onClickHandler(row)
         }
-        
+
     }
 
 
-    onRowClick(row : any) {
+    onRowClick(row: any) {
         this.selectedRow = row
-        
+
         // Required:
         this.$forceUpdate()
     }
