@@ -1,5 +1,4 @@
-import { getAttributeMetadata } from '@/andromedaUtil/andromedaUtil';
-import { AndromedaTimeSeriesLoader } from '@/andromedaUtil/AndromedaTimeSeriesLoader';
+import { AndromedaTimeSeriesLoader } from '../../../andromedaUtil/AndromedaTimeSeriesLoader';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import DashboardPanel from '../../DashboardPanel/DashboardPanel';
 import ContinuousTimeSeriesChart from '../../charts/ContinuousTimeSeriesChart/ContinuousTimeSeriesChart';
