@@ -25,7 +25,7 @@ export class AndromedaTimeSeriesLoader {
 
         const timeAt = dateStart.toISOString()
         const endTimeAt = dateEnd.toISOString()
-        const timerel = "between"
+        const timerel = "between_with_start"
 
       
 
@@ -132,11 +132,27 @@ export class AndromedaTimeSeriesLoader {
         
         const lastReturnedItem = values[values.length - 1]
 
-        if (lastReturnedItem[0] > timeAt) {
-            const newDateEnd = new Date(lastReturnedItem[0])
+        const earliestReturnedDate = new Date(lastReturnedItem[0])
+
+        if (earliestReturnedDate > dateStart) {
+            console.log(lastReturnedItem[0] + " <-> " + timeAt)
+            console.log("Checking for more data")
             
-            await this.load(attrSourceString, dateStart, newDateEnd)
+            
+            await this.load(attrSourceString, dateStart, earliestReturnedDate)
         }
+        else {
+            this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
+
+            // NOTE: We cache the keys array here because it is often needed, and if the there are
+            // many entries, generating the keys array takes a lot of time.
+            this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
+    
+            this.updateMinMaxByAttrKey(attrKey)
+    
+            this.updateGlobalMinMax()
+        }
+      
     }
 
 

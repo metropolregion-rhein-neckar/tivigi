@@ -283,6 +283,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
             const data = this.loader.data.data[attrPath]
 
+            if (!(data.timestamps instanceof Array)) {
+                continue
+            }
+
             for (const ts of data.timestamps) {
 
                 const date = new Date(parseInt(ts))
