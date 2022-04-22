@@ -1,4 +1,5 @@
 <div class="ContinuousTimeSeriesChart" v-onresize="onResize">
+ 
     <svg ref="svg"
     
   
@@ -10,20 +11,18 @@
 
         <g v-for="(timeseries,attrKey) in data.data" class="ContinousTimeSeriesChart__DataSeriesHoverCatcher"
         
-        @aclick="onDataSeriesClick(attrKey, $event)"
-        
-        v-on-no-drag-click="(event) => {onNoDragClick(attrKey, event)}">
-            <path :class="getDataSeriesClass(attrKey)" :style="getDataSeriesStyle(attrKey)" :d="getPath(attrKey)" />
-            <path :d="getPath(attrKey)" />
+        @aclick="onDataSeriesClick(attrKey, $event)" v-on-no-drag-click="(event) => {onNoDragClick(attrKey, event)}">
+
+            <path :class="getDataSeriesClass(attrKey)" :style="getDataSeriesStyle(attrKey)" :d="getPath(attrKey)" />                          
         </g>
 
-        <template v-for="label of getAxisLabelsX()">
-            
-            <text :x="label.x" :y="size.y - 5" v-html="label.text" style="text-anchor: middle;font-size:0.9em"></text>
-            
+        
+        <template v-for="label of getAxisLabelsX()">            
+            <text :x="label.x" :y="size.y - 5" v-html="label.text" style="text-anchor: middle;font-size:0.9em"></text>            
         </template>
+        
 
-
+        <!-- Datetime label at bottom of the panel: -->
         <!--
         <g v-if="timeAtMouse != -1" :transform="`translate(${w2sX(timeAtMouse)},0)`">
             <line :x1="0" :y1="0" :x2="0" :y2="getChartHeight()" 
@@ -35,7 +34,7 @@
         -->
 
         
-
+        
         <g v-if="closestVertex != null" class="ContinousTimeSeriesChart__VertexInfo"
         :transform="`translate(${w2sX(closestVertex.timestamp)},${w2sY(closestVertex.value)})`">
             <circle class="ContinousTimeSeriesChart__ClosestValueMarker" :r="4" />
@@ -49,5 +48,6 @@
                 <text class="ContinousTimeSeriesChart__ClosestValueMarker__Value"y="10" v-html="closestVertex.value"></text>
             </g>
         </g>
+        
     </svg>
 </div>

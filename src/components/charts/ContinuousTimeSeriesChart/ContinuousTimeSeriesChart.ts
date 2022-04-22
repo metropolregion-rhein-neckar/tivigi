@@ -54,13 +54,12 @@ export default class ContinuousTimeSeriesChart extends Vue {
     prevTimeLeftEdge = Number.MAX_VALUE
     prevTimeRightEdge = Number.MIN_VALUE
 
-    cfg_zoomSpeed = 1.1
-
 
     mouseDragStartPos = -1
 
     bw = 75
     bh = 22
+
     labelHideTimeoutHandle = -1
 
     closestVertex: any = null
@@ -83,6 +82,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
     readonly cfg_ySteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000]
     readonly cfg_yPixelsPerStep = 50
+    readonly cfg_zoomSpeed = 1.1
 
 
     beforeDestroy() {
@@ -96,8 +96,6 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
 
     fireTimeFrameChangedEvent() {
-
-        
 
         const timeRightEdge = this.timeLeftEdge + (this.millisecondsPerPixel * this.size.x)
 
@@ -395,6 +393,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
 
     getPath(attrKey: string): string {
+        
 
         if (this.cachedSvgPaths[attrKey] != undefined) {
             return this.cachedSvgPaths[attrKey]
@@ -408,6 +407,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
         const timeseries = this.data.data[attrKey].timeseries
         const timestamps = this.data.data[attrKey].timestamps
 
+        
 
         let startIndex = this.getStartIndex(attrKey)
         let endIndex = this.getEndIndex(attrKey)
@@ -425,6 +425,8 @@ export default class ContinuousTimeSeriesChart extends Vue {
             let x = this.w2sX(timestamp)
             let y = this.w2sY(value)
 
+            
+
             if (index == startIndex) {
                 result = "M "
             }
@@ -440,6 +442,8 @@ export default class ContinuousTimeSeriesChart extends Vue {
         //#endregion
 
         this.cachedSvgPaths[attrKey] = result
+
+
 
         return result
     }
@@ -772,7 +776,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
     }
 
 
-    w2sY(value: number): number {
+    w2sY(value: number): number {        
         return Math.round(-(value - this.data.minValue) * this.scaleY + this.getChartHeight())
     }
 

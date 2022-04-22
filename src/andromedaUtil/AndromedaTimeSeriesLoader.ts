@@ -296,6 +296,7 @@ export class AndromedaTimeSeriesLoader {
         }
 
 
+        this.updateGlobalMinMax()
     }
 
 
