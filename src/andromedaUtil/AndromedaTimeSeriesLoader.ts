@@ -1,12 +1,3 @@
-class TimeFrame {
-    out = false
-    constructor(public begin: number, public end: number) {
-
-    }
-}
-
-
-
 export class AndromedaTimeSeriesLoader {
 
     data: any = {
@@ -17,9 +8,6 @@ export class AndromedaTimeSeriesLoader {
         data: {}
     }
 
-    requested = Array<TimeFrame>()
-    toLoad = Array<TimeFrame>()
-    loaded = Array<TimeFrame>()
 
 
     constructor(public brokerBaseUrl: string) {
@@ -29,371 +17,129 @@ export class AndromedaTimeSeriesLoader {
     }
 
 
-    async load(attributes: Array<string>, startTime: number, endTime: number) {
+    async load(attrSourceString: string, dateStart: Date, dateEnd: Date) {
 
-
-
-        const dateStart = new Date(startTime)
-        const dateEnd = new Date(endTime)
-
+        // ATTENTION: 
+        // 'dateStart' is the BEGINNING, i.e. the EARLIER date.
+        // 'dateEnd' is the END, i.e. the LATER date.
 
         const timeAt = dateStart.toISOString()
         const endTimeAt = dateEnd.toISOString()
         const timerel = "between"
 
-        /*
-        const einkaufszettel: any = {}
+      
 
-        for (const attrSourceString of attributes) {
+        const offset = attrSourceString.lastIndexOf("/")
+        const entityId = attrSourceString.substring(0, offset)
+        const attrName = attrSourceString.substring(offset + 1)
 
-            const offset = attrSourceString.lastIndexOf("/")
-            const entityId = attrSourceString.substring(0, offset)
-            const attrName = attrSourceString.substring(offset + 1)
+        const url = `${this.brokerBaseUrl}/entities/${entityId}/attrs/${attrName}/history?timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
 
-            if (einkaufszettel[entityId] == undefined) {
-                einkaufszettel[entityId] = []
-            }
+        //console.log("Loading from " + timeAt + " to " + endTimeAt)
+        console.log(url)
+       
+        const attrKey = attrSourceString
 
-            if (attrName == undefined) {
-                console.error("Undefined attribute name, skipping")
-            }
-            else {
-                einkaufszettel[entityId].push(attrName)
-            }
+
+        const res = await fetch(url)
+
+        if (res.status != 200) {
+            console.error("Failed to load time series")
+            return
         }
-
-
-        const promises = []
-
-        for (const entityId in einkaufszettel) {
-
-            const url = `${this.brokerBaseUrl}/temporal/entities/${entityId}?attrs=${einkaufszettel[entityId].join(",")}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
-        
-            promises.push(fetch(url))
-        }
-        */
 
         
 
-        const promises = []
+        let text = await res.text()
 
-        for (const attrSourceString of attributes) {
 
-            const offset = attrSourceString.lastIndexOf("/")
-            const entityId = attrSourceString.substring(0, offset)
-            const attrName = attrSourceString.substring(offset + 1)
+        let entityFragment: any = undefined
 
-            const url = `${this.brokerBaseUrl}/entities/${entityId}/attrs/${attrName}/history?timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
-        
-            console.log(url)
-            promises.push(fetch(url))   
+        try {
+            entityFragment = JSON.parse(text)
+        }
+        catch (e) {
+            console.log("Failed to parse response from: " + res.url)
+
         }
 
 
-        
-
-           
-        
-
-        const responses = await Promise.all(promises)
-
-        await this.parseResponses(responses)
-
-    }
-
-
-
-    getTimeFramesDiff(requested: Array<TimeFrame>, loaded: Array<TimeFrame>) {
-
-        requested = this.mergeTimeFrames(requested)
-        loaded = this.mergeTimeFrames(loaded)
-
-        let diffs = Array<TimeFrame>()
-
-        for (const req of requested) {
-
-            let req_added = false
-
-
-            for (const exist of loaded) {
-
-
-                // If req is entirely within exist, continue:
-                if (exist.begin <= req.begin && exist.end >= req.end) {
-                    req_added = true
-                    continue
-                }
-
-
-                diffs.push(new TimeFrame(req.begin, Math.min(req.end, exist.begin)))
-                diffs.push(new TimeFrame(Math.max(exist.end, req.begin), req.end))
-                req_added = true
-
-            }
-
-            if (!req_added) {
-                diffs.push(new TimeFrame(req.begin, req.end))
-            }
-
-        }
-
-        diffs = this.mergeTimeFrames(diffs)
-
-        //console.log(diffs)
-        return diffs
-    }
-
-
-    mergeTimeFrames(tf: Array<TimeFrame>) {
-
-        let original = tf.slice()
-
-        for (let t of original) {
-            t.out = false
+        if (entityFragment == undefined) {
+            console.error("Failed to parse time series JSON")
+            return
         }
 
 
-        while (true) {
-
-            let merger = false
-
-            for (let t0 of original) {
-
-                if (t0.out) {
-                    continue
-                }
-
-                for (let t1 of original) {
-
-                    if (t1.out) {
-                        continue
-                    }
-
-                    if (t0 == t1) {
-                        continue
-                    }
-
-
-                    // If t0 and t1 don't overlap at all, continue:
-                    if (t1.begin > t0.end || t1.end < t0.begin) {
-                        continue
-                    }
-
-                    // If there is asymmetric overlap, create new timeframe by merging t0 and t1:
-                    let min = Math.min(t0.begin, t1.begin)
-                    let max = Math.max(t0.end, t1.end)
-
-                    t0.begin = min
-                    t0.end = max
-
-                    t1.out = true
-
-                    merger = true
-
-                }
-            }
-
-            let newOriginal = []
-
-            for (let t of original) {
-                if (!t.out) {
-                    newOriginal.push(t)
-                }
-            }
-
-            original = newOriginal
-
-
-            //console.log("boo")
-
-            if (merger == false) {
-                break
+      
+        if (this.data.data[attrKey] == undefined) {
+            this.data.data[attrKey] = {
+                timeseries: {}
             }
         }
 
-        return original
-    }
+        // This is just a shortcut variable for convenience
+        const foo = this.data.data[attrKey].timeseries
 
+        // TODO: Min/max should only be updated if the request was successful, but returned an empty
+        // array. This needs to be implemented in the broker first.
 
+        if (entityFragment[attrName] == undefined) {
+            //console.error("Response contains no time series data for the requested attribute")
 
+            //console.log("Everything loaded")
 
-    async parseResponses(responses: Array<Response>) {
+            
+            this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
 
-        const promises = []
-
-        for (const res of responses) {
-
-            if (res.status == 200) {
-
-                //promises.push(res.text())
-                let text = await res.text()
-
-
-
-                let entityFragment: any = undefined
-
-                try {
-                    entityFragment = JSON.parse(text)
-                }
-                catch (e) {
-                    console.log("Failed to parse response from: " + res.url)
-                    continue
-                }
-
-
-                for (const attrName in entityFragment) {
-
-                    if (entityFragment[attrName].type != "Property") {
-                        continue
-                    }
-
-
-                    const attrKey = entityFragment.id + "/" + attrName
-
-                    if (this.data.data[attrKey] == undefined) {
-                        this.data.data[attrKey] = {
-                            timeseries: {}
-                        }
-                    }
-
-                    const foo = this.data.data[attrKey].timeseries
-
-
-                    let responseMinTime = Number.MAX_VALUE
-                    let responseMaxTime = Number.MIN_VALUE
-
-
-                    for (const kvp of entityFragment[attrName].values) {
-
-                        const date = new Date(kvp[0])
-
-                        const milliseconds = date.getTime()
-
-                        responseMinTime = Math.min(responseMinTime, milliseconds)
-                        responseMaxTime = Math.max(responseMaxTime, milliseconds)
-
-                        foo[milliseconds] = kvp[1]
-                    }
-
-                    this.loaded.push(new TimeFrame(responseMinTime, responseMaxTime))
-
-                    this.loaded = this.mergeTimeFrames(this.loaded)
-
-                    // console.log(JSON.stringify(this.loaded))
-
-
-
-
-                    this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
-
-                    // NOTE: We cache the keys array here because it is often needed, and if the there are
-                    // many entries, generating the keys array takes a lot of time.
-                    this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
-
-                    this.updateMinMaxByAttrKey(attrKey)
-                }
-            }
-        }
-
-
-        this.updateGlobalMinMax()
-    }
-
-
-    /*
-
+            // NOTE: We cache the keys array here because it is often needed, and if the there are
+            // many entries, generating the keys array takes a lot of time.
+            this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
     
-    async parseResponses(responses: Array<Response>) {
-
-        const promises = []
-
-        for (const res of responses) {
-
-            if (res.status == 200) {
-                                
-                promises.push(res.text())
-            }
-        }
-
-        const responses2 = await Promise.all(promises)
-        await this.parseResponses2(responses2)
-    }
+            this.updateMinMaxByAttrKey(attrKey)
     
-    async parseResponses2(responseBodies: Array<string>) {
-
-        for (const dataString of responseBodies) {
-
-            let entityFragment: any = undefined
-
-            try {
-                entityFragment = JSON.parse(dataString)
-            }
-            catch (e) {
-                console.log("Failed to parse entity fragment JSON: " + dataString)
-                continue
-            }
-
-            if (entityFragment == undefined) {
-                continue
-            }
-
-            for (const attrName in entityFragment) {
-
-                if (entityFragment[attrName].type != "Property") {
-                    continue
-                }
-
-
-                const attrKey = entityFragment.id + "/" + attrName
-
-                if (this.data.data[attrKey] == undefined) {
-                    this.data.data[attrKey] = {
-                        timeseries: {}
-                    }
-                }
-
-                const foo = this.data.data[attrKey].timeseries
-
-
-                let responseMinTime = Number.MAX_VALUE
-                let responseMaxTime = Number.MIN_VALUE
-
-
-                for (const kvp of entityFragment[attrName].values) {
-
-                    const date = new Date(kvp[0])
-
-                    const milliseconds = date.getTime()
-
-                    responseMinTime = Math.min(responseMinTime, milliseconds)
-                    responseMaxTime = Math.max(responseMaxTime, milliseconds)
-
-                    foo[milliseconds] = kvp[1]
-                }
-
-                this.loaded.push(new TimeFrame(responseMinTime, responseMaxTime))
-
-                this.loaded = this.mergeTimeFrames(this.loaded)
-
-                // console.log(JSON.stringify(this.loaded))
-
-                
-
-
-
-                this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
-
-                // NOTE: We cache the keys array here because it is often needed, and if the there are
-                // many entries, generating the keys array takes a lot of time.
-                this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
-
-                this.updateMinMaxByAttrKey(attrKey)
-            }
+            this.updateGlobalMinMax()
+            return
         }
 
-        this.updateGlobalMinMax()
+        // TODO: 2 Differentiate between failed request and no more data (requires changes in broker code)
+        if (entityFragment[attrName].values.length == 0) {
+            console.log("Nothing returned")
+            return
+        }
+
+
+
+        // This is just a shortcut variable for convenience
+        const values = entityFragment[attrName].values
+
+        //let responseMinTime = Number.MAX_VALUE
+        //let responseMaxTime = Number.MIN_VALUE
+
+        
+
+        for (const kvp of values) {
+
+            const date = new Date(kvp[0])
+
+            const milliseconds = date.getTime()
+
+            //responseMinTime = Math.min(responseMinTime, milliseconds)
+            //responseMaxTime = Math.max(responseMaxTime, milliseconds)
+
+            foo[milliseconds] = kvp[1]
+        }
+
+        
+        const lastReturnedItem = values[values.length - 1]
+
+        if (lastReturnedItem[0] > timeAt) {
+            const newDateEnd = new Date(lastReturnedItem[0])
+            
+            await this.load(attrSourceString, dateStart, newDateEnd)
+        }
     }
-    */
+
+
 
     updateMinMaxByAttrKey(attrKey: string) {
 
@@ -471,8 +217,6 @@ export class AndromedaTimeSeriesLoader {
         this.data.maxTime = maxTime
         this.data.minValue = minValue
         this.data.maxValue = maxValue
-
-
     }
 
 

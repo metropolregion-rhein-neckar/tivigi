@@ -35,7 +35,7 @@ export default class AndromedaContinuousTimeSeriesPanel extends Vue {
     title!: string
 
     @Prop()
-    subtitle! : string
+    subtitle!: string
     //#endregion
 
     attrMeta: any = undefined
@@ -46,7 +46,7 @@ export default class AndromedaContinuousTimeSeriesPanel extends Vue {
     getAttrLabel(attrKey: string): string {
         let result = "Undefined"
 
-        
+
         const offset = attrKey.lastIndexOf("/")
         //const entityId = attrKey.substring(0, offset)
         const attrName = attrKey.substring(offset + 1)
@@ -64,25 +64,26 @@ export default class AndromedaContinuousTimeSeriesPanel extends Vue {
 
 
     getEntityId(attrKey: string): string {
-         
+
         const offset = attrKey.lastIndexOf("/")
         const entityId = attrKey.substring(0, offset)
         //const attrName = attrKey.substring(offset + 1)
-      
+
         return entityId
     }
 
 
-    async mounted() {    
-       // this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)     
+    async mounted() {
+        // this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)     
     }
 
 
-    async onDataRequest(evt : any) {
-   
-        console.log("requesting data")
-        await this.loader.load(this.attributes, evt.left, evt.right)     
-        
+    async onDataRequest(evt: any) {        
+
+        for (const attribute of this.attributes) {
+            this.loader.load(attribute, new Date(evt.left), new Date(evt.right))
+        }
+
     }
 }
 

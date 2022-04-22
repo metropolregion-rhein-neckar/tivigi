@@ -114,7 +114,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         const right = Date.parse(this.endTime)
 
 
-        await this.loader.load(attrNames, left, right)
+        for(const attrName of attrNames) {
+            await this.loader.load(attrName, new Date(left), new Date(right))
+        }
+        
 
         this.tableData = this.prepareTableData()
 

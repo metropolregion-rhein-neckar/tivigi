@@ -1,5 +1,3 @@
-// TODO: FIX: Left edge of time series is not loaded under some circumstances
-
 import { Vector2 } from 'tivigi/src/util/Vector2';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import "tivigi/src/directives/v-onresize"
@@ -144,7 +142,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
     getClosestIndex(attrKey: string, timestamp: number): number {
 
-        if (this.data.data[attrKey] == undefined) {
+        if (this.data.data[attrKey] == undefined || this.data.data[attrKey].timestamps == undefined) {
             return -1
         }
 
@@ -152,6 +150,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
         const timestamps = this.data.data[attrKey].timestamps
 
+        
         let index = Math.round(timestamps.length / 2)
 
         let add = Math.round(timestamps.length / 4)
