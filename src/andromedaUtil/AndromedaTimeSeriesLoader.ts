@@ -40,11 +40,31 @@ export class AndromedaTimeSeriesLoader {
 
         const attrKey = attrSourceString
 
+        
+        if (this.data.data[attrKey] == undefined) {
+            this.data.data[attrKey] = {
+                timeseries: {}
+            }
+        }
+
+        // This is just a shortcut variable for convenience
+        const foo = this.data.data[attrKey].timeseries
+
 
         const res = await fetch(url)
 
         if (res.status != 200) {
-            console.error("Failed to load time series")
+        
+            // TODO: Refactor this to reduce copy-paste 
+            this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
+
+            // NOTE: We cache the keys array here because it is often needed, and if the there are
+            // many entries, generating the keys array takes a lot of time.
+            this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
+
+            this.updateMinMaxByAttrKey(attrKey)
+
+            this.updateGlobalMinMax()
             return
         }
 
@@ -71,14 +91,6 @@ export class AndromedaTimeSeriesLoader {
 
 
 
-        if (this.data.data[attrKey] == undefined) {
-            this.data.data[attrKey] = {
-                timeseries: {}
-            }
-        }
-
-        // This is just a shortcut variable for convenience
-        const foo = this.data.data[attrKey].timeseries
 
         // TODO: Min/max should only be updated if the request was successful, but returned an empty
         // array. This needs to be implemented in the broker first.
@@ -112,9 +124,7 @@ export class AndromedaTimeSeriesLoader {
         // This is just a shortcut variable for convenience
         const values = entityFragment[attrName].values
 
-        //let responseMinTime = Number.MAX_VALUE
-        //let responseMaxTime = Number.MIN_VALUE
-
+        
 
 
         for (const kvp of values) {
@@ -123,9 +133,7 @@ export class AndromedaTimeSeriesLoader {
 
             const milliseconds = date.getTime()
 
-            //responseMinTime = Math.min(responseMinTime, milliseconds)
-            //responseMaxTime = Math.max(responseMaxTime, milliseconds)
-
+          
             foo[milliseconds] = kvp[1]
         }
 
