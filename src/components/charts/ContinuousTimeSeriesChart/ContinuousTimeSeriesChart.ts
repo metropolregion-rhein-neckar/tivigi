@@ -291,7 +291,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
             switch (mode) {
 
                 case AXIS_LABEL_MODE._1_YEAR:
-                    if (d.getDate() == 1 && d.getMonth() == 0) {
+                    if (d.getUTCDate() == 1 && d.getUTCMonth() == 0) {
 
 
                         text = `01.01.${zeroPad(d.getUTCFullYear(), 2)}`
@@ -301,23 +301,23 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
 
                 case AXIS_LABEL_MODE._1_MONTH:
-                    if (d.getDate() == 1) {
-
-                        //text = `${zeroPad(d.getDate(), 2)}.${zeroPad(d.getMonth() + 1, 2)}.${zeroPad(d.getUTCFullYear(), 2)}`
-                        text = `${monthNames[d.getMonth()]} ${zeroPad(d.getUTCFullYear(), 2)}`
+                    if (d.getUTCDate() == 1) {
+                        
+                        text = `${monthNames[d.getUTCMonth()]} ${zeroPad(d.getUTCFullYear(), 2)}`
                     }
 
                     break
 
                 case AXIS_LABEL_MODE._1_DAY:
-                    text = `${zeroPad(d.getDate(), 2)}.${zeroPad(d.getMonth() + 1, 2)}.`
+                    text = `${zeroPad(d.getUTCDate(), 2)}.${zeroPad(d.getUTCMonth() + 1, 2)}.`
                     break
 
                 case AXIS_LABEL_MODE._5_DAYS:
 
-                    if (d.getDate() % 5 == 0) {
+                
+                    if (d.getUTCDate() % 5 == 0) {
 
-                        text = `${zeroPad(d.getDate(), 2)}.${zeroPad(d.getMonth() + 1, 2)}.${zeroPad(d.getUTCFullYear(), 2)}`
+                        text = `${zeroPad(d.getUTCDate(), 2)}.${zeroPad(d.getUTCMonth() + 1, 2)}.${zeroPad(d.getUTCFullYear(), 2)}`
 
                     }
 
@@ -327,7 +327,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
                 case AXIS_LABEL_MODE._1_HOUR:
 
                 case AXIS_LABEL_MODE._15_MIN:
-                    text = `${zeroPad(d.getHours(), 2)}:${zeroPad(d.getMinutes(), 2)}`
+                    text = `${zeroPad(d.getUTCHours(), 2)}:${zeroPad(d.getUTCMinutes(), 2)}`
                     break
             }
 
@@ -380,12 +380,12 @@ export default class ContinuousTimeSeriesChart extends Vue {
     getTimeString(timestamp: any): string {
         let date = new Date(parseInt(timestamp))
 
-        let d = zeroPad(date.getDate(), 2)
-        let m = zeroPad(date.getMonth() + 1, 2)
-        let h = zeroPad(date.getHours(), 2)
+        let d = zeroPad(date.getUTCDate(), 2)
+        let m = zeroPad(date.getUTCMonth() + 1, 2)
+        let h = zeroPad(date.getUTCHours(), 2)
         let y = date.getUTCFullYear()
-        let min = zeroPad(date.getMinutes(), 2)
-        let sec = zeroPad(date.getSeconds(), 2)
+        let min = zeroPad(date.getUTCMinutes(), 2)
+        let sec = zeroPad(date.getUTCSeconds(), 2)
 
         return `${d}.${m}.${y} - ${h}:${min} UTC`
     }
