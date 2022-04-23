@@ -32,8 +32,8 @@ export class AndromedaTimeSeriesLoader {
         const offset = attrSourceString.lastIndexOf("/")
         const entityId = attrSourceString.substring(0, offset)
         const attrName = attrSourceString.substring(offset + 1)
-
-        const url = `${this.brokerBaseUrl}/entities/${entityId}/attrs/${attrName}/history?timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
+        
+        const url = `${this.brokerBaseUrl}/temporal/entities/${entityId}/?attrs=${attrName}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
 
         //console.log("Loading from " + timeAt + " to " + endTimeAt)
         //console.log(url)
