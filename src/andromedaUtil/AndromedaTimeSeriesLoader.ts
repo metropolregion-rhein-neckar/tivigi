@@ -27,7 +27,7 @@ export class AndromedaTimeSeriesLoader {
         const endTimeAt = dateEnd.toISOString()
         const timerel = "between_with_start"
 
-      
+
 
         const offset = attrSourceString.lastIndexOf("/")
         const entityId = attrSourceString.substring(0, offset)
@@ -36,8 +36,8 @@ export class AndromedaTimeSeriesLoader {
         const url = `${this.brokerBaseUrl}/entities/${entityId}/attrs/${attrName}/history?timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
 
         //console.log("Loading from " + timeAt + " to " + endTimeAt)
-        console.log(url)
-       
+        //console.log(url)
+
         const attrKey = attrSourceString
 
 
@@ -48,7 +48,7 @@ export class AndromedaTimeSeriesLoader {
             return
         }
 
-        
+
 
         let text = await res.text()
 
@@ -70,7 +70,7 @@ export class AndromedaTimeSeriesLoader {
         }
 
 
-      
+
         if (this.data.data[attrKey] == undefined) {
             this.data.data[attrKey] = {
                 timeseries: {}
@@ -88,15 +88,15 @@ export class AndromedaTimeSeriesLoader {
 
             //console.log("Everything loaded")
 
-            
+
             this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
 
             // NOTE: We cache the keys array here because it is often needed, and if the there are
             // many entries, generating the keys array takes a lot of time.
             this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
-    
+
             this.updateMinMaxByAttrKey(attrKey)
-    
+
             this.updateGlobalMinMax()
             return
         }
@@ -115,7 +115,7 @@ export class AndromedaTimeSeriesLoader {
         //let responseMinTime = Number.MAX_VALUE
         //let responseMaxTime = Number.MIN_VALUE
 
-        
+
 
         for (const kvp of values) {
 
@@ -129,16 +129,16 @@ export class AndromedaTimeSeriesLoader {
             foo[milliseconds] = kvp[1]
         }
 
-        
+
         const lastReturnedItem = values[values.length - 1]
 
         const earliestReturnedDate = new Date(lastReturnedItem[0])
 
         if (earliestReturnedDate > dateStart) {
-            console.log(lastReturnedItem[0] + " <-> " + timeAt)
-            console.log("Checking for more data")
-            
-            
+            //console.log(lastReturnedItem[0] + " <-> " + timeAt)
+            //console.log("Checking for more data")
+
+
             await this.load(attrSourceString, dateStart, earliestReturnedDate)
         }
         else {
@@ -147,12 +147,12 @@ export class AndromedaTimeSeriesLoader {
             // NOTE: We cache the keys array here because it is often needed, and if the there are
             // many entries, generating the keys array takes a lot of time.
             this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
-    
+
             this.updateMinMaxByAttrKey(attrKey)
-    
+
             this.updateGlobalMinMax()
         }
-      
+
     }
 
 

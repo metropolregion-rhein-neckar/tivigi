@@ -65,7 +65,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
     altKeyPressed = false
 
-    cachedSvgPaths: any = {}
+    //cachedSvgPaths: any = {}
     cached_axisLabelStepY = 0
 
 
@@ -150,7 +150,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
         const timestamps = this.data.data[attrKey].timestamps
 
-        
+
         let index = Math.round(timestamps.length / 2)
 
         let add = Math.round(timestamps.length / 4)
@@ -202,23 +202,6 @@ export default class ContinuousTimeSeriesChart extends Vue {
     }
 
 
-    getEndIndex(attrKey: string): number {
-
-        const timeRightEdge = this.timeLeftEdge + this.millisecondsPerPixel * this.size.x
-
-        let endIndex = this.getClosestIndex(attrKey, timeRightEdge)
-
-        // ATTENTION: Ideally, it should be sufficient to increase endIndex by just 1 to prevent
-        // the graph from being "cut off" before it reaches the right edge of the viewport.
-        // However, we still observed rendering artifacts, and it appears to work better with
-        // endIndex += 2
-
-        endIndex += 2
-
-        endIndex = Math.min(endIndex, this.data.data[attrKey].timestamps.length - 1)
-
-        return endIndex
-    }
 
 
     getAxisLabelsX() {
@@ -302,7 +285,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
                 case AXIS_LABEL_MODE._1_MONTH:
                     if (d.getUTCDate() == 1) {
-                        
+
                         text = `${monthNames[d.getUTCMonth()]} ${zeroPad(d.getUTCFullYear(), 2)}`
                     }
 
@@ -314,7 +297,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
                 case AXIS_LABEL_MODE._5_DAYS:
 
-                
+
                     if (d.getUTCDate() % 5 == 0) {
 
                         text = `${zeroPad(d.getUTCDate(), 2)}.${zeroPad(d.getUTCMonth() + 1, 2)}.${zeroPad(d.getUTCFullYear(), 2)}`
@@ -392,24 +375,27 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
 
     getPath(attrKey: string): string {
-        
 
+        /*
         if (this.cachedSvgPaths[attrKey] != undefined) {
             return this.cachedSvgPaths[attrKey]
         }
+        */
 
         if (this.data.data[attrKey] == undefined) {
-            this.cachedSvgPaths[attrKey] = ""
+            //this.cachedSvgPaths[attrKey] = ""
             return ""
         }
+
+
+
+
+        let startIndex = this.getIndexStart(attrKey)
+        let endIndex = this.getIndexEnd(attrKey)
 
         const timeseries = this.data.data[attrKey].timeseries
         const timestamps = this.data.data[attrKey].timestamps
 
-        
-
-        let startIndex = this.getStartIndex(attrKey)
-        let endIndex = this.getEndIndex(attrKey)
 
         let result = ""
 
@@ -424,7 +410,10 @@ export default class ContinuousTimeSeriesChart extends Vue {
             let x = this.w2sX(timestamp)
             let y = this.w2sY(value)
 
-            
+            if (isNaN(y)) {
+                continue
+            }
+
 
             if (index == startIndex) {
                 result = "M "
@@ -440,7 +429,8 @@ export default class ContinuousTimeSeriesChart extends Vue {
 
         //#endregion
 
-        this.cachedSvgPaths[attrKey] = result
+
+        //this.cachedSvgPaths[attrKey] = result
 
 
 
@@ -448,7 +438,30 @@ export default class ContinuousTimeSeriesChart extends Vue {
     }
 
 
-    getStartIndex(attrKey: string): number {
+
+    getIndexEnd(attrKey: string): number {
+        if (this.data.data[attrKey].timestamps == undefined) {
+            return -1
+        }
+
+        const timeRightEdge = this.timeLeftEdge + this.millisecondsPerPixel * this.size.x
+
+        let endIndex = this.getClosestIndex(attrKey, timeRightEdge)
+
+        // ATTENTION: Ideally, it should be sufficient to increase endIndex by just 1 to prevent
+        // the graph from being "cut off" before it reaches the right edge of the viewport.
+        // However, we still observed rendering artifacts, and it appears to work better with
+        // endIndex += 2
+
+        endIndex += 2
+
+        endIndex = Math.min(endIndex, this.data.data[attrKey].timestamps.length - 1)
+
+        return endIndex
+    }
+
+
+    getIndexStart(attrKey: string): number {
         let startIndex = this.getClosestIndex(attrKey, this.timeLeftEdge)
 
         startIndex--
@@ -494,8 +507,8 @@ export default class ContinuousTimeSeriesChart extends Vue {
             const timestamps = this.data.data[attrKey].timestamps
 
 
-            let startIndex = this.getStartIndex(attrKey)
-            let endIndex = this.getEndIndex(attrKey)
+            let startIndex = this.getIndexStart(attrKey)
+            let endIndex = this.getIndexEnd(attrKey)
 
 
             for (let ii = startIndex; ii <= endIndex; ii++) {
@@ -572,7 +585,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
         // TODO: What if endtime < starttime?
 
         //#region set end (right edge) time
-        if (this.endTime != undefined) {            
+        if (this.endTime != undefined) {
 
 
             const endTime_unix = new Date(this.endTime)
@@ -744,8 +757,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
     update() {
 
 
-
-        this.cachedSvgPaths = {}
+        //this.cachedSvgPaths = {}
 
         const valueSpan = this.data.maxValue - this.data.minValue
 
@@ -775,7 +787,7 @@ export default class ContinuousTimeSeriesChart extends Vue {
     }
 
 
-    w2sY(value: number): number {        
+    w2sY(value: number): number {
         return Math.round(-(value - this.data.minValue) * this.scaleY + this.getChartHeight())
     }
 

@@ -80,9 +80,14 @@ export default class AndromedaContinuousTimeSeriesPanel extends Vue {
 
     async onDataRequest(evt: any) {        
 
+        const promises = []
+
+
         for (const attribute of this.attributes) {
-            this.loader.load(attribute, new Date(evt.left), new Date(evt.right))
+            promises.push(this.loader.load(attribute, new Date(evt.left), new Date(evt.right)))
         }
+
+        //Promise.all(promises)
 
     }
 }
