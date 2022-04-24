@@ -146,8 +146,7 @@ export class AndromedaTimeSeriesLoader {
         this.updateGlobalMinMax()
 
 
-        if (attrsToCheck.length > 0) {
-            console.log("nachladen")
+        if (attrsToCheck.length > 0) {            
             await this.load2(entityId, attrsToCheck, dateStart, nextRequestStartDate)
         }
 
