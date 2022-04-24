@@ -1,3 +1,4 @@
+
 export class AndromedaTimeSeriesLoader {
 
     data: any = {
@@ -17,7 +18,20 @@ export class AndromedaTimeSeriesLoader {
     }
 
 
-    async load(attrSourceString: string, dateStart: Date, dateEnd: Date) {
+  
+    async load(task : any, dateStart: Date, dateEnd: Date) {
+
+        const promises = []
+
+        for (const entityId in task) {
+            promises.push(this.load2(entityId, task[entityId], dateStart,dateEnd))
+        }
+
+        await Promise.all(promises)
+    }
+
+
+    private async load2(entityId: string, attrNames: Array<string>, dateStart: Date, dateEnd: Date) {
 
         // ATTENTION: 
         // 'dateStart' is the BEGINNING, i.e. the EARLIER date.
@@ -28,50 +42,19 @@ export class AndromedaTimeSeriesLoader {
         const timerel = "between_with_start"
 
 
-
-        const offset = attrSourceString.lastIndexOf("/")
-        const entityId = attrSourceString.substring(0, offset)
-        const attrName = attrSourceString.substring(offset + 1)
-        
-        const url = `${this.brokerBaseUrl}/temporal/entities/${entityId}/?attrs=${attrName}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
-
-        //console.log("Loading from " + timeAt + " to " + endTimeAt)
-        //console.log(url)
-
-        const attrKey = attrSourceString
-
-        
-        if (this.data.data[attrKey] == undefined) {
-            this.data.data[attrKey] = {
-                timeseries: {}
-            }
-        }
-
-        // This is just a shortcut variable for convenience
-        const foo = this.data.data[attrKey].timeseries
+        const url = `${this.brokerBaseUrl}/temporal/entities/${entityId}/?attrs=${attrNames.join(",")}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
 
 
         const res = await fetch(url)
 
         if (res.status != 200) {
-        
-            // TODO: Refactor this to reduce copy-paste 
-            this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
-
-            // NOTE: We cache the keys array here because it is often needed, and if the there are
-            // many entries, generating the keys array takes a lot of time.
-            this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
-
-            this.updateMinMaxByAttrKey(attrKey)
-
-            this.updateGlobalMinMax()
+            //console.log("fail")
             return
         }
 
 
-
-        let text = await res.text()
-
+        //#region Parse response JSON
+        const text = await res.text()
 
         let entityFragment: any = undefined
 
@@ -80,88 +63,95 @@ export class AndromedaTimeSeriesLoader {
         }
         catch (e) {
             console.log("Failed to parse response from: " + res.url)
-
-        }
-
-
-        if (entityFragment == undefined) {
-            console.error("Failed to parse time series JSON")
             return
         }
-
+        //#endregion Parse response JSON
 
 
 
         // TODO: Min/max should only be updated if the request was successful, but returned an empty
         // array. This needs to be implemented in the broker first.
 
-        if (entityFragment[attrName] == undefined) {
-            //console.error("Response contains no time series data for the requested attribute")
+        let nextRequestStartDate = new Date(dateStart.getTime());
 
-            //console.log("Everything loaded")
-
-
-            this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
-
-            // NOTE: We cache the keys array here because it is often needed, and if the there are
-            // many entries, generating the keys array takes a lot of time.
-            this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
-
-            this.updateMinMaxByAttrKey(attrKey)
-
-            this.updateGlobalMinMax()
-            return
-        }
-
-        // TODO: 2 Differentiate between failed request and no more data (requires changes in broker code)
-        if (entityFragment[attrName].values.length == 0) {
-            console.log("Nothing returned")
-            return
-        }
+        let attrsToCheck = Array<string>()
 
 
 
-        // This is just a shortcut variable for convenience
-        const values = entityFragment[attrName].values
+        for (const attrName of attrNames) {
 
-        
+            if (entityFragment[attrName] == undefined) {
+                continue
+            }
 
-
-        for (const kvp of values) {
-
-            const date = new Date(kvp[0])
-
-            const milliseconds = date.getTime()
-
-          
-            foo[milliseconds] = kvp[1]
-        }
+            if (entityFragment[attrName].values.length == 0) {
+                continue
+            }
 
 
-        const lastReturnedItem = values[values.length - 1]
+            // NOTE: attrPath is used as the key to store the time series in the loader's cache
+            const attrKey = entityId + "/" + attrName
 
-        const earliestReturnedDate = new Date(lastReturnedItem[0])
+            if (this.data.data[attrKey] == undefined) {
+                this.data.data[attrKey] = {
+                    timeseries: {}
+                }
+            }
 
-        if (earliestReturnedDate > dateStart) {
-            //console.log(lastReturnedItem[0] + " <-> " + timeAt)
-            //console.log("Checking for more data")
+
+            // These are just a shortcut variable for convenience
+            const values = entityFragment[attrName].values
+            const foo = this.data.data[attrKey]
+
+            // Add data from response to collection of loaded data:
+            for (const kvp of values) {
+                const date = new Date(kvp[0])
+                const milliseconds = date.getTime()
+                foo.timeseries[milliseconds] = kvp[1]
+            }
 
 
-            await this.load(attrSourceString, dateStart, earliestReturnedDate)
-        }
-        else {
-            this.data.data[attrKey].timeseries = this.sortTimestampsAlphabetically(foo)
+            //#region Add response data to in-memory time series and update per-attribute min-max
+            foo.timeseries = this.sortTimestampsAlphabetically(foo.timeseries)
 
             // NOTE: We cache the keys array here because it is often needed, and if the there are
             // many entries, generating the keys array takes a lot of time.
-            this.data.data[attrKey].timestamps = Object.keys(this.data.data[attrKey].timeseries)
+            foo.timestamps = Object.keys(foo.timeseries)
 
             this.updateMinMaxByAttrKey(attrKey)
+            //#endregion Add response data to in-memory time series and update per-attribute min-max
 
-            this.updateGlobalMinMax()
+
+            //#region Check whether another request is required to load the complete times series
+
+            // ATTENTION: This assumes that the returned time series instances are 
+            // ordered by observedAt in DESCENDING order!
+            const lastReturnedItem = values[values.length - 1]
+
+            const earliestDateOfCurrentAttribute = new Date(lastReturnedItem[0])
+
+            if (earliestDateOfCurrentAttribute > dateStart) {
+
+                attrsToCheck.push(attrName)
+
+                if (earliestDateOfCurrentAttribute > nextRequestStartDate) {
+                    nextRequestStartDate = earliestDateOfCurrentAttribute
+                }
+            }
+
+            //#endregion Check whether another request is required to load the complete times series
+        }
+
+
+        this.updateGlobalMinMax()
+
+
+        if (attrsToCheck.length > 0) {
+            await this.load2(entityId, attrsToCheck, dateStart, nextRequestStartDate)
         }
 
     }
+
 
 
 

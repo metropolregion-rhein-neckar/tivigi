@@ -51,10 +51,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     subtitle!: string
     //#endregion
 
-   
-   
+
+
     loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl)
-    
+
     displayMode = 0
 
     numDecimalsDefault = 2
@@ -71,7 +71,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     async created() {
 
-       
+
         if (this.initialDisplayMode) {
             this.displayMode = this.initialDisplayMode
         }
@@ -80,47 +80,44 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     }
 
 
-     
+
     async init() {
-       
+
         const attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
-       
+
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
-          
-                
-                if (attrDef.label == undefined) {                    
+
+
+                if (attrDef.label == undefined) {
                     attrDef.label = attrMeta[attrDef.attrName].metadata.label
                 }
                 else {
                     attrDef.label = attrDef.label.replaceAll("%%LABEL%%", attrDef.label = attrMeta[attrDef.attrName].metadata.label)
                 }
-                
+
             }
         }
 
+        
 
-        const attrNames = Array<string>()
+        const attributesByEntityId: any = {}
 
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
-                attrNames.push(attrDef.entityId + "/" + attrDef.attrName)
+             
+                if (attributesByEntityId[attrDef.entityId] == undefined) {
+                    attributesByEntityId[attrDef.entityId] = Array<string>()
+                }
+
+                attributesByEntityId[attrDef.entityId].push(attrDef.attrName)
             }
         }
 
-        
-
-        const left = Date.parse(this.startTime)
-        const right = Date.parse(this.endTime)
-
-
-        for(const attrName of attrNames) {
-            await this.loader.load(attrName, new Date(left), new Date(right))
-        }
-        
+        await this.loader.load(attributesByEntityId, new Date(this.startTime), new Date(this.endTime))
+     
 
         this.tableData = this.prepareTableData()
-
         this.chartData = this.prepareChartData()
     }
 
@@ -175,8 +172,8 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                 if (attrDef.compare) {
                     style.chartType = "crosses"
 
-                   // label += " (Vergleich)"
-                   // shortLabel += " (Vgl.)"
+                    // label += " (Vergleich)"
+                    // shortLabel += " (Vgl.)"
                 }
 
                 let numDecimals = this.numDecimalsDefault

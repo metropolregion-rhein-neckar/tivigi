@@ -73,22 +73,35 @@ export default class AndromedaContinuousTimeSeriesPanel extends Vue {
     }
 
 
-    async mounted() {
-        // this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)     
-    }
+
+    async onDataRequest(evt: any) {
+
+        
+
+        const attributesByEntityId: any = {}
+
+        for (const attrSourceString of this.attributes) {
+
+            const offset = attrSourceString.lastIndexOf("/")
+            const entityId = attrSourceString.substring(0, offset)
+            const attrName = attrSourceString.substring(offset + 1)
+
+            attributesByEntityId[entityId].push(attrName)
+
+        }
 
 
-    async onDataRequest(evt: any) {        
-
+        await this.loader.load(attributesByEntityId, new Date(evt.left), new Date(evt.right))
+        /*
         const promises = []
 
-
+        
         for (const attribute of this.attributes) {
             promises.push(this.loader.load(attribute, new Date(evt.left), new Date(evt.right)))
         }
-
-        //Promise.all(promises)
-
+        
+        await Promise.all(promises)
+*/
     }
 }
 
