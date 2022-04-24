@@ -147,6 +147,7 @@ export class AndromedaTimeSeriesLoader {
 
 
         if (attrsToCheck.length > 0) {
+            console.log("nachladen")
             await this.load2(entityId, attrsToCheck, dateStart, nextRequestStartDate)
         }
 
