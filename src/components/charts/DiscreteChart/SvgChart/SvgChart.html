@@ -17,6 +17,7 @@
                 <rect v-for="(point, pointIndex) of stack" :x="w2sX(bucketIndex) - ((barWidth * bucket.length) / 2) + (stackIndex * barWidth) + 3" 
                 :y="w2sY(point.y)" :width="barWidth - 6" :height="getBarHeight(point.height)" 
                 :data-tooltip="getDataPointTooltip(point.dataset,point.height)" :style="getDatasetStyle(point.dataset, 1, '#000')" />
+                
             </g>
         </g>
         <!--################# END Draw stacked bars ###################-->
@@ -70,7 +71,4 @@
         <!--################# END Draw the rest ###################-->
     </g>
     
-    <!--
-    <text x="10" y="40" style="fill:#000">{{getDisplayMinY()}} : {{getDisplayMaxY()}}</text>
-    -->
 </svg>

@@ -343,14 +343,16 @@ export default class SvgChart extends Vue {
                             continue
                         }
 
+                        const y =  point.y
+
                         // ATTENTION: The order of commands (increase of positiveY/negativeY vs. push to stack) is important here!
-                        if (point.y > 0) {
-                            positiveY += point.y
-                            stack.push({ "dataset": dataset, "y": positiveY, "height": point.y })
+                        if (y > 0) {
+                            positiveY += y
+                            stack.push({ "dataset": dataset, "y": positiveY, "height": y })
                         }
-                        else if (point.y < 0) {
-                            stack.push({ "dataset": dataset, "y": negativeY, "height": point.y })
-                            negativeY += point.y
+                        else if (y < 0) {
+                            stack.push({ "dataset": dataset, "y": negativeY, "height": y })
+                            negativeY += y
                         }
                     }
                 }
@@ -411,11 +413,14 @@ export default class SvgChart extends Vue {
 
     w2sY(value: number): number {
 
-        // ATTENTION: For some reason, caching the value
+        // ATTENTION: For some reason, pre-calculating scaleY in onMinMaxChange(), storing it in a cache variable
+        // and using it here causes scaleY to be computed wrongly. Thus, we always calculate the current value
+        // for scaleY here:
         const scaleY = (this.size.y / (this.getDisplayMaxY() - this.getDisplayMinY())) 
 
         // ATTENTION: The rounding is required for clean drawing (not anti-aliased where it is unnecessary and undesired)   
-        const result = Math.floor(-value * scaleY)
+        //const result = Math.floor(-value * scaleY)
+        const result = -value * scaleY
 
         if (isNaN(result)) {
             // TODO: 3 Understand when and why result is not a number
