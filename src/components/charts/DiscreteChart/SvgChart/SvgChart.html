@@ -1,9 +1,9 @@
 <svg class="SvgChart" :viewBox="getViewBoxString()">
 
     <!-- This is a frame around the entire viewBox: -->
-    <rect v-if="debug" :x="0" :y="0" :width="size.x" :height="size.y" style="fill:transparent;stroke:#aaa" />
+    <rect v-if="debug" :x="0" :y="0" :width="size.x" :height="size.y + 60" style="fill:transparent;stroke:#aaa" />
 
-    <g :transform="'translate(' + cached_yLabelsWidth + ',' + (height - w2sY(getDisplayMinY()) + cfg_padding[0]) + ')'">
+    <g :transform="'translate(' + cached_yLabelsWidth + ',' + (size.y - w2sY(getDisplayMinY()) + 15) + ')'">
 
         <Axis dir="x" :labels="getLabelsX()" />
         <Axis dir="y" :labels="getLabelsY()" />
@@ -69,5 +69,8 @@
         </g>
         <!--################# END Draw the rest ###################-->
     </g>
-
+    
+    <!--
+    <text x="10" y="40" style="fill:#000">{{getDisplayMinY()}} : {{getDisplayMaxY()}}</text>
+    -->
 </svg>

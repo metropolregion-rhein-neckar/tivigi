@@ -1,5 +1,3 @@
-// TODO: Center bucket on x-axis label
-
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import { Vector2 } from 'tivigi/src/util/Vector2';
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
@@ -57,20 +55,12 @@ export default class SvgChart extends Vue {
     cached_maxY = 0
     cached_yLabelsWidth = 0
     cached_axisLabelStepY = 0
-    cached_scaleY = 0
-    cached_scaleX = 0
-
+    
     readonly cfg_fontSize = 15
-    // top, right, bottom, left
-    // NOTE: padding right and padding left currently have no effect.    
-    readonly cfg_padding = [15, 0, 40, 0]
+    
     readonly cfg_ySteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000]
     readonly cfg_yPixelsPerStep = 50
 
-
-    get height(): number {
-        return this.size.y - this.cfg_padding[0] - this.cfg_padding[2]
-    }
 
 
     @Watch("data")
@@ -93,13 +83,10 @@ export default class SvgChart extends Vue {
         this.cached_maxX = this.getMaxX()
         this.cached_maxY = this.getMaxY()
 
-        this.cached_scaleX = (this.size.x - this.cached_yLabelsWidth) / (this.data.labelsX.length + 1)
-        this.cached_scaleY = this.height / (this.getDisplayMaxY() - this.getDisplayMinY())
-
-
-        this.cached_axisLabelStepY = this.getAxisLabelStepY()
+        this.cached_axisLabelStepY = this.getAxisLabelStepY()        
     }
     
+
     getBarHeight(height : number) : number {
         return Math.max(0, Math.abs(this.w2sY(height)))
     }
@@ -150,7 +137,7 @@ export default class SvgChart extends Vue {
 
 
     getViewBoxString(): string {
-        return "0 0 " + this.size.x + " " + this.size.y
+        return "0 0 " + this.size.x + " " + (this.size.y + 60)
     }
 
 
@@ -158,7 +145,7 @@ export default class SvgChart extends Vue {
     //###################### BEGIN This is not generic ###########################
     getAxisLabelStepY(): number {
 
-        const numSteps = this.height / this.cfg_yPixelsPerStep
+        const numSteps = this.size.y / this.cfg_yPixelsPerStep
 
         const range = this.cached_maxY - this.cached_minY
 
@@ -415,16 +402,20 @@ export default class SvgChart extends Vue {
 
 
     w2sX(value: number): number {
+        const scaleX = (this.size.x - this.cached_yLabelsWidth) / (this.data.labelsX.length + 1)
 
         // ATTENTION: The rounding is required for clean drawing (not anti-aliased where it is unnecessary and undesired)   
-        return Math.floor(value * this.cached_scaleX)
+        return Math.floor(value * scaleX)
     }
 
 
     w2sY(value: number): number {
 
+        // ATTENTION: For some reason, caching the value
+        const scaleY = (this.size.y / (this.getDisplayMaxY() - this.getDisplayMinY())) 
+
         // ATTENTION: The rounding is required for clean drawing (not anti-aliased where it is unnecessary and undesired)   
-        const result = Math.floor(-value * this.cached_scaleY)
+        const result = Math.floor(-value * scaleY)
 
         if (isNaN(result)) {
             // TODO: 3 Understand when and why result is not a number
