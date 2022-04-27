@@ -9,15 +9,16 @@
 
 
 
-        <g :transform="'translate(' + cached_yLabelsWidth + ',' + (chartAreaSize.y + paddingTop + getDisplayMinY() * getScaleY()) + ')'">
-
+        <g :transform="'translate(' + cached_yLabelsWidth + ',' + (chartAreaSize.y + paddingTop + getChartOffset()) + ')'">
 
             <!-- This is a frame around the chart area -->
 
             <rect v-if="debug" class="SvgChart__DebugChartAreaBorder" :x="0" :y="-chartAreaSize.y"
                 :width="chartAreaSize.x" :height="chartAreaSize.y" />
 
+                
             <Axis dir="x" :labels="getLabelsX()" />
+            
             <Axis dir="y" :labels="getLabelsY()" />
 
 

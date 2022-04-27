@@ -135,6 +135,7 @@ export default class SvgChart extends Vue {
 
     getYLabelsWidth(): number {
 
+        
        
         let result = 0
 
@@ -153,6 +154,7 @@ export default class SvgChart extends Vue {
     //###################### BEGIN This is not generic ###########################
     getAxisLabelStepY(): number {
 
+        
         const numSteps = this.chartAreaSize.y / this.cfg_yPixelsPerStep
 
         const range = this.cached_maxY - this.cached_minY
@@ -172,6 +174,7 @@ export default class SvgChart extends Vue {
 
     getLabelsX(): Array<AxisLabel> {
 
+        
         let result = Array<AxisLabel>()
 
         for (let ii = 0; ii < this.data.labelsX.length; ii++) {
@@ -183,16 +186,42 @@ export default class SvgChart extends Vue {
 
 
     getLabelsY(): Array<AxisLabel> {
+        
+        const miny = this.getDisplayMinY()
+        const maxy = this.getDisplayMaxY()
 
         let result = Array<AxisLabel>()
 
-        for (let y = this.getDisplayMinY(); y <= this.getDisplayMaxY(); y += this.cached_axisLabelStepY) {
+        if (this.cached_axisLabelStepY <= 0) {
+            return result
+        }
+
+        
+        // Quick and dirty fix for "maximum call stack size exceeded" error:
+        // TODO: 2 Understand the actual origin of this problem and fix it
+        if ((maxy - miny) / this.cached_axisLabelStepY > 100) {           
+            return result
+        }
+
+        for (let y = miny; y <= maxy; y += this.cached_axisLabelStepY) {
+            
             result.push({ pos: y, text: y.toString() })
         }
 
         return result
     }
 
+
+    getChartOffset() {
+        let result = this.getDisplayMinY() * this.getScaleY()
+
+        if (isNaN(result)) {
+            result = 0
+
+        }
+
+        return result
+    }
 
     getDisplayMaxX() {
         return this.cached_maxX
@@ -492,8 +521,7 @@ export default class SvgChart extends Vue {
 
 
     onResize() {
-    
-      
+            
         this.updateChartAreaSize()
         
     }
