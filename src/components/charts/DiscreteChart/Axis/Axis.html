@@ -17,11 +17,11 @@
 
         <!-- These are the horizontal lines that mark they Y axis steps: -->
 
-        <line :x1="0" :x2="parent.size.x - parent.getYLabelsWidth()" :y1="w2sY(label.pos)" :y2="w2sY(label.pos)"
+        <line :x1="0" :x2="parent.chartAreaSize.x" :y1="w2sY(label.pos)" :y2="w2sY(label.pos)"
             :class="getYAxisClass(label)" />
 
         <!-- These are they Y axis labels: -->
-        <text :x="-5" :y="w2sY(label.pos)">{{label.text}}</text>
+        <text :x="-10" :y="w2sY(label.pos)">{{label.text}}</text>
 
     </g>
     <!--###################### END Y Axis ########################-->

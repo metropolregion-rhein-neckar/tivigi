@@ -11,4 +11,7 @@ export class Vector2 {
         return new Vector2(this.x - other.x, this.y - other.y)
     }
 
+    clone() {
+        return new Vector2(this.x, this.y)
+    }
 }

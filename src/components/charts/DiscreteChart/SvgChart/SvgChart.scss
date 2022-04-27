@@ -1,4 +1,25 @@
 Svg.SvgChart {
-    max-height:350px;
+   
     
+    //border: 4px dotted #f00;
+
+    text {
+        font-size: 15px;
+    }
+
+    rect.SvgChart__DebugViewboxBorder {
+        stroke: #ccc;
+        fill: transparent;
+    }
+
+    rect.SvgChart__DebugChartAreaBorder {
+        stroke: #000;
+        fill: transparent;
+        stroke-width: 1;
+    }
+
+    line.SvgChart__Axis__X--Zero {
+        stroke-dasharray: none;
+        //stroke:#000;
+    }
 }

@@ -8,6 +8,7 @@ import { AxisLabel, ChartData, DataPoint, Dataset, getDatasetStyle } from '../ch
 import "./SvgChart.scss"
 import WithRender from './SvgChart.html';
 
+
 @WithRender
 @Component({
     components: {
@@ -27,23 +28,29 @@ export default class SvgChart extends Vue {
     @Prop({ default: false })
     debug!: boolean
 
-    @Prop({ default: false })
+    @Prop({ default: true })
     cropToYRange!: boolean
-
-    barWidth = 22
-
+    //############ END Props #############
 
 
 
+
+    
+
+
+    paddingTop = 10
+    paddingBottom = 45
 
     stackData: any = null
 
     crossSize = 5
 
-    //############ END Props #############
 
-    size = new Vector2(650, 300)
+ 
 
+    
+
+    chartAreaSize = new Vector2()
 
     overrideMaxY = Number.NEGATIVE_INFINITY
     overrideMinY = Number.POSITIVE_INFINITY
@@ -56,11 +63,12 @@ export default class SvgChart extends Vue {
     cached_yLabelsWidth = 0
     cached_axisLabelStepY = 0
     
-    readonly cfg_fontSize = 15
+    readonly cfg_fontSize = 13
     
     readonly cfg_ySteps = [1, 2, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 250000]
-    readonly cfg_yPixelsPerStep = 50
-
+    readonly cfg_yPixelsPerStep = 40
+    cfg_barWidth = 18
+    cfg_barSpacing = 5
 
 
     @Watch("data")
@@ -72,7 +80,12 @@ export default class SvgChart extends Vue {
 
         this.cached_yLabelsWidth = this.getYLabelsWidth()
 
+        
+        // Update chart area size:
+        this.onResize()
+        
         this.stackData = this.prepareStackData()
+    
     }
 
 
@@ -132,12 +145,7 @@ export default class SvgChart extends Vue {
             }
         }
 
-        return (result * this.cfg_fontSize) + 5
-    }
-
-
-    getViewBoxString(): string {
-        return "0 0 " + this.size.x + " " + (this.size.y + 55)
+        return (result * this.cfg_fontSize) + 10
     }
 
 
@@ -145,7 +153,7 @@ export default class SvgChart extends Vue {
     //###################### BEGIN This is not generic ###########################
     getAxisLabelStepY(): number {
 
-        const numSteps = this.size.y / this.cfg_yPixelsPerStep
+        const numSteps = this.chartAreaSize.y / this.cfg_yPixelsPerStep
 
         const range = this.cached_maxY - this.cached_minY
 
@@ -269,6 +277,7 @@ export default class SvgChart extends Vue {
     }
 
 
+
     private getMinY() {
 
         let result = Number.MAX_VALUE
@@ -294,6 +303,12 @@ export default class SvgChart extends Vue {
 
         return Math.min(result, this.overrideMinY)
     }
+
+
+    mounted() {
+        this.onResize()
+    }
+
 
 
     overrideMinMax(newmin: number, newmax: number) {
@@ -404,7 +419,7 @@ export default class SvgChart extends Vue {
 
 
     w2sX(value: number): number {
-        const scaleX = (this.size.x - this.cached_yLabelsWidth) / (this.data.labelsX.length + 1)
+        const scaleX = this.chartAreaSize.x / (this.data.labelsX.length + 1)
 
         // ATTENTION: The rounding is required for clean drawing (not anti-aliased where it is unnecessary and undesired)   
         return Math.floor(value * scaleX)
@@ -416,11 +431,9 @@ export default class SvgChart extends Vue {
         // ATTENTION: For some reason, pre-calculating scaleY in onMinMaxChange(), storing it in a cache variable
         // and using it here causes scaleY to be computed wrongly. Thus, we always calculate the current value
         // for scaleY here:
-        const scaleY = (this.size.y / (this.getDisplayMaxY() - this.getDisplayMinY())) 
-
-        // ATTENTION: The rounding is required for clean drawing (not anti-aliased where it is unnecessary and undesired)   
-        //const result = Math.floor(-value * scaleY)
-        const result = -value * scaleY
+       
+        const result = -value * this.getScaleY()
+        //const result = (-value + this.getDisplayMinY()) * this.getScaleY()
 
         if (isNaN(result)) {
             // TODO: 3 Understand when and why result is not a number
@@ -430,6 +443,11 @@ export default class SvgChart extends Vue {
         return result
     }
 
+
+    getScaleY() {
+        return (this.chartAreaSize.y / (this.getDisplayMaxY() - this.getDisplayMinY())) 
+
+    }
 
     getX(point: DataPoint, index: number): number {
         let barWidth = 15
@@ -472,5 +490,25 @@ export default class SvgChart extends Vue {
         return result
     }
 
+
+    onResize() {
+    
+      
+        this.updateChartAreaSize()
+        
+    }
+
+
+    updateChartAreaSize() {
+
+        const el = this.$el as SVGElement
+        const bbox = el.getBoundingClientRect()
+
+        const sx = bbox.width
+        const sy = bbox.height
+      
+        this.chartAreaSize = new Vector2(sx - this.cached_yLabelsWidth, sy - this.paddingBottom - this.paddingTop)
+   
+    }
 
 }
