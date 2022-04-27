@@ -3,11 +3,11 @@
     <!--###################### BEGIN X Axis ########################-->
     <g class="SvgChart__Axis__X" v-if="dir == 'x'" v-for="label in labels">
 
-         <!-- These are the long vertical lines above the labels: -->
-         <line :x1="w2sX(label.pos)" :y1="w2sY(displayMinY)" :x2="w2sX(label.pos)" :y2="w2sY(displayMaxY)" />
+        <!-- These are the long vertical lines above the labels: -->
+        <line :x1="w2sX(label.pos)" :y1="w2sY(displayMinY)" :x2="w2sX(label.pos)" :y2="w2sY(displayMaxY)" />
 
         <!-- These are the X axis labels: -->
-        <text :x="w2sX(label.pos)"  :y="w2sY(displayMinY) + 35">{{label.text}}</text>
+        <text :x="w2sX(label.pos)" :y="w2sY(displayMinY) + 30">{{label.text}}</text>
     </g>
     <!--###################### END X Axis ########################-->
 
@@ -18,10 +18,10 @@
         <!-- These are the horizontal lines that mark they Y axis steps: -->
 
         <line :x1="0" :x2="parent.size.x - parent.getYLabelsWidth()" :y1="w2sY(label.pos)" :y2="w2sY(label.pos)"
-        :class="getYAxisClass(label)"  />
+            :class="getYAxisClass(label)" />
 
         <!-- These are they Y axis labels: -->
-        <text :x="-15" :y="w2sY(label.pos)">{{label.text}}</text>
+        <text :x="-5" :y="w2sY(label.pos)">{{label.text}}</text>
 
     </g>
     <!--###################### END Y Axis ########################-->

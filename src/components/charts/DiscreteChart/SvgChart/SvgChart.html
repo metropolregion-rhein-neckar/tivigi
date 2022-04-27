@@ -1,7 +1,7 @@
 <svg class="SvgChart" :viewBox="getViewBoxString()">
 
     <!-- This is a frame around the entire viewBox: -->
-    <rect v-if="debug" :x="0" :y="0" :width="size.x" :height="size.y + 60" style="fill:transparent;stroke:#aaa" />
+    <rect v-if="debug" :x="0" :y="0" :width="size.x" :height="size.y + 55" style="fill:transparent;stroke:#aaa" />
 
     <g :transform="'translate(' + cached_yLabelsWidth + ',' + (size.y - w2sY(getDisplayMinY()) + 15) + ')'">
 

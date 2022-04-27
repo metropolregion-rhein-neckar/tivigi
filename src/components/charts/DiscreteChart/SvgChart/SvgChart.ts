@@ -122,22 +122,22 @@ export default class SvgChart extends Vue {
 
     getYLabelsWidth(): number {
 
+       
         let result = 0
 
         for (const label of this.getLabelsY()) {
 
             if (label.text.length > result) {
-                result = label.text.length
+                result = label.text.length             
             }
         }
 
-
-        return (result * this.cfg_fontSize) + 20
+        return (result * this.cfg_fontSize) + 5
     }
 
 
     getViewBoxString(): string {
-        return "0 0 " + this.size.x + " " + (this.size.y + 60)
+        return "0 0 " + this.size.x + " " + (this.size.y + 55)
     }
 
 
