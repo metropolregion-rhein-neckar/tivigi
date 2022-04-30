@@ -68,6 +68,11 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         await this.init()
     }
 
+    @Watch("displayMode")
+    async onDisplayModeChange() {
+        await this.init()
+     //   this.$forceUpdate()
+    }
 
     async created() {
 
