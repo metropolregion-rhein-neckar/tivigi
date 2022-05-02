@@ -15,7 +15,7 @@
 
       <div v-show="displayMode == 0">
         <div>
-          <SvgChart :data="chartData" />
+          <SvgChart :data="chartData" :displayMaxY="displayMaxY" />
           <HtmlLegend :data="chartData" />
         </div>
       </div>

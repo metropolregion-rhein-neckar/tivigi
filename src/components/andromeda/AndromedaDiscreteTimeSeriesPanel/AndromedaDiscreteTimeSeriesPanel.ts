@@ -51,6 +51,9 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     subtitle!: string
     //#endregion
 
+    @Prop()
+    displayMaxY!: number
+
 
 
     loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl)
