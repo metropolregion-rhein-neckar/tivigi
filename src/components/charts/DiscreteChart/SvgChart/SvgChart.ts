@@ -146,7 +146,7 @@ export default class SvgChart extends Vue {
             }
         }
 
-        return (result * this.cfg_fontSize) + 10
+        return (result * this.cfg_fontSize) + 15
     }
 
 
