@@ -1,6 +1,27 @@
 export class Vector2 {
-    constructor(public x : number = 0, public y : number = 0) {
 
+    values = [0,0]
+
+    constructor(x : number = 0, y : number = 0) {
+
+        this.values[0] = x
+        this.values[1] = y
+    }
+
+    get x() : number {
+        return this.values[0]
+    }
+
+    set x(newval : number) {
+        this.values[0] = newval
+    }
+
+    get y() : number {
+        return this.values[1]
+    }
+
+    set y(newval : number) {
+        this.values[1] = newval
     }
 
     add(other : Vector2) : Vector2 {
@@ -13,5 +34,13 @@ export class Vector2 {
 
     clone() {
         return new Vector2(this.x, this.y)
+    }
+
+    len() : number {
+        return Math.sqrt(this.x*this.x + this.y*this.y)
+    }
+
+    scalarMult(value : number) : Vector2 {
+        return new Vector2(this.x * value, this.y * value)
     }
 }
