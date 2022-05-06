@@ -43,4 +43,14 @@ export class Vector2 {
     scalarMult(value : number) : Vector2 {
         return new Vector2(this.x * value, this.y * value)
     }
+
+   
+}
+
+export function vector2Min(v1 : Vector2,v2 : Vector2) : Vector2 {
+    return new Vector2(Math.min(v1.x,v2.x), Math.min(v1.y,v2.y))
+}
+
+export function vector2Max(v1 : Vector2,v2 : Vector2) : Vector2 {
+    return new Vector2(Math.max(v1.x,v2.x), Math.max(v1.y,v2.y))
 }

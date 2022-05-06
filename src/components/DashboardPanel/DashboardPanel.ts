@@ -31,6 +31,7 @@ export default class DashboardPanel extends Vue {
     expanded = false
     showInfoPanel = false
 
+   
 
     getDynamicClass() {
         return {
