@@ -59,7 +59,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     displayMode = 0
 
-    numDecimalsDefault = 2
+    numDecimalsDefault = 1
 
     attrMeta: any
 
