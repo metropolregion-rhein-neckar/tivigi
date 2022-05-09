@@ -24,8 +24,8 @@ export default class SvgChart extends Vue {
     data!: ChartData
 
 
-    @Prop()
-    displayMaxY! : number
+    @Prop({default:null})
+    displayMaxY! : number|null
 
     @Prop({ default: false })
     debug!: boolean
@@ -236,7 +236,7 @@ export default class SvgChart extends Vue {
 
     getDisplayMaxY() {
 
-        if (this.displayMaxY != undefined) {
+        if (this.displayMaxY != null) {
             return this.displayMaxY
         }
 

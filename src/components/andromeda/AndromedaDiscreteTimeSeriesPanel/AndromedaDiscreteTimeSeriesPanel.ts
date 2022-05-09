@@ -27,7 +27,7 @@ import './AndromedaDiscreteTimeSeriesPanel.scss'
 })
 export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
-    //#region Properties
+    //#region Props
 
     @Prop()
     attributes!: Array<Array<AndromedaAttributeDefinition>>
@@ -49,11 +49,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     @Prop({ default: "" })
     subtitle!: string
-    //#endregion
 
-    @Prop()
-    displayMaxY!: number
-
+    @Prop({ default: null })
+    displayMaxY!: number | null
+    //#endregion Props
 
 
     loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl)
@@ -62,6 +61,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
     numDecimalsDefault = 2
 
+    attrMeta: any
 
     tableData: TableData = new TableData()
     chartData: ChartData = new ChartData()
@@ -74,7 +74,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
     @Watch("displayMode")
     async onDisplayModeChange() {
         await this.init()
-     //   this.$forceUpdate()
+        //   this.$forceUpdate()
     }
 
     async created() {
@@ -84,8 +84,13 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
             this.displayMode = this.initialDisplayMode
         }
 
+        this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
+
+
         await this.init()
     }
+
+
 
 
 
@@ -98,22 +103,26 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
 
                 if (attrDef.label == undefined) {
-                    attrDef.label = attrMeta[attrDef.attrName].metadata.label
+                    if (attrMeta[attrDef.attrName] != undefined) {
+                        attrDef.label = attrMeta[attrDef.attrName].metadata.label
+                    }
                 }
                 else {
-                    attrDef.label = attrDef.label.replaceAll("%%LABEL%%", attrDef.label = attrMeta[attrDef.attrName].metadata.label)
+                    if (attrMeta[attrDef.attrName] != undefined) {
+                        attrDef.label = attrDef.label.replaceAll("%%LABEL%%", attrDef.label = attrMeta[attrDef.attrName].metadata.label)
+                    }
                 }
 
             }
         }
 
-        
+
 
         const attributesByEntityId: any = {}
 
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
-             
+
                 if (attributesByEntityId[attrDef.entityId] == undefined) {
                     attributesByEntityId[attrDef.entityId] = Array<string>()
                 }
@@ -123,7 +132,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         }
 
         await this.loader.load(attributesByEntityId, new Date(this.startTime), new Date(this.endTime))
-     
+
 
         this.tableData = this.prepareTableData()
         this.chartData = this.prepareChartData()
@@ -146,6 +155,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
         colors.push({ start: new ColorRGBA([255, 255, 255, 255]), end: new ColorRGBA([50, 50, 220, 255]) })
         colors.push({ start: new ColorRGBA([220, 220, 100, 255]), end: new ColorRGBA([60, 60, 60, 255]) })
+        colors.push({ start: new ColorRGBA([180, 180, 180, 255]), end: new ColorRGBA([0, 0, 0, 255]) })
 
 
 
@@ -265,8 +275,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
                 let numDecimals = this.numDecimalsDefault
 
-                if (typeof attrDef.numDecimals == "number") {
-                    numDecimals = attrDef.numDecimals
+                let numDecimalsDatabase = this.attrMeta[attrDef.attrName].metadata.numDecimals
+
+                if (typeof numDecimalsDatabase == "number") {
+                    numDecimals = numDecimalsDatabase
                 }
 
 
