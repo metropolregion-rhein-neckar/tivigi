@@ -272,6 +272,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         //for (const attrPath in this.loader.data.data) {
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
+                
 
                 let numDecimals = this.numDecimalsDefault
 
@@ -283,6 +284,13 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
 
                 const attrPath = attrDef.entityId + "/" + attrDef.attrName
+
+                const data = this.loader.data.data[attrPath]
+
+                // Don't add table columns for data that don't exist:
+                if (data == undefined) {
+                    continue
+                }
 
                 //############### BEGIN Create attribute field #############
                 const displayFunc = (row: any) => formatNumberString(row[attrPath], numDecimals)
