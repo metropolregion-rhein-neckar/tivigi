@@ -11,6 +11,14 @@
 // found really good solutions. Splitting up the involved functionality into smaller pieces allows us to
 // recombine them in different ways and experiment with different approaches of how to manage this.
 
+export enum AggregationPeriod {
+    day = "day"
+}
+
+export enum AggregationMethod {
+    sum = "sum"
+}
+
 
 export interface TimeSeriesLoaderTask {
     entityId: string,
@@ -49,10 +57,9 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
 
 
 
-async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoaderTask) {
+export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoaderTask) {
 
-    let result: any = {
-    }
+    let result: any = {}
 
     result[task.entityId] = {}
 
@@ -139,9 +146,10 @@ async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoa
                 const dateStart = new Date(interval[1])
                 //const dateEnd = new Date(interval[2])
 
+                const value = interval[0]
 
                 const timestamp = dateStart.getTime()
-                result[task.entityId][attrName][timestamp] = interval[0]
+                result[task.entityId][attrName][timestamp] = Math.round(value * 1000) / 1000
 
             }
 

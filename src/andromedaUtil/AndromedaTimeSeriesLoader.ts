@@ -1,7 +1,6 @@
+import { AggregationMethod, AggregationPeriod, loadTimeSeriesInPieces, TimeSeriesLoaderTask } from "tivigi/src/andromedaUtil/andromedaTimeSeriesFunctions"
 
-export enum AggregationPeriod {
-    day = "day"
-}
+
 
 export class AndromedaTimeSeriesLoader {
 
@@ -28,213 +27,60 @@ export class AndromedaTimeSeriesLoader {
         const promises = []
 
         for (const entityId in task) {
-            promises.push(this.load2(entityId, task[entityId], dateStart, dateEnd))
+            const task2: TimeSeriesLoaderTask = {
+                entityId: entityId,
+                dateStart: dateStart,
+                dateEnd: dateEnd,
+                attrs: task[entityId]
+            }
+
+            promises.push(this.loadTask(task2))
         }
 
         await Promise.all(promises)
-    }
-
-
-    private async load2(entityId: string, attrNames: Array<string>, dateStart: Date, dateEnd: Date) {
-
-        // ATTENTION: 
-        // 'dateStart' is the BEGINNING, i.e. the EARLIER date.
-        // 'dateEnd' is the END, i.e. the LATER date.
-
-        const timeAt = dateStart.toISOString()
-        const endTimeAt = dateEnd.toISOString()
-        const timerel = "between_with_start"
-
-
-        const url = `${this.brokerBaseUrl}/temporal/entities/${entityId}/?attrs=${attrNames.join(",")}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=temporalValues`
-
-
-        const res = await fetch(url)
-
-        if (res.status != 200) {
-            //console.log("fail")
-            return
-        }
-
-
-        //#region Parse response JSON
-        const text = await res.text()
-
-        let entityFragment: any = undefined
-
-        try {
-            entityFragment = JSON.parse(text)
-        }
-        catch (e) {
-            console.log("Failed to parse response from: " + res.url)
-            return
-        }
-        //#endregion Parse response JSON
-
-
-
-        // TODO: Min/max should only be updated if the request was successful, but returned an empty
-        // array. This needs to be implemented in the broker first.
-
-        let nextRequestStartDate = new Date(dateStart.getTime());
-
-        let attrsToCheck = Array<string>()
-
-
-
-        for (const attrName of attrNames) {
-
-            if (entityFragment[attrName] == undefined) {
-                continue
-            }
-
-            if (entityFragment[attrName].values.length == 0) {
-                continue
-            }
-
-
-            // NOTE: attrPath is used as the key to store the time series in the loader's cache
-            const attrKey = entityId + "/" + attrName
-
-            if (this.data.data[attrKey] == undefined) {
-                this.data.data[attrKey] = {
-                    timeseries: {}
-                }
-            }
-
-
-            // These are just a shortcut variable for convenience
-            const values = entityFragment[attrName].values
-            const foo = this.data.data[attrKey]
-
-            // Add data from response to collection of loaded data:
-            for (const kvp of values) {
-                const date = new Date(kvp[0])
-                const milliseconds = date.getTime()
-                foo.timeseries[milliseconds] = kvp[1]
-            }
-
-
-            //#region Add response data to in-memory time series and update per-attribute min-max
-            foo.timeseries = this.sortTimestampsAlphabetically(foo.timeseries)
-
-            // NOTE: We cache the keys array here because it is often needed, and if the there are
-            // many entries, generating the keys array takes a lot of time.
-            foo.timestamps = Object.keys(foo.timeseries)
-
-            this.updateMinMaxByAttrKey(attrKey)
-            //#endregion Add response data to in-memory time series and update per-attribute min-max
-
-
-            //#region Check whether another request is required to load the complete times series
-
-            // ATTENTION: This assumes that the returned time series instances are 
-            // ordered by observedAt in DESCENDING order!
-            const lastReturnedItem = values[values.length - 1]
-
-            const earliestDateOfCurrentAttribute = new Date(lastReturnedItem[0])
-
-            if (earliestDateOfCurrentAttribute > dateStart) {
-
-                attrsToCheck.push(attrName)
-
-                if (earliestDateOfCurrentAttribute > nextRequestStartDate) {
-                    nextRequestStartDate = earliestDateOfCurrentAttribute
-                }
-            }
-
-            //#endregion Check whether another request is required to load the complete times series
-        }
-
-
-        this.updateGlobalMinMax()
-
-
-        if (attrsToCheck.length > 0) {
-            await this.load2(entityId, attrsToCheck, dateStart, nextRequestStartDate)
-        }
-
     }
 
 
     async loadAggregated(task: any, dateStart: Date, dateEnd: Date,
-        aggrMethod: string, aggrPeriodDuration: AggregationPeriod) {
+        aggrMethod: AggregationMethod, aggrPeriodDuration: AggregationPeriod) {
+
+
         const promises = []
 
         for (const entityId in task) {
-            promises.push(this.loadAggregated2(entityId, task[entityId], dateStart, dateEnd, aggrMethod, aggrPeriodDuration))
+            
+            const task2: TimeSeriesLoaderTask = {
+                entityId: entityId,
+                dateStart: dateStart,
+                dateEnd: dateEnd,
+                attrs: task[entityId],
+                aggrMethod: aggrMethod,
+                aggrPeriodDuration: aggrPeriodDuration
+            }
+            
+            promises.push(this.loadTask(task2))            
         }
 
         await Promise.all(promises)
     }
 
 
-    private async loadAggregated2(entityId: string, attrNames: Array<string>, dateStart: Date, dateEnd: Date,
-        aggrMethod: string, aggrPeriodDuration: AggregationPeriod) {
+  
 
-        // ATTENTION: 
-        // 'dateStart' is the BEGINNING, i.e. the EARLIER date.
-        // 'dateEnd' is the END, i.e. the LATER date.
+    private async loadTask(task : TimeSeriesLoaderTask) {
 
-        const timeAt = dateStart.toISOString()
-        const endTimeAt = dateEnd.toISOString()
-        const timerel = "between_with_start"
+        const response = await loadTimeSeriesInPieces(this.brokerBaseUrl, task)
 
+        for (const attrName of task.attrs) {
 
-        const url = `${this.brokerBaseUrl}/temporal/entities/${entityId}/?attrs=${attrNames.join(",")}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}&options=aggregatedValues&aggrMethods=${aggrMethod}&aggrPeriodDuration=${aggrPeriodDuration}`
+            const data = response[task.entityId][attrName]
 
-
-
-        const res = await fetch(url)
-
-        if (res.status != 200) {
-            //console.log("fail")
-            return
-        }
-
-
-        //#region Parse response JSON
-        const text = await res.text()
-
-        let entityFragment: any = undefined
-
-        try {
-            entityFragment = JSON.parse(text)
-        }
-        catch (e) {
-            console.log("Failed to parse response from: " + res.url)
-            return
-        }
-        //#endregion Parse response JSON
-
-
-
-        // TODO: Min/max should only be updated if the request was successful, but returned an empty
-        // array. This needs to be implemented in the broker first.
-
-        let nextRequestStartDate = new Date(dateStart.getTime());
-
-        let attrsToCheck = Array<string>()
-
-
-
-        for (const attrName of attrNames) {
-
-            if (entityFragment[attrName] == undefined) {
+            if (data == undefined) {
                 continue
             }
-
-
-
-            if (entityFragment[attrName][aggrMethod] == undefined || entityFragment[attrName][aggrMethod].length == 0) {
-                continue
-            }
-
-
-
 
             // NOTE: attrPath is used as the key to store the time series in the loader's cache
-            const attrKey = entityId + "/" + attrName
+            const attrKey = task.entityId + "/" + attrName
 
             if (this.data.data[attrKey] == undefined) {
                 this.data.data[attrKey] = {
@@ -244,18 +90,15 @@ export class AndromedaTimeSeriesLoader {
 
 
             // These are just a shortcut variable for convenience
-            const intervals = entityFragment[attrName][aggrMethod]
+
             const foo = this.data.data[attrKey]
 
             // Add data from response to collection of loaded data:
-            for (const interval of intervals) {
-                const dateStart = new Date(interval[1])
-                //const dateEnd = new Date(interval[2])
-                const value = interval[0]
-
-                const milliseconds = dateStart.getTime()
-
-                foo.timeseries[milliseconds] = value
+            for (const timestamp in data) {
+                // ATTENTION: parseInt() is required here!
+                const date = new Date(parseInt(timestamp))
+                const milliseconds = date.getTime()
+                foo.timeseries[milliseconds] = data[timestamp]
             }
 
 
@@ -267,39 +110,13 @@ export class AndromedaTimeSeriesLoader {
             foo.timestamps = Object.keys(foo.timeseries)
 
             this.updateMinMaxByAttrKey(attrKey)
-            //#endregion Add response data to in-memory time series and update per-attribute min-max
-
-
-            //#region Check whether another request is required to load the complete times series
-
-            // ATTENTION: This assumes that the returned time series instances are 
-            // ordered by observedAt in DESCENDING order!
-            const lastReturnedItem = intervals[intervals.length - 1]
-
-            const earliestDateOfCurrentAttribute = new Date(lastReturnedItem[0])
-
-            if (earliestDateOfCurrentAttribute > dateStart) {
-
-                attrsToCheck.push(attrName)
-
-                if (earliestDateOfCurrentAttribute > nextRequestStartDate) {
-                    nextRequestStartDate = earliestDateOfCurrentAttribute
-                }
-            }
-
-            //#endregion Check whether another request is required to load the complete times series
-        }
-
-
-        this.updateGlobalMinMax()
-
-
-        if (attrsToCheck.length > 0) {
-            await this.load2(entityId, attrsToCheck, dateStart, nextRequestStartDate)
         }
 
     }
 
+
+
+   
 
     updateMinMaxByAttrKey(attrKey: string) {
 
@@ -344,6 +161,7 @@ export class AndromedaTimeSeriesLoader {
 
 
     updateGlobalMinMax() {
+
         let minValue = Number.MAX_VALUE
         let maxValue = Number.MIN_VALUE
 
