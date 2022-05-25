@@ -72,7 +72,18 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
     const timerel = "between_with_start"
     const lastN = 0
 
-    let url = `${brokerBaseUrl}/temporal/entities/${task.entityId}/?attrs=${task.attrs.join(",")}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}`
+    let attrsJoined = ""
+
+    if (!(task.attrs instanceof Array)) {
+        console.error("task.attrs is not an Array")
+        console.log(task.attrs)
+        return
+
+    }
+
+    attrsJoined = task.attrs.join(",")
+
+    let url = `${brokerBaseUrl}/temporal/entities/${task.entityId}/?attrs=${attrsJoined}&timerel=${timerel}&timeAt=${timeAt}&endTimeAt=${endTimeAt}`
 
     if (task.aggrMethod != undefined && task.aggrPeriodDuration != undefined) {
         url += `&options=aggregatedValues&aggrMethods=${task.aggrMethod}&aggrPeriodDuration=${task.aggrPeriodDuration}`
