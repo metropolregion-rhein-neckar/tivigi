@@ -218,16 +218,21 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
 
         const moreData = await loadTimeSeriesInPieces(brokerBaseUrl, newTask)
 
-        for (const attrName in moreData[task.entityId]) {
-
-            if (result[task.entityId][attrName] == undefined) {
-                result[task.entityId][attrName] = []
-            }
+        if (moreData != undefined && moreData[task.entityId] != undefined) {
 
 
-            for (const kvp of moreData[task.entityId][attrName].values) {
-                const timestamp = new Date(kvp[0]).getTime()
-                result[task.entityId][attrName][timestamp] = kvp[1]
+
+            for (const attrName in moreData[task.entityId]) {
+
+                if (result[task.entityId][attrName] == undefined) {
+                    result[task.entityId][attrName] = []
+                }
+
+
+                for (const kvp of moreData[task.entityId][attrName].values) {
+                    const timestamp = new Date(kvp[0]).getTime()
+                    result[task.entityId][attrName][timestamp] = kvp[1]
+                }
             }
         }
     }

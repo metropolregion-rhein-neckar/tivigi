@@ -175,8 +175,20 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
                 const attrDef = bucketDef[attrIndex]
 
+                /*
                 const color_main = colorStart.add(colorDiff.mult((1.0 / bucketDef.length) * attrIndex)).round()
+                */
 
+                let step = 0
+
+                if (bucketDef.length > 1) {
+                    step = attrIndex / (bucketDef.length - 1)
+                }
+    
+    
+                const color_main = colorStart.add(colorDiff.mult(step)).round()
+
+                
                 const style =
                 {
                     color: color_main.toHexString(),
