@@ -20,6 +20,12 @@ export default class DashboardPanel extends Vue {
 
     //############### BEGIN Properties ###############
  
+    @Prop({default:true})
+    showFullscreenButton!: boolean
+
+    @Prop({default:true})
+    showInfoButton!: boolean
+
     @Prop()
     subtitle!: string
 
