@@ -50,9 +50,9 @@ div.DashboardPanel__Header {
 
     button {
         background-color: #fff;
-        //border: 1px solid #000;
-        margin:0px 1px;
-        padding: 3px 1px;
+        
+        margin:0px 0px;
+        padding: 2px 1px;
         border-radius: 4px !important;
       
         display: flex;
@@ -62,11 +62,8 @@ div.DashboardPanel__Header {
             background-color: #ddd;
         }
  
-        > * {
-            display: block;
-            padding: 0px 2px;
-        }
-
+        font-size:1em;
+        font-weight:normal;
         > span {
             display: none;
         }
