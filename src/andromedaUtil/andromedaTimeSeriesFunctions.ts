@@ -36,6 +36,8 @@ export interface TimeSeriesLoaderTask {
 
 export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSeriesLoaderTask>): Promise<any> {
 
+    const result: any = {}
+
     const promises = []
 
     for (const task of tasks) {
@@ -45,11 +47,25 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
     const results = await Promise.all(promises)
 
 
-    const result: any = {}
+    for (const res of results) {
 
-    for (const entityId in results) {
-        result[entityId] = results[entityId]
+        if (res == undefined) {
+            continue
+        }
+
+
+        for (const entityId in res) {
+            if (result[entityId] == undefined) {
+                result[entityId] = {}
+            }
+
+            for (const attrName in res[entityId]) {
+                result[entityId][attrName] = res[entityId][attrName]
+            }
+        }
+
     }
+
 
     return result
 }
@@ -59,9 +75,11 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
 
 export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoaderTask) {
 
-    let result: any = {}
+    let result: any = {
 
-    result[task.entityId] = {}
+    }
+
+    //result[task.entityId] = {}
 
     // ATTENTION: 
     // 'dateStart' is the BEGINNING, i.e. the EARLIER date.
@@ -78,7 +96,6 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
         console.error("task.attrs is not an Array")
         console.log(task.attrs)
         return
-
     }
 
     attrsJoined = task.attrs.join(",")
@@ -135,8 +152,8 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
             continue
         }
 
-        if (result[task.entityId][attrName] == undefined) {
-            result[task.entityId][attrName] = {}
+        if (result[attrName] == undefined) {
+            result[attrName] = {}
         }
 
 
@@ -160,7 +177,7 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
                 const value = interval[0]
 
                 const timestamp = dateStart.getTime()
-                result[task.entityId][attrName][timestamp] = Math.round(value * 1000) / 1000
+                result[attrName][timestamp] = Math.round(value * 1000) / 1000
 
             }
 
@@ -177,7 +194,7 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
 
             for (const kvp of values) {
                 const timestamp = new Date(kvp[0]).getTime()
-                result[task.entityId][attrName][timestamp] = kvp[1]
+                result[attrName][timestamp] = kvp[1]
             }
 
             lastReturnedTimestamp = values[values.length - 1][0]
@@ -200,12 +217,14 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
             }
         }
 
+
         //#endregion Check whether another request is required to load the complete times series
     }
 
 
 
-    if (attrsToCheck.length > 0) {
+
+    if (attrsToCheck.length) {
 
         const newTask: TimeSeriesLoaderTask = {
             entityId: task.entityId,
@@ -216,27 +235,28 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
             dateEnd: nextRequestStartDate
         }
 
-        const moreData = await loadTimeSeriesInPieces(brokerBaseUrl, newTask)
+        const moreData: any = await loadTimeSeriesInPieces(brokerBaseUrl, newTask)
 
         if (moreData != undefined && moreData[task.entityId] != undefined) {
 
-
-
             for (const attrName in moreData[task.entityId]) {
 
-                if (result[task.entityId][attrName] == undefined) {
-                    result[task.entityId][attrName] = []
+                if (result[attrName] == undefined) {
+                    result[attrName] = []
                 }
-
 
                 for (const kvp of moreData[task.entityId][attrName].values) {
                     const timestamp = new Date(kvp[0]).getTime()
-                    result[task.entityId][attrName][timestamp] = kvp[1]
+                    result[attrName][timestamp] = kvp[1]
                 }
             }
         }
     }
 
-    return result
+    let res2: any = {}
+
+    res2[task.entityId] = result
+
+    return res2
 }
 
