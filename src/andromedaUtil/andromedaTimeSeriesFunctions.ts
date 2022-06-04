@@ -24,9 +24,6 @@ export interface TimeSeriesLoaderTask {
     entityId: string,
     attrs: Array<string>,
 
-    dateStart: Date,
-    dateEnd: Date,
-
     // These are optional:
     aggrMethod?: "sum",
     aggrPeriodDuration?: "day"
@@ -34,14 +31,43 @@ export interface TimeSeriesLoaderTask {
 }
 
 
-export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSeriesLoaderTask>): Promise<any> {
+export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSeriesLoaderTask>, dateStart : Date, dateEnd : Date): Promise<any> {
 
     const result: any = {}
 
     const promises = []
 
-    for (const task of tasks) {
-        promises.push(loadTimeSeriesInPieces(brokerBaseUrl, task))
+
+    const actualTasks : any = []
+
+    //#region Merge tasks with same entity ID to reduce the number of required HTTP requests
+    for(const task of tasks) {
+
+        let found = false
+
+        for (const actualTask of actualTasks) {
+            if (actualTask.entityId == task.entityId) {
+                actualTask.attrs = actualTask.attrs.concat(task.attrs)
+                found = true
+                break
+            }
+        }
+
+        if (!found) {
+            const task2 = {
+                entityId: task.entityId,
+                attrs: task.attrs,
+               
+            }
+
+            actualTasks.push(task2)
+        }
+    }
+    //#endregion Merge tasks with same entity ID to reduce the number of required HTTP requests
+
+    
+    for (const task of actualTasks) {
+        promises.push(loadTimeSeriesInPieces(brokerBaseUrl, task, dateStart, dateEnd))
     }
 
     const results = await Promise.all(promises)
@@ -73,7 +99,7 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
 
 
 
-export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoaderTask) {
+export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoaderTask, dateStart : Date, dateEnd : Date) {
 
     let result: any = {
 
@@ -85,8 +111,8 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
     // 'dateStart' is the BEGINNING, i.e. the EARLIER date.
     // 'dateEnd' is the END, i.e. the LATER date.
 
-    const timeAt = task.dateStart.toISOString()
-    const endTimeAt = task.dateEnd.toISOString()
+    const timeAt = dateStart.toISOString()
+    const endTimeAt = dateEnd.toISOString()
     const timerel = "between_with_start"
     const lastN = 0
 
@@ -140,7 +166,7 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
     // TODO: Min/max should only be updated if the request was successful, but returned an empty
     // array. This needs to be implemented in the broker first.
 
-    let nextRequestStartDate = new Date(task.dateStart.getTime());
+    let nextRequestStartDate = new Date(dateStart.getTime());
 
     let attrsToCheck = Array<string>()
 
@@ -208,7 +234,7 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
 
         const earliestDateOfCurrentAttribute = new Date(lastReturnedTimestamp)
 
-        if (earliestDateOfCurrentAttribute > task.dateStart) {
+        if (earliestDateOfCurrentAttribute > dateStart) {
 
             attrsToCheck.push(attrName)
 
@@ -230,12 +256,10 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
             entityId: task.entityId,
             attrs: attrsToCheck,
             aggrMethod: task.aggrMethod,
-            aggrPeriodDuration: task.aggrPeriodDuration,
-            dateStart: task.dateStart,
-            dateEnd: nextRequestStartDate
+            aggrPeriodDuration: task.aggrPeriodDuration            
         }
 
-        const moreData: any = await loadTimeSeriesInPieces(brokerBaseUrl, newTask)
+        const moreData: any = await loadTimeSeriesInPieces(brokerBaseUrl, newTask, dateStart, nextRequestStartDate)
 
         if (moreData != undefined && moreData[task.entityId] != undefined) {
 

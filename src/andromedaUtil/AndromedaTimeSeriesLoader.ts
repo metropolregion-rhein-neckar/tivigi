@@ -29,21 +29,18 @@ export class AndromedaTimeSeriesLoader {
         for (const entityId in task) {
             const task2: TimeSeriesLoaderTask = {
                 entityId: entityId,
-                dateStart: dateStart,
-                dateEnd: dateEnd,
+            
                 attrs: task[entityId]
             }
 
-            promises.push(this.loadTask(task2))
+            promises.push(this.loadTask(task2, dateStart, dateEnd))
         }
 
         await Promise.all(promises)
     }
 
 
-    async loadAggregated(task: any, dateStart: Date, dateEnd: Date,
-        aggrMethod: AggregationMethod, aggrPeriodDuration: AggregationPeriod) {
-
+    async loadAggregated(task: any, dateStart: Date, dateEnd: Date, aggrMethod: AggregationMethod, aggrPeriodDuration: AggregationPeriod) {
 
         const promises = []
 
@@ -51,14 +48,13 @@ export class AndromedaTimeSeriesLoader {
             
             const task2: TimeSeriesLoaderTask = {
                 entityId: entityId,
-                dateStart: dateStart,
-                dateEnd: dateEnd,
+                
                 attrs: task[entityId],
                 aggrMethod: aggrMethod,
                 aggrPeriodDuration: aggrPeriodDuration
             }
             
-            promises.push(this.loadTask(task2))            
+            promises.push(this.loadTask(task2, dateStart, dateEnd))            
         }
 
         await Promise.all(promises)
@@ -67,9 +63,9 @@ export class AndromedaTimeSeriesLoader {
 
   
 
-    private async loadTask(task : TimeSeriesLoaderTask) {
+    private async loadTask(task : TimeSeriesLoaderTask, dateStart : Date, dateEnd : Date) {
 
-        const response = await loadTimeSeriesInPieces(this.brokerBaseUrl, task)
+        const response = await loadTimeSeriesInPieces(this.brokerBaseUrl, task, dateStart, dateEnd)
 
         for (const attrName of task.attrs) {
 
@@ -115,13 +111,9 @@ export class AndromedaTimeSeriesLoader {
     }
 
 
-
-   
-
     updateMinMaxByAttrKey(attrKey: string) {
 
         const foo = this.data.data[attrKey]
-
 
         let minValue = Number.MAX_VALUE
         let maxValue = Number.MIN_VALUE
@@ -170,8 +162,6 @@ export class AndromedaTimeSeriesLoader {
 
         for (const attrKey in this.data.data) {
             const attribute = this.data.data[attrKey]
-
-
 
             maxValue = Math.max(maxValue, attribute.maxValue)
             minValue = Math.min(minValue, attribute.minValue)
