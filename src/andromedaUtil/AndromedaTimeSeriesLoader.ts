@@ -67,7 +67,15 @@ export class AndromedaTimeSeriesLoader {
 
         const response = await loadTimeSeriesInPieces(this.brokerBaseUrl, task, dateStart, dateEnd)
 
+        if (response == undefined) {
+            return
+        }
+        
         for (const attrName of task.attrs) {
+
+            if (response[task.entityId] == undefined) {
+                continue
+            }
 
             const data = response[task.entityId][attrName]
 

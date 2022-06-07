@@ -123,6 +123,10 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
 
+                if (attrDef.entityId == undefined) {
+                    continue
+                }
+
                 if (attributesByEntityId[attrDef.entityId] == undefined) {
                     attributesByEntityId[attrDef.entityId] = Array<string>()
                 }
