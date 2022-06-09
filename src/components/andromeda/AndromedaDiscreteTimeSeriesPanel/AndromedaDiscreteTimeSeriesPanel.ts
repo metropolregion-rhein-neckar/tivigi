@@ -14,6 +14,7 @@ import HtmlLegend from '../../charts/DiscreteChart/HtmlLegend/HtmlLegend';
 
 import WithRender from './AndromedaDiscreteTimeSeriesPanel.html';
 import './AndromedaDiscreteTimeSeriesPanel.scss'
+import { encodeDeltas } from 'ol/format/Polyline';
 
 @WithRender
 @Component({
@@ -93,9 +94,12 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
 
 
-
+    @Watch("startTime")
+    @Watch("endTime")
     async init() {
 
+        
+      
         const attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
 
         for (const bucketDef of this.attributes) {
@@ -103,7 +107,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
 
 
                 if (attrDef.label == undefined) {
-                    if (attrMeta[attrDef.attrName] != undefined) {
+                    if (this.attrMeta[attrDef.attrName] != undefined) {
                         attrDef.label = attrMeta[attrDef.attrName].metadata.label
                     }
                 }
@@ -135,11 +139,16 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
             }
         }
 
+        // ATTENTION: This is required to clear already loaded data:
+        this.loader = new AndromedaTimeSeriesLoader(this.brokerBaseUrl)
+
         await this.loader.load(attributesByEntityId, new Date(this.startTime), new Date(this.endTime))
 
 
         this.tableData = this.prepareTableData()
         this.chartData = this.prepareChartData()
+
+    
     }
 
 
@@ -188,11 +197,11 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
                 if (bucketDef.length > 1) {
                     step = attrIndex / (bucketDef.length - 1)
                 }
-    
-    
+
+
                 const color_main = colorStart.add(colorDiff.mult(step)).round()
 
-                
+
                 const style =
                 {
                     color: color_main.toHexString(),
@@ -288,7 +297,7 @@ export default class AndromedaDiscreteTimeSeriesPanel extends Vue {
         //for (const attrPath in this.loader.data.data) {
         for (const bucketDef of this.attributes) {
             for (const attrDef of bucketDef) {
-                
+
 
                 let numDecimals = this.numDecimalsDefault
 
