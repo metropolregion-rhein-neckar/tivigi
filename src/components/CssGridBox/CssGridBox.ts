@@ -39,6 +39,10 @@ export default class CssGridBox extends Vue {
         
         const inner = this.$refs.inner as HTMLDivElement
 
+        if (inner == undefined) {
+            return
+        }
+        
         // NOTE: 
         // The gridRowGap_px added to *inner.offsetHeight* is the actual gap below the box.         
         // The gridRowGap_px added to *gridAutoRows_px* are the "imaginary" gaps between each stretch
