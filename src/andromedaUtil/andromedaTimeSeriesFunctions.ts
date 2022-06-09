@@ -129,6 +129,8 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
 
     const timeAt = dateStart.toISOString()
     const endTimeAt = dateEnd.toISOString()
+    // ATTENTION: This MUST be "between_with_start"! Using "between_with_start_and_end" causes an infinite
+    // recusion loop!
     const timerel = "between_with_start"
     const lastN = 0
 
