@@ -37,7 +37,7 @@ export async function getAttributeMetadata(brokerBaseUrl : string) {
 
 
 
-
+// TODO: Is this still used somewhere?
 export function sortKeysAlphabetically(object: any): any {
 
     return Object.keys(object).sort(
@@ -55,7 +55,7 @@ export function sortKeysAlphabetically(object: any): any {
 
 
 
-
+// TODO: Is this still used somewhere?
 export function mergeEntityFragments(fragments1: Array<any>, fragments2: Array<any>) {
 
     const byKey1: any = {}

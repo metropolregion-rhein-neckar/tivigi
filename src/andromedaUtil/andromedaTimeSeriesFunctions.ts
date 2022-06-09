@@ -31,17 +31,22 @@ export interface TimeSeriesLoaderTask {
 }
 
 
-export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSeriesLoaderTask>, dateStart : Date, dateEnd : Date): Promise<any> {
+export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSeriesLoaderTask>, dateStart: Date, dateEnd: Date): Promise<any> {
+
 
     const result: any = {}
+
+    if (isNaN(dateStart.getTime()) || isNaN(dateEnd.getTime())) {
+        return result
+    }
 
     const promises = []
 
 
-    const actualTasks : any = []
+    const actualTasks: any = []
 
     //#region Merge tasks with same entity ID to reduce the number of required HTTP requests
-    for(const task of tasks) {
+    for (const task of tasks) {
 
         let found = false
 
@@ -57,7 +62,7 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
             const task2 = {
                 entityId: task.entityId,
                 attrs: task.attrs,
-               
+
             }
 
             actualTasks.push(task2)
@@ -65,7 +70,7 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
     }
     //#endregion Merge tasks with same entity ID to reduce the number of required HTTP requests
 
-    
+
     for (const task of actualTasks) {
         promises.push(loadTimeSeriesInPieces(brokerBaseUrl, task, dateStart, dateEnd))
     }
@@ -81,12 +86,23 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
 
 
         for (const entityId in res) {
+            
             if (result[entityId] == undefined) {
                 result[entityId] = {}
             }
 
             for (const attrName in res[entityId]) {
-                result[entityId][attrName] = res[entityId][attrName]
+
+                const ordered = Object.keys(res[entityId][attrName]).sort().reduce(
+                    (obj: any, key: any) => {
+                        obj[key] = res[entityId][attrName][key];
+                        return obj;
+                    },
+                    {}
+                );
+
+
+                result[entityId][attrName] = ordered
             }
         }
 
@@ -99,7 +115,7 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
 
 
 
-export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoaderTask, dateStart : Date, dateEnd : Date) {
+export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSeriesLoaderTask, dateStart: Date, dateEnd: Date) {
 
     let result: any = {
 
@@ -256,7 +272,7 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
             entityId: task.entityId,
             attrs: attrsToCheck,
             aggrMethod: task.aggrMethod,
-            aggrPeriodDuration: task.aggrPeriodDuration            
+            aggrPeriodDuration: task.aggrPeriodDuration
         }
 
         const moreData: any = await loadTimeSeriesInPieces(brokerBaseUrl, newTask, dateStart, nextRequestStartDate)
