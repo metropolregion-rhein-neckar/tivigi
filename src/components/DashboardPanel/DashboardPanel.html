@@ -1,6 +1,5 @@
 <div :class="getDynamicClass()">
 
-
   <div class="DashboardPanel__Header">
 
     <div>
@@ -8,8 +7,8 @@
         NOTE: We use v-html here instead of {{text}} so that HTML control codes like "&shy;" are parsed.
         This is required to add things like soft hyphens to the title variable.
       -->
-      <h2 v-html="title"></h2>
-      <h3>{{subtitle}}</h3>
+      <h2 v-if="title != ''" v-html="title"></h2>
+      <h3 v-if="subtitle != ''" v-html="subtitle"></h3>
     </div>
 
     <div class="DashboardPanel__Header__Spacer"></div>
@@ -17,14 +16,13 @@
     <!-- NOTE: height:0 prevents the buttons from growing vertically if the heading has multiple lines. -->
 
 
-    <div class="InputGroup" style="height:1em;margin-left:8px;">
+    <div class="DashboardPanel__HeaderButtons">
       <slot name="headerButtons"></slot>
 
-      <Smartbutton v-if="showFullscreenButton" v-model="expanded" :set="true" :unset="false" data-tooltip="Vollbild"><img
-          src="img/expand.png" /><span>Tabelle</span></Smartbutton>
-      <Smartbutton v-if="showInfoButton" v-model="showInfoPanel" :set="true" :unset="false" data-tooltip="Informationen"><img
-          src="img/info.svg" /><span>Information</span></Smartbutton>
-
+      <Smartbutton v-if="showFullscreenButton" class="LightButton" v-model="expanded" :set="true" :unset="false"
+        data-tooltip="Vollbild"><img src="img/expand.png"></Smartbutton>
+      <Smartbutton v-if="showInfoButton" class="LightButton" v-model="showInfoPanel" :set="true" :unset="false"
+        data-tooltip="Informationen"><img src="img/info.svg"></Smartbutton>
 
     </div>
   </div>

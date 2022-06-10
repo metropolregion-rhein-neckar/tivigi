@@ -19,6 +19,7 @@ button {
     &:disabled {
         cursor: default;
     }
+
 }
 
 select {
@@ -26,10 +27,6 @@ select {
 }
 
 
-
-.ButtonIcon {
-    height:1em;    
-}
 
 
 input,
@@ -64,35 +61,6 @@ select {
     transform: translate(-50%, -50%);
     
 }
-//###################### BEGIN Cursor classes ######################
-.cursor-pointer {
-    cursor: pointer;
-}
-
-.cursor-ew-resize {
-    cursor: ew-resize;
-}
-
-.cursor-ns-resize {
-    cursor: ns-resize;
-}
-
-.cursor-nw-resize {
-    cursor: nw-resize;
-}
-
-.cursor-ne-resize {
-    cursor: ne-resize;
-}
-
-.cursor-sw-resize {
-    cursor: sw-resize;
-}
-
-.cursor-se-resize {
-    cursor: se-resize;
-}
-//###################### END Cursor classes ######################
 
 //################## BEGIN Various input element styles ####################
 *.Input {
@@ -146,7 +114,7 @@ $button_bgcolor_unchecked: #ddd;
     background-color: $button_bgcolor_unchecked;
     user-select: none;
 
-    font-size: 1em;
+    
 
     &:disabled {
         cursor: default;
@@ -176,6 +144,46 @@ $button_bgcolor_unchecked: #ddd;
     }
 }
 
+
+.LightButton {
+    background-color: #fff;
+    border:none;
+    margin:0px 1px;
+    padding:4px 4px;
+    border-radius: 4px !important;
+  
+    display: flex;
+    align-items: center;
+    color: #000 !important;
+    &:hover {
+        background-color: #ddd;
+    }
+
+    font-size:1em;
+    font-weight:normal;
+  
+    img {
+        height: 16px;
+        margin:3px;
+       // margin-right:6px;        
+    }
+
+    span {
+        margin:0px 3px;
+    }
+    &.Smartbutton--checked {
+        background-color: #e0e0e0;
+    }
+}
+
+
+
+
+
+.ButtonIcon {
+    
+    height:1em;    
+}
 //##################### END button ######################
 
 //################# BEGIN Card component ################
@@ -459,3 +467,35 @@ g.SvgChart__Axis__Y {
     }
 }
 //################## END SVG Charts ###################
+
+
+
+//###################### BEGIN Cursor classes ######################
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-ew-resize {
+    cursor: ew-resize;
+}
+
+.cursor-ns-resize {
+    cursor: ns-resize;
+}
+
+.cursor-nw-resize {
+    cursor: nw-resize;
+}
+
+.cursor-ne-resize {
+    cursor: ne-resize;
+}
+
+.cursor-sw-resize {
+    cursor: sw-resize;
+}
+
+.cursor-se-resize {
+    cursor: se-resize;
+}
+//###################### END Cursor classes ######################

@@ -8,7 +8,7 @@ import "tivigi/src/components/SmartButton/SmartButton.scss"
 export default class SmartButton extends Vue {
 
     //################## BEGIN Props ###################
-  
+
     // ATTENTION: No default for 'set' and 'unset' must be defined! 
     // The behaviour is different based on whether these are set or not!
     @Prop()
@@ -41,8 +41,7 @@ export default class SmartButton extends Vue {
 
 
     getDynamicClass(): any {
-        return {          
-            "Button": true,
+        return {
             "Smartbutton": true,
             "Smartbutton--checked": (this.value != undefined) && (this.value == this.set)
         }
@@ -51,10 +50,10 @@ export default class SmartButton extends Vue {
 
     onClick(evt: MouseEvent) {
 
-        
+
         if (!this.getChecked()) {
             // If the button is not checked, fire input event (which *might* check it, if it has state):
-            this.$emit('input', this.set)            
+            this.$emit('input', this.set)
         }
         else {
             // Otherwise, if possible, uncheck it.

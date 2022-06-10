@@ -26,10 +26,10 @@ export default class DashboardPanel extends Vue {
     @Prop({default:true})
     showInfoButton!: boolean
 
-    @Prop()
+    @Prop({default:""})
     subtitle!: string
 
-    @Prop()
+    @Prop({default:""})
     title!: string
 
     //############### END Properties ###############
