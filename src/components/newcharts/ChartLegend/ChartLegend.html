@@ -1,0 +1,15 @@
+<div class="ChartLegend">
+
+
+    <div v-for="entry of data" class="ChartLegend__Entry" :data-tooltip="entry.label">
+        <div >
+
+
+            <img v-if="entry.symbolUrl != undefined" class="ChartLegend__Symbol" :src="entry.symbolUrl" />
+            <div v-else class="ChartLegend__Symbol" :style="getStyle(entry)"></div>
+        </div>
+        <div v-html="getLabel(entry)"></div>
+    </div>
+
+
+</div>

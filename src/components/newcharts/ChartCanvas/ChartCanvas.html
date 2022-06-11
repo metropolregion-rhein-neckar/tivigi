@@ -1,0 +1,48 @@
+<div class="ChartCanvas">
+
+    <!-- ATTENTION: The inner wrapper div is required to be able to apply a CSS padding to the outer div
+    (i.e. the component root element) without messing up the automatic adaption of the SVG's viewBox size to the
+    surrounding <div>'s size. The size of the <svg> is set to match the size of the surrounding <div> whenever
+    the surrounding <div> is resized. However, if a padding is set for the surrounding <div>, 
+    the SVG will become too large.
+        
+    The reason why the resize listener must be attached to a wrapper <div> at all (instead of attaching it to the
+    <svg> element itself) is because the resize listener does not work on <svg> elements. -->
+
+    <div ref="wrapper" v-onresize="onResize">
+
+        <svg ref="svg" :viewBox="getViewBoxString()" @mousedown="onMouseDown" @wheel="onWheel" :style="getStyle()">
+
+            <defs>
+                <clipPath :id="clipPathId">
+                    <rect :x="0" :y="0" :width="chartAreaSize.x" :height="chartAreaSize.y" />
+                </clipPath>
+            </defs>
+
+
+            <!-- This is a frame around the entire viewBox: -->
+            <rect class="ChartCanvas__ViewBoxBorder" v-if="debug" :x="0" :y="0" :width="viewBoxSize.x" :height="viewBoxSize.y" />
+
+
+            <!-- This is a frame around the chart area: -->
+            <rect class="ChartCanvas__ChartAreaBorder" v-if="debug" :x="chartAreaPos.x" :y="chartAreaPos.y" :width="chartAreaSize.x" :height="chartAreaSize.y" />
+
+
+
+            <g :transform="'translate(' + chartAreaPos.x + ',' + chartAreaPos.y + ')'">
+
+                <slot name="under"></slot>
+
+                <g :clip-path="'url(#' + clipPathId + ')'">
+                    <slot name="charts"></slot>
+                </g>
+
+                <slot name="over"></slot>
+
+            </g>
+       
+        <circle v-if="debug" :cx="tp1.x" :cy="tp1.y" r="60"/>
+        <circle v-if="debug" :cx="tp2.x" :cy="tp2.y" r="60"/>
+    </svg>
+    </div>
+</div>

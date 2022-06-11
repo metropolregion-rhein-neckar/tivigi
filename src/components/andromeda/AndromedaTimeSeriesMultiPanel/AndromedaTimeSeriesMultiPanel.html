@@ -1,0 +1,40 @@
+<DashboardPanel :title="title" :subtitle="subtitle">
+
+    <template v-if="showDisplayModeButtons" v-slot:headerButtons>
+
+        <SmartButton class="LightButton" v-model="displayMode_internal" :set="0" data-tooltip="Diagramm">
+            <img src="tivigi/img/barchart32.png" alt="Diagramm" />
+        </Smartbutton>
+        <SmartButton class="LightButton" v-model="displayMode_internal" :set="1" data-tooltip="Tabelle">
+            <img src="tivigi/img/table.svg" alt="Tabelle" />
+        </Smartbutton>
+
+    </template>
+
+    <template v-slot:main>
+
+        <template v-if="displayMode_internal == 0">
+            <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" :scaleX="scaleX" scaleY="auto"
+                :legend.sync="legend_internal">
+
+                <template v-slot:charts>
+                    <BarChart :buckets="barsBuckets" />
+                    <LineChart :buckets="linesBuckets" />
+                </template>
+
+                <template v-slot:under>
+                    <DatetimeAxis dimension="x" :showLines="false" />
+
+                    <NumericalAxis dimension="y" />
+
+                </template>
+
+            </ChartCanvas>
+
+            <ChartLegend :data="legend_internal" />
+        </template>
+        <template v-else>
+            <TableView :data="tableData" />
+        </template>
+    </template>
+</DashboardPanel>

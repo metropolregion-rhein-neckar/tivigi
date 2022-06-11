@@ -1,0 +1,29 @@
+<g class="LineChart">
+    <!--################# BEGIN Draw stacked bars ###################-->
+    <template v-for="(group,x) in displayData">
+
+
+        <template v-for="(stack,stackIndex) in group">
+
+            <template v-for="(point, pointIndex) of stack.items">
+                <!--
+                <circle
+                    :cx="w2sx(x) - (group.length * (barWidth + cfg_barSpacing_px)) / 2 + stackIndex * (barWidth + cfg_barSpacing_px) + cfg_barSpacing_px/2 + barWidth/2 "
+                    :cy="w2sy(point.y)" :r="5" :style="getStackItemStyle(point)"
+                    :data-tooltip="`${point.dataset.label}: <strong>${getFormattedValue(point.dataset, point.y)} ${point.dataset.unit}</strong>`" />
+                -->
+
+                <image
+                    :x="w2sx(x) - (group.length * (barWidth + cfg_barSpacing_px)) / 2 + stackIndex * (barWidth + cfg_barSpacing_px) + cfg_barSpacing_px/2 + barWidth/2 - symbolWidth/2"
+                    :y="w2sy(point.y) - symbolHeight/2" :href="symbolUrl" :height="symbolHeight" :width="symbolWidth" 
+                    :data-tooltip="`${point.dataset.label}: <strong>${getFormattedValue(point.dataset, point.y)} ${point.dataset.unit}</strong>`"
+                    />
+
+
+            </template>
+
+        </template>
+
+    </template>
+    <!--################# END Draw stacked bars ###################-->
+</g>

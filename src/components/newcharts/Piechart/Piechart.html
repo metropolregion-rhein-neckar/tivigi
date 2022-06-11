@@ -1,0 +1,12 @@
+<div class="Piechart">
+    
+    <div class="Piechart__Inner"><slot /></div>
+    
+    <svg ref="svg" :viewBox="getViewBoxString()">
+        <g :style="getTranslation()">
+            <path v-for="entry of renderData" ref="arc" :style="entry.style" 
+            :d="entry.path" :data-tooltip="getTooltipText(entry)" :class="entry.class" />           
+        </g>
+    </svg>
+
+</div>

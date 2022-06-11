@@ -1,0 +1,33 @@
+div.ChartCanvas {
+  user-select: none;
+  //border: 2px solid #0f0;
+  height: 300px;
+
+  div {
+    height:100%;
+  }
+  rect.ChartCanvas__ViewBoxBorder {
+    fill: none;
+    //stroke: #000;
+    stroke-width: 1;
+  }
+
+  rect.ChartCanvas__ChartAreaBorder {
+    fill: none;
+
+    stroke: none;
+     //stroke: rgba(0,0,0,0.4);
+    stroke-width: 2;
+  }
+
+  svg {
+    // ATTENTION: We MUST specify a height for the <svg> element! Otherwise, an endless
+    // recursion, powered by the v-onresize event handler, will be triggered and make the
+    // <svg> grow infinitely!
+    //height: 100%;
+    //border: 2px solid #00f;
+    font-size: 13px;
+    
+   // width:100%;
+  }
+}

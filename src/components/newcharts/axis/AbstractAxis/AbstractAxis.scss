@@ -1,0 +1,32 @@
+g.ChartCanvas__Axis {
+    line {
+        stroke: rgba(0, 0, 0, 0.4);
+        stroke-width: 1;
+        stroke-dasharray: 3;
+    }
+
+    
+    line.AxisZeroLine {
+        stroke-dasharray: none;
+        //stroke: #000;
+    }
+    
+    text {
+        dominant-baseline: middle;
+    }
+}
+
+g.ChartCanvas__XAxis {
+    text {
+        text-anchor: middle;
+        text-anchor: start;
+      
+    }
+}
+
+g.ChartCanvas__YAxis {
+    text {
+        text-anchor: end;
+       
+    }
+}

@@ -1,0 +1,63 @@
+
+div.ChartLegend {
+  
+  display: flex;
+
+  flex-wrap: wrap;
+
+  div.ChartLegend__Entry {
+    display: flex;
+    flex-direction: row;
+//    width: 50%;
+    //border:1px solid #000;
+
+    align-items: center;
+    margin-right:16px;
+  }
+
+  .ChartLegend__Symbol {
+    width: 10px;
+    height: 10px;
+    //   border: 1px solid #000;
+    border-radius: 1px;
+    margin: 5px;
+  
+  }
+}
+
+/*
+
+div.ChartLegend {
+  
+
+  display: grid;
+  font-size:13px;
+
+  grid-template-columns: repeat(auto-fit, minmax(12em, 1fr));
+
+  //grid-auto-rows: 1px;
+  // NOTE: We work with a grid-gap of 0 here because a higher value would mess up the automatic
+  // calculation of box heights based on their content. Box margins/paddings are set in the boxes themselves.
+  grid-gap: 2px;
+  grid-auto-flow: row;
+
+  // This gives all boxes in the same row the same height, depending on the heighest box:
+  grid-auto-rows: minmax(min-content, max-content);
+
+  div.ChartLegend__Entry {
+    display: flex;
+    flex-direction: row;
+    //width: 50%;
+    //border:1px solid #000;
+    
+    align-items: center;
+  }
+  div.ChartLegend__Symbol {
+    width: 11px;
+    height: 11px;    
+    border-radius: 1px;
+    margin-right: 6px;
+    
+  }
+}
+*/
