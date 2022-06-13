@@ -37,4 +37,12 @@
             <TableView :data="tableData" />
         </template>
     </template>
+
+
+    <template v-slot:infoPanel>
+
+        <slot name="infoPanelText"></slot>
+       
+  
+      </template>
 </DashboardPanel>

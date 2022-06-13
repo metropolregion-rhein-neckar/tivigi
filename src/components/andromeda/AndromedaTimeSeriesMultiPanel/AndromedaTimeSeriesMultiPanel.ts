@@ -173,6 +173,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
             for (const seriesCfg of bucket) {
 
+                if (seriesCfg.entityId == undefined) {
+                    continue
+                }
+
                 const task2 = {
                     entityId: seriesCfg.entityId,
                     attrs: [seriesCfg.attrName],
@@ -206,6 +210,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
             for (const sc of bc) {
 
                 let points = []
+
+                if (response[sc.entityId] == undefined) {
+                    continue
+                }
 
                 const data = response[sc.entityId][sc.attrName]
 
