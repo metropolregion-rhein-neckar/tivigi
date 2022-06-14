@@ -56,17 +56,13 @@ export default class BarChart extends AbstractChart {
 
     created() {
       
-        /*
-        this.colors.push({ start: new ColorRGBA([150, 150, 200, 255]), end: new ColorRGBA([200, 200, 50, 255]) })
-        this.colors.push({ start: new ColorRGBA([100, 100, 100, 255]), end: new ColorRGBA([200, 200, 200, 255]) })
-        this.colors.push({ start: new ColorRGBA([150, 150, 150, 255]), end: new ColorRGBA([50, 50, 50, 255]) })
-        this.colors.push({ start: new ColorRGBA([150, 150, 150, 255]), end: new ColorRGBA([50, 50, 50, 255]) })
-        */
+      
 
-        this.colors.push({ start: new ColorRGBA([100, 100, 200, 255]), end: new ColorRGBA([220, 220, 255, 255]) })
-        this.colors.push({ start: new ColorRGBA([50, 150, 50, 255]), end: new ColorRGBA([200, 255, 200, 255]) })
+        this.colors.push({ start: new ColorRGBA([100, 100, 250, 255]), end: new ColorRGBA([200, 200, 255, 255]) })
+        this.colors.push({ start: new ColorRGBA([30, 200, 30, 255]), end: new ColorRGBA([200, 255, 200, 255]) })
         this.colors.push({ start: new ColorRGBA([150, 100, 100, 255]), end: new ColorRGBA([255, 200, 200, 255]) })
         this.colors.push({ start: new ColorRGBA([50, 50, 50, 255]), end: new ColorRGBA([200, 200, 200, 255]) })
+
     }
 
 

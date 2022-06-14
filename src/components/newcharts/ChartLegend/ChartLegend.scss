@@ -1,27 +1,32 @@
-
 div.ChartLegend {
-  
   display: flex;
 
   flex-wrap: wrap;
 
+  div.ChartLegend__Group {
+    //border:1px solid #000;
+    width:50%;
+  }
   div.ChartLegend__Entry {
     display: flex;
     flex-direction: row;
-//    width: 50%;
+    //    width: 50%;
     //border:1px solid #000;
 
     align-items: center;
-    margin-right:16px;
+    margin-right: 16px;
   }
 
   .ChartLegend__Symbol {
     width: 10px;
     height: 10px;
-    //   border: 1px solid #000;
-    border-radius: 1px;
+
     margin: 5px;
-  
+  }
+
+  div.ChartLegend__Symbol {
+    border: 1px solid #000;
+    border-radius: 1px;
   }
 }
 
