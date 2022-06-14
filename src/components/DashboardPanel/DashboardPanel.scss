@@ -1,3 +1,10 @@
+div.DashboardPanel {
+    height: 100%;
+  
+    display: flex;
+    flex-direction: column;
+}
+
 div.DashboardPanel div.SidebarPanel__Body {
     padding: 16px;
 }
@@ -22,7 +29,7 @@ div.DashboardPanel__InfoText {
 }
 
 div.DashboardPanel__Header {
-    display: flex;    
+    display: flex;
     margin-bottom: 16px;
 
     h2 {
@@ -37,7 +44,7 @@ div.DashboardPanel__Header {
         margin: 0;
         color: #777;
         font-size: 1em;
-        font-weight: normal;        
+        font-weight: normal;
     }
 
     div.DashboardPanel__Header__Spacer {
@@ -45,8 +52,20 @@ div.DashboardPanel__Header {
     }
 
     > div.DashboardPanel__HeaderButtons {
-        margin-left:8px;
-        display:flex;
-        max-height:30px;
+        margin-left: 8px;
+        display: flex;
+        max-height: 30px;
+    }
+}
+
+div.DashboardPanel__Main {
+    //height: 100%;
+    flex: 1;
+    > div {
+        
+        position: relative;
+        top: 50%;
+
+        transform: translateY(-50%);
     }
 }

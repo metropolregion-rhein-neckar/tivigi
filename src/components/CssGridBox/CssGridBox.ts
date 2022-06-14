@@ -1,5 +1,5 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-
+import "./CssGridBox.scss"
 import "../../directives/v-onresize"
 import WithRender from './CssGridBox.html';
 
