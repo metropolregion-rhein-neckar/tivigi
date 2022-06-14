@@ -342,7 +342,7 @@ export default class ChartCanvas extends Vue {
         
         this.autoScale(this.scaleX == "auto", this.scaleY == "auto")
 
-        let legend = Array<ChartLegendItem>()
+        let legend = Array<Array<ChartLegendItem>>()
 
 
         for (const child of this.$children) {

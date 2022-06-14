@@ -49,7 +49,7 @@ export default class LineChart extends AbstractChart {
 
     displayData = Array<any>()
 
-    legendData = Array<ChartLegendItem>()
+    legendData = Array<Array<ChartLegendItem>>()
 
     colors = Array<any>()
 
@@ -96,7 +96,7 @@ export default class LineChart extends AbstractChart {
 
 
 
-    getLegendData(): Array<ChartLegendItem> {
+    getLegendData(): Array<Array<ChartLegendItem>> {
 
 
         return this.legendData
@@ -151,6 +151,8 @@ export default class LineChart extends AbstractChart {
 
             const colorDiff = colorEnd.sub(colorStart)
 
+            let legendGroup = []
+
             for (let datasetIndex = 0; datasetIndex < bucket.length; datasetIndex++) {
 
                 const dataset = bucket[datasetIndex]
@@ -177,7 +179,8 @@ export default class LineChart extends AbstractChart {
                     symbolUrl:this.symbolUrl
                 }
 
-                this.legendData.push(legendItem)
+                //this.legendData.push(legendItem)
+                legendGroup.push(legendItem)
                 //#endregion Add legend item
 
 
@@ -229,7 +232,11 @@ export default class LineChart extends AbstractChart {
                     }
                     */
                 }
+
+                
             }
+
+            this.legendData.push(legendGroup)
         }
 
         return result

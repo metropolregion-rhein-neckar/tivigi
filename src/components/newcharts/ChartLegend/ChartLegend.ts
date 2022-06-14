@@ -16,7 +16,7 @@ import { ChartLegendItem } from './ChartLegendItem';
 export default class ChartLegend extends Vue {
 
     @Prop()
-    data! : ChartLegendItem
+    data! : any
 
     getLabel(entry : ChartLegendItem) {
 

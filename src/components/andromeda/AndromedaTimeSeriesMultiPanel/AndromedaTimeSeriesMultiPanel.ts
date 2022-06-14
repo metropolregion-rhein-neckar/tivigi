@@ -124,6 +124,11 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         this.$emit("update:displayMode", this.displayMode_internal)
     }
 
+    @Watch("bars",{deep:true})
+    @Watch("lines",{deep:true})
+    onDataChange() {
+        this.loadData()
+    }
 
     @Watch("extent")
     async loadData() {

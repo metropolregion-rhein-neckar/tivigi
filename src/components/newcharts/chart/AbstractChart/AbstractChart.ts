@@ -22,7 +22,7 @@ export default class AbstractChart extends AbstractChartElement {
     }
 
 
-    getLegendData() : Array<ChartLegendItem> {
+    getLegendData() : Array<Array<ChartLegendItem>> {
 
         return []
 

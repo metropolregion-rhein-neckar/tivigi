@@ -49,17 +49,24 @@ export default class BarChart extends AbstractChart {
 
     displayData = Array<any>()
 
-    legendData = Array<ChartLegendItem>()
+    legendData = Array<Array<ChartLegendItem>>()
 
     colors = Array<any>()
 
 
     created() {
+      
+        /*
         this.colors.push({ start: new ColorRGBA([150, 150, 200, 255]), end: new ColorRGBA([200, 200, 50, 255]) })
         this.colors.push({ start: new ColorRGBA([100, 100, 100, 255]), end: new ColorRGBA([200, 200, 200, 255]) })
         this.colors.push({ start: new ColorRGBA([150, 150, 150, 255]), end: new ColorRGBA([50, 50, 50, 255]) })
         this.colors.push({ start: new ColorRGBA([150, 150, 150, 255]), end: new ColorRGBA([50, 50, 50, 255]) })
+        */
 
+        this.colors.push({ start: new ColorRGBA([100, 100, 200, 255]), end: new ColorRGBA([220, 220, 255, 255]) })
+        this.colors.push({ start: new ColorRGBA([50, 150, 50, 255]), end: new ColorRGBA([200, 255, 200, 255]) })
+        this.colors.push({ start: new ColorRGBA([150, 100, 100, 255]), end: new ColorRGBA([255, 200, 200, 255]) })
+        this.colors.push({ start: new ColorRGBA([50, 50, 50, 255]), end: new ColorRGBA([200, 200, 200, 255]) })
     }
 
 
@@ -96,7 +103,7 @@ export default class BarChart extends AbstractChart {
 
 
 
-    getLegendData(): Array<ChartLegendItem> {
+    getLegendData(): Array<Array<ChartLegendItem>> {
 
 
         return this.legendData
@@ -144,6 +151,8 @@ export default class BarChart extends AbstractChart {
 
             const bucket = this.buckets[bucketIndex]
 
+            let legendGroup = []
+
             const colorEnd = this.colors[bucketIndex].end
             const colorStart = this.colors[bucketIndex].start
 
@@ -174,10 +183,10 @@ export default class BarChart extends AbstractChart {
                     color: color_main.toHexString()
                 }
 
-                this.legendData.push(legendItem)
+                //this.legendData.push(legendItem)
                 //#endregion Add legend item
 
-
+                legendGroup.push(legendItem)
                 for (const p of dataset.points) {
 
                     if (result[p.x] == undefined) {
@@ -216,7 +225,11 @@ export default class BarChart extends AbstractChart {
                         this.displayMax.y = Math.max(this.displayMax.y, stack.positive)
                     }
                 }
+
+                
             }
+
+            this.legendData.push(legendGroup)
         }
 
         return result
