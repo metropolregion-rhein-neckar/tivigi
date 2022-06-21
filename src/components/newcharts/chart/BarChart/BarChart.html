@@ -12,7 +12,7 @@
             :width="barWidth" 
             :height="Math.abs(point.height * scale.y)"
             :style="getStackItemStyle(point)"
-            :data-tooltip="`${point.dataset.label}: <strong>${getFormattedValue(point.dataset, point.y)} ${point.dataset.unit}</strong>`"
+            :data-tooltip="`${point.dataset.label}: <strong>${getFormattedValue(point.dataset, point.height)} ${point.dataset.unit}</strong>`"
              />
            
 
