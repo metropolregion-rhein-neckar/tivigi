@@ -124,8 +124,8 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         this.$emit("update:displayMode", this.displayMode_internal)
     }
 
-    @Watch("bars",{deep:true})
-    @Watch("lines",{deep:true})
+    @Watch("bars", { deep: true })
+    @Watch("lines", { deep: true })
     onDataChange() {
         this.loadData()
     }
@@ -245,9 +245,29 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
                 }
 
 
+                let label = "Namenloses Attribut"
+                let shortLabel = "Namenloses Attribut"
+                let numDecimals = 2
 
-                let label = this.attrMeta[sc.attrName].metadata.label
-                let shortLabel = this.attrMeta[sc.attrName].metadata.shortLabel
+                if (this.attrMeta[sc.attrName].metadata != undefined) {
+                    if (this.attrMeta[sc.attrName].metadata.label != undefined) {
+                        label = this.attrMeta[sc.attrName].metadata.label
+                    }
+
+
+
+                    if (this.attrMeta[sc.attrName].metadata.shortLabel != undefined) {
+
+                        shortLabel = this.attrMeta[sc.attrName].metadata.shortLabel
+                    }
+
+                    let numDecimalsDatabase = this.attrMeta[sc.attrName].metadata.numDecimals
+
+                    if (typeof numDecimalsDatabase == "number") {
+                        numDecimals = numDecimalsDatabase
+                    }
+                }
+
 
                 if (sc.labelSuffix != undefined) {
 
@@ -256,17 +276,15 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
                     }
 
                     if (shortLabel != undefined) {
-                        shortLabel += sc.labelSuffix                        
+                        shortLabel += sc.labelSuffix
                     }
                 }
 
+
+
                 let series = new Dataset(label)
 
-                let numDecimalsDatabase = this.attrMeta[sc.attrName].metadata.numDecimals
-
-                if (typeof numDecimalsDatabase == "number") {
-                    series.numDecmials = numDecimalsDatabase
-                }
+                series.numDecmials = numDecimals
 
                 if (shortLabel != undefined) {
                     series.shortLabel = shortLabel
@@ -328,7 +346,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
 
                 if (dataset.shortLabel) {
-                    shortLabel = dataset.shortLabel                    
+                    shortLabel = dataset.shortLabel
                 }
 
                 const field = new FieldConfig(dataset.label, shortLabel, displayFunc, rawFunc, FieldTextAlign.RIGHT, undefined, undefined, true)

@@ -47,7 +47,7 @@ export default class Piechart extends Vue {
     degreesRotate!: number
 
     @Prop()
-    legend!: Array<ChartLegendItem>
+    legend!: Array<Array<ChartLegendItem>>
 
     @Prop()
     total!: number | undefined
@@ -70,7 +70,7 @@ export default class Piechart extends Vue {
     prepareRenderData() {
 
 
-        const legend = Array<ChartLegendItem>()
+        const legend = Array<Array<ChartLegendItem>>()
 
         const result = []
 
@@ -88,6 +88,8 @@ export default class Piechart extends Vue {
                 total += item.value
             }
         }
+
+        legend.push([])
 
         const range_deg = this.degreesEnd - this.degreesStart
 
@@ -115,7 +117,7 @@ export default class Piechart extends Vue {
             })
 
 
-            legend.push({
+            legend[0].push({
                 label:this.data[index].label,
                 color: color_main.toHexString()
             })
