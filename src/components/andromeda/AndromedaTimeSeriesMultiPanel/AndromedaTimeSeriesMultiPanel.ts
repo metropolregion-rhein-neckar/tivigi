@@ -286,6 +286,9 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
                         shortLabel = this.attrMeta[sc.attrName].metadata.shortLabel
                     }
+                    else {
+                        shortLabel = label
+                    }
 
                     let numDecimalsDatabase = this.attrMeta[sc.attrName].metadata.numDecimals
 
