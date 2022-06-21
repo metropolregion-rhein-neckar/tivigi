@@ -79,12 +79,14 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Prop({ default: "" })
     subtitle!: string
 
-
     @Prop({ default: 0 })
     displayMode!: number
 
     @Prop({ default: true })
     showDisplayModeButtons!: boolean
+
+    @Prop({ default: false })
+    preload!: boolean
     //#endregion Props
 
 
@@ -113,6 +115,22 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         await this.loadData()
     }
 
+    @Watch("initialExtent", {deep:true})
+    async onInitialExtentChange() {
+        this.extent = this.initialExtent
+        /*
+        console.log("exteeent")
+        console.log(this.extent)
+
+        let start = new Date(this.extent.minx)
+        let end = new Date(this.extent.maxx)
+
+        console.log(start)
+        console.log(end)
+        console.log("---")
+       */
+       // await this.loadData()
+    }
 
     @Watch("displayMode")
     onDisplayModeChange() {
@@ -154,6 +172,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         this.prepareTableData(this.barsBuckets, this.tableData)
         this.prepareTableData(this.linesBuckets, this.tableData)
 
+        this.$forceUpdate()
     }
 
 
@@ -166,6 +185,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         }
 
 
+       
         let min = new Vector2(this.extent.minx, this.extent.miny)
         let max = new Vector2(this.extent.maxx, this.extent.maxy)
 
@@ -193,8 +213,14 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
             }
         }
 
-        let dateStart = new Date(this.extent.minx - size.x)
-        let dateEnd = new Date(this.extent.maxx + size.x)
+        let preloadWidth = 0
+
+        if (this.preload) {
+            preloadWidth = size.x
+        }
+
+        let dateStart = new Date(this.extent.minx - preloadWidth)
+        let dateEnd = new Date(this.extent.maxx + preloadWidth)
 
 
 
