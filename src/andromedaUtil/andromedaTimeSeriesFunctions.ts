@@ -12,11 +12,13 @@
 // recombine them in different ways and experiment with different approaches of how to manage this.
 
 export enum AggregationPeriod {
-    day = "day"
+    day = "day",
+    hour = "hour"
 }
 
 export enum AggregationMethod {
-    sum = "sum"
+    sum = "sum",
+    avg = "avg"
 }
 
 
@@ -25,8 +27,8 @@ export interface TimeSeriesLoaderTask {
     attrs: Array<string>,
 
     // These are optional:
-    aggrMethod?: "sum",
-    aggrPeriodDuration?: "day"
+    aggrMethod?: AggregationMethod,
+    aggrPeriodDuration?: AggregationPeriod
 
 }
 
