@@ -61,10 +61,11 @@ export async function loadTimeSeries(brokerBaseUrl: string, tasks: Array<TimeSer
         }
 
         if (!found) {
-            const task2 = {
+            const task2 : TimeSeriesLoaderTask = {
                 entityId: task.entityId,
                 attrs: task.attrs,
-
+                aggrMethod : task.aggrMethod,
+                aggrPeriodDuration : task.aggrPeriodDuration
             }
 
             actualTasks.push(task2)
@@ -157,7 +158,7 @@ export async function loadTimeSeriesInPieces(brokerBaseUrl: string, task: TimeSe
 
     if (lastN > 0) {
         url += "&lastN=" + lastN
-    }
+    }    
 
     const res = await fetch(url)
 
