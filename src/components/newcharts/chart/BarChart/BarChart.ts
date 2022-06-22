@@ -93,7 +93,8 @@ export default class BarChart extends AbstractChart {
 
     getFormattedValue(series: Dataset, value: number) {
 
-        const numDecimals = tryToRead(series, "style.numDecimals", 1)
+        let numDecimals = typeof series.numDecimals == "number" ? series.numDecimals : 1
+
         return formatNumberString(value, numDecimals)
     }
 

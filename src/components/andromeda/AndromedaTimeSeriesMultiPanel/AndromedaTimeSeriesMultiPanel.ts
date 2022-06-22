@@ -313,7 +313,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
                 let series = new Dataset(label)
 
-                series.numDecmials = numDecimals
+                series.numDecimals = numDecimals
 
                 if (shortLabel != undefined) {
                     series.shortLabel = shortLabel
@@ -366,7 +366,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
                 // ATTENTION: This requires that the label of each Dataset is unique!
                 let attrPath = dataset.label
 
-                const displayFunc = (row: any) => formatNumberString(row[attrPath], dataset.numDecmials)
+                const displayFunc = (row: any) => formatNumberString(row[attrPath], dataset.numDecimals)
 
                 const rawFunc = (row: any) => row[attrPath]
 

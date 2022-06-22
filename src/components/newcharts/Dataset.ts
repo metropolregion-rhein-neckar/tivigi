@@ -4,12 +4,10 @@ import { DataPoint, NewChartDatasetStyle } from "./chartDataClasses"
 
 export class Dataset {
 
-    numDecmials: number = 2
+    numDecimals: number = 2
     shortLabel?: string
     unit : string = ""
-    
 
-    //style? :  NewChartDatasetStyle
 
     points: Array<DataPoint> = Array<DataPoint>()
 
