@@ -39,7 +39,8 @@ export default class LineChart extends AbstractChart {
 
     symbolWidth = 15
     symbolHeight = 15
-    symbolUrl = "img/charts/cross.svg"
+    // TODO: Make this configurable
+    symbolUrl = "img/charts/horizontal_line.svg"
 
     cfg_barSpacing_px = 5
 

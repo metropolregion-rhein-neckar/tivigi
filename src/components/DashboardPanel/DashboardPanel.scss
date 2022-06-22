@@ -1,6 +1,6 @@
 div.DashboardPanel {
     height: 100%;
-  
+
     display: flex;
     flex-direction: column;
 }
@@ -59,13 +59,13 @@ div.DashboardPanel__Header {
 }
 
 div.DashboardPanel__Main {
-    //height: 100%;
+    // Note that we can't use CSS transform/translate for vertical centering here 
+    // because this will under some circumstances break "position:fixed" of nested elements.
+    
     flex: 1;
+    display: flex;
+    flex-direction: column;
     > div {
-        
-        position: relative;
-        top: 50%;
-
-        transform: translateY(-50%);
+        flex: 1;
     }
 }
