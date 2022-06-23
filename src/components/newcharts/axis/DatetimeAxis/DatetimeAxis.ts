@@ -1,12 +1,6 @@
-import { Component } from 'vue-property-decorator';
-
+import { Component, Prop } from 'vue-property-decorator';
 import AbstractAxis from '../AbstractAxis/AbstractAxis';
-
-
 import { AxisLabel } from '../AxisLabel';
-
-
-
 import { zeroPad } from 'tivigi/src/util/formatters';
 
 
@@ -41,6 +35,16 @@ const msPerHour = 3600000
 const msPerQuarterHour = 900000
 const msPerMinute = 60000
 
+const stepSizes = {
+    [AXIS_LABEL_MODE._1_YEAR]: msPerDay,
+    [AXIS_LABEL_MODE._1_MONTH]: msPerDay,
+    [AXIS_LABEL_MODE._5_DAYS]: msPerDay,
+    [AXIS_LABEL_MODE._1_DAY]: msPerDay,
+    [AXIS_LABEL_MODE._1_HOUR]: msPerHour,
+    [AXIS_LABEL_MODE._15_MIN]: msPerQuarterHour,
+    [AXIS_LABEL_MODE._1_MIN]: msPerMinute
+
+}
 
 
 @Component({
@@ -50,11 +54,19 @@ const msPerMinute = 60000
 })
 export default class DatetimeAxis extends AbstractAxis {
 
+    @Prop()
+    forceLabelScale!: string
+
 
     getNextAxisStep(value: number, down: boolean): number {
+        const dim = (this.dimension == "x") ? 0 : 1
+
+        const scale = 1.0 / this.canvas.scale.values[dim]
 
 
-        const stepSize = this.getLabelStep()
+        const mode = this.getMode(scale)
+
+        const stepSize = stepSizes[mode]
 
 
         let result = Math.ceil(value / stepSize) * stepSize
@@ -67,47 +79,42 @@ export default class DatetimeAxis extends AbstractAxis {
     }
 
 
-    getLabelStep(): number {
-        const dim = (this.dimension == "x") ? 0 : 1
 
+    getMode(scale: number) {
 
-        let stepSize = msPerQuarterHour
+        if (typeof this.forceLabelScale == 'string') {
 
-        let mode: AXIS_LABEL_MODE = AXIS_LABEL_MODE._15_MIN
-
-        let scale = 1.0 / this.canvas.scale.values[dim]
+            switch(this.forceLabelScale) {
+                case "year" :
+                    return AXIS_LABEL_MODE._1_YEAR
+            }
+        }
+        
+        let mode = AXIS_LABEL_MODE._1_MIN
 
         if (scale > 40000000) {
-            stepSize = msPerDay
             mode = AXIS_LABEL_MODE._1_YEAR
         }
-
         else if (scale > 7000000) {
-            stepSize = msPerDay
             mode = AXIS_LABEL_MODE._1_MONTH
         }
         else if (scale > 2000000) {
-            stepSize = msPerDay
             mode = AXIS_LABEL_MODE._5_DAYS
         }
         else if (scale > 70000) {
-            stepSize = msPerDay
             mode = AXIS_LABEL_MODE._1_DAY
         }
         else if (scale > 15000) {
-            stepSize = msPerHour
             mode = AXIS_LABEL_MODE._1_HOUR
         }
         else if (scale > 1400) {
-            stepSize = msPerQuarterHour
             mode = AXIS_LABEL_MODE._15_MIN
         }
         else if (scale > 0) {
-            stepSize = msPerMinute
             mode = AXIS_LABEL_MODE._1_MIN
         }
 
-        return stepSize
+        return mode
     }
 
 
@@ -117,45 +124,12 @@ export default class DatetimeAxis extends AbstractAxis {
 
         const dim = (this.dimension == "x") ? 0 : 1
 
+        const scale = 1.0 / this.canvas.scale.values[dim]
 
-        // TODO: Remove code duplication in getLabelStep()
+        const mode = this.getMode(scale)
 
-        let mode: AXIS_LABEL_MODE = AXIS_LABEL_MODE._15_MIN
+        const stepSize = stepSizes[mode]
 
-        let scale = 1.0 / this.canvas.scale.values[dim]
-
-        if (scale > 40000000) {
-
-            mode = AXIS_LABEL_MODE._1_YEAR
-        }
-
-        else if (scale > 7000000) {
-
-            mode = AXIS_LABEL_MODE._1_MONTH
-        }
-        else if (scale > 2000000) {
-
-            mode = AXIS_LABEL_MODE._5_DAYS
-        }
-        else if (scale > 70000) {
-
-            mode = AXIS_LABEL_MODE._1_DAY
-        }
-        else if (scale > 15000) {
-
-            mode = AXIS_LABEL_MODE._1_HOUR
-        }
-        else if (scale > 1400) {
-
-            mode = AXIS_LABEL_MODE._15_MIN
-        }
-        else if (scale > 0) {
-
-            mode = AXIS_LABEL_MODE._1_MIN
-        }
-
-
-        const stepSize = this.getLabelStep()
         const lowestVisibleValue = this.canvas.bottomLeftWorld.values[dim]
 
         let pos = (Math.ceil(lowestVisibleValue / stepSize)) * stepSize
@@ -165,7 +139,7 @@ export default class DatetimeAxis extends AbstractAxis {
 
 
 
-        while (pos <= lowestVisibleValue + canvasAxisLength_world ) {
+        while (pos <= lowestVisibleValue + canvasAxisLength_world) {
 
             const d = new Date(pos)
             let text = ""
@@ -216,13 +190,15 @@ export default class DatetimeAxis extends AbstractAxis {
                     break
             }
 
+            const tooltip = d.toLocaleDateString() + ", " + d.toLocaleTimeString()
 
 
             if (text != "") {
 
                 result.push({
                     "pos": pos,
-                    "text": text
+                    "text": text,
+                    "tooltip": tooltip
                 })
             }
 

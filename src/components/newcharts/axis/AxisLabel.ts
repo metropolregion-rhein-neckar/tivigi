@@ -1,4 +1,5 @@
 export interface AxisLabel {
     pos : number,
-    text : string
+    text : string,
+    tooltip? : string
 }

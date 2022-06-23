@@ -76,16 +76,20 @@ export default class LineChart extends AbstractChart {
 
         let range = this.displayMax.sub(this.displayMin)
 
-        // NOTE: The subtraction creates a padding for autoscale:
-        return this.displayMin.sub(new Vector2(range.x / 10, 0))
+        // NOTE: The subtraction creates a padding for autoscale. 
+        // The '+1' causes the chart to be horizontally centered on 
+        // the canvas if there is only one data point.
+        return this.displayMin.sub(new Vector2(range.x / 10 + 1, 0))
     }
 
 
     getDisplayMax(): Vector2 {
         let range = this.displayMax.sub(this.displayMin)
 
-
-        return this.displayMax.add(new Vector2(range.x / 10, 0))
+        // NOTE: The subtraction creates a padding for autoscale. 
+        // The '+1' causes the chart to be horizontally centered on 
+        // the canvas if there is only one data point.
+        return this.displayMax.add(new Vector2(range.x / 10 + 1, 0))
     }
 
 
@@ -138,8 +142,8 @@ export default class LineChart extends AbstractChart {
         this.displayMax.x = Number.NEGATIVE_INFINITY
         this.displayMax.y = Number.NEGATIVE_INFINITY
 
-        
-        
+
+
 
         this.legendData = []
 
@@ -175,9 +179,9 @@ export default class LineChart extends AbstractChart {
                 //#region Add legend item
                 let legendItem: ChartLegendItem = {
                     label: dataset.label,
-                    shortLabel : dataset.shortLabel,
+                    shortLabel: dataset.shortLabel,
                     color: color_main.toHexString(),
-                    symbolUrl:this.symbolUrl
+                    symbolUrl: this.symbolUrl
                 }
 
                 //this.legendData.push(legendItem)
@@ -205,7 +209,7 @@ export default class LineChart extends AbstractChart {
                         color: color_main.toHexString()
                     })
 
-                 
+
                     this.displayMin.y = Math.min(this.displayMin.y, p.y)
                     this.displayMax.y = Math.max(this.displayMax.y, p.y)
                     /*
@@ -234,7 +238,7 @@ export default class LineChart extends AbstractChart {
                     */
                 }
 
-                
+
             }
 
             this.legendData.push(legendGroup)

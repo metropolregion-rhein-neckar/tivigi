@@ -2,7 +2,7 @@
     <g v-if="dimension=='x'" class="ChartCanvas__Axis ChartCanvas__XAxis">
 
         <template v-for="label in displayLabels">
-            <text :style="getXAxisLabelStyle(label)">{{label.text}}</text>
+            <text :style="getXAxisLabelStyle(label)" :data-tooltip="label.tooltip">{{label.text}}</text>
             
             <line :x1="w2sx(label.pos)" :y1="canvas.chartAreaSize.y + 10" :x2="w2sx(label.pos)" 
             :y2="canvas.chartAreaSize.y + 5" style="stroke-dasharray: none;"/>
@@ -18,7 +18,8 @@
     
     <g v-if="dimension=='y'" class="ChartCanvas__Axis ChartCanvas__YAxis">
         <template v-for="label in displayLabels">
-            <text :x="-7" :y="w2sy(label.pos)" :style="getYAxisLabelStyle(label)">{{label.text}}</text>
+            <text :x="-7" :y="w2sy(label.pos)" :style="getYAxisLabelStyle(label)"
+            :data-tooltip="label.tooltip">{{label.text}}</text>
             <line  v-if="showLines" :x1="0" :y1="w2sy(label.pos)" 
             :x2="canvas.chartAreaSize.x" :y2="w2sy(label.pos)"
             :class="getLineClass(label.pos)" />

@@ -89,7 +89,9 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     preload!: boolean
     //#endregion Props
 
-
+    @Prop()
+    forceXLabelScale! : string
+    
     extent: BoundingBox = this.initialExtent
 
 

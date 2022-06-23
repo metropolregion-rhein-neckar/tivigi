@@ -23,7 +23,7 @@
                 </template>
 
                 <template v-slot:under>
-                    <DatetimeAxis dimension="x" :showLines="false" />
+                    <DatetimeAxis dimension="x" :showLines="false" :forceLabelScale="forceXLabelScale"/>
 
                     <NumericalAxis dimension="y" />
 

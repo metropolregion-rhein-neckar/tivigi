@@ -2,7 +2,6 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 import AbstractChart from '../AbstractChart/AbstractChart';
 import { Vector2 } from 'tivigi/src/util/Vector2';
 import { formatNumberString } from 'tivigi/src/util/formatters';
-import { tryToRead } from 'tivigi/src/util/tryToRead';
 import { Dataset } from '../../Dataset';
 import { ChartLegendItem } from '../../ChartLegend/ChartLegendItem';
 import { ColorRGBA } from 'tivigi/src/util/ColorRGBA';
@@ -78,16 +77,20 @@ export default class BarChart extends AbstractChart {
 
         let range = this.displayMax.sub(this.displayMin)
 
-        // NOTE: The subtraction creates a padding for autoscale:
-        return this.displayMin.sub(new Vector2(range.x / 10, 0))
+        // NOTE: The subtraction creates a padding for autoscale. 
+        // The '+1' causes the chart to be horizontally centered on 
+        // the canvas if there is only one data point.
+        return this.displayMin.sub(new Vector2(range.x / 10 + 1, 0))
     }
 
 
     getDisplayMax(): Vector2 {
         let range = this.displayMax.sub(this.displayMin)
 
-
-        return this.displayMax.add(new Vector2(range.x / 10, 0))
+        // NOTE: The subtraction creates a padding for autoscale. 
+        // The '+1' causes the chart to be horizontally centered on 
+        // the canvas if there is only one data point.
+        return this.displayMax.add(new Vector2(range.x / 10 + 1, 0))
     }
 
 
