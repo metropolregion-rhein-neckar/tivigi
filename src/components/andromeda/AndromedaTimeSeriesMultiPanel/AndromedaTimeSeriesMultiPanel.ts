@@ -120,18 +120,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Watch("initialExtent", {deep:true})
     async onInitialExtentChange() {
         this.extent = this.initialExtent
-        /*
-        console.log("exteeent")
-        console.log(this.extent)
-
-        let start = new Date(this.extent.minx)
-        let end = new Date(this.extent.maxx)
-
-        console.log(start)
-        console.log(end)
-        console.log("---")
-       */
-       // await this.loadData()
+       
     }
 
     @Watch("displayMode")
@@ -244,7 +233,12 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
                 let points = []
 
+                if (sc.entityId == undefined) {
+                    continue
+                }
+
                 if (response[sc.entityId] == undefined) {
+                    console.error("Fehler beim Laden: Entity nicht in der Antwort enthalten: " + sc.entityId)
                     continue
                 }
 
@@ -252,6 +246,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
                 if (data == undefined) {
 
+                    console.error("Fehler beim Laden: Entity/Attribut nicht in der Antwort enthalten: " + sc.entityId + "/" + sc.attrName)
                     continue
                 }
 
@@ -278,11 +273,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
                 let numDecimals = 2
 
                 if (this.attrMeta[sc.attrName].metadata != undefined) {
+
                     if (this.attrMeta[sc.attrName].metadata.label != undefined) {
                         label = this.attrMeta[sc.attrName].metadata.label
                     }
-
-
 
                     if (this.attrMeta[sc.attrName].metadata.shortLabel != undefined) {
 
@@ -329,14 +323,6 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
             newBarBuckets.push(bucket)
         }
-
-
-        // ATTENTION: We can't work with "source = []" here because we want to modify the *original array*
-        // that was passed to the function as the argument "source", and NOT assign a new empty array to
-        //  the *variable name* "source", which wouldn't change the originally passed array at all:
-
-        //dest.length = 0
-        //dest.push(...newBarBuckets)
 
         return newBarBuckets
     }

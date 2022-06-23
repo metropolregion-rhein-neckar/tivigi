@@ -4,22 +4,18 @@
 
 
         <template v-for="(stack,stackIndex) in group">
-           
-            <rect v-for="(point, pointIndex) of stack.items" class="BarChart__Bar"
-            
-            :x="w2sx(x) - (group.length * (barWidth + cfg_barSpacing_px)) / 2 + stackIndex * (barWidth + cfg_barSpacing_px) + cfg_barSpacing_px/2"
-            :y="w2sy(point.y) " 
-            :width="barWidth" 
-            :height="Math.abs(point.height * scale.y)"
-            :style="getStackItemStyle(point)"
-            :data-tooltip="`${point.dataset.label}: <strong>${getFormattedValue(point.dataset, point.height)} ${point.dataset.unit}</strong>`"
-             />
-           
+
+            <!-- TODO: 1 Understand why stack can be undefined here -->
+            <template v-if="stack != undefined">
+                <rect v-for="(point, pointIndex) of stack.items" class="BarChart__Bar"
+                    :x="w2sx(x) - (group.length * (barWidth + cfg_barSpacing_px)) / 2 + stackIndex * (barWidth + cfg_barSpacing_px) + cfg_barSpacing_px/2"
+                    :y="w2sy(point.y) " :width="barWidth" :height="Math.abs(point.height * scale.y)"
+                    :style="getStackItemStyle(point)"
+                    :data-tooltip="`${point.dataset.label}: <strong>${getFormattedValue(point.dataset, point.height)} ${point.dataset.unit}</strong>`" />
+            </template>
 
         </template>
-      
+
     </template>
     <!--################# END Draw stacked bars ###################-->
 </g>
-
-

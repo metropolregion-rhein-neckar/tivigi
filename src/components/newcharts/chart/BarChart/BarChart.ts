@@ -147,9 +147,9 @@ export default class BarChart extends AbstractChart {
 
         this.legendData = []
 
-        for (let bucketIndex = 0; bucketIndex < this.buckets.length; bucketIndex++) {
+        for (let bucketIndex = 0; bucketIndex < buckets.length; bucketIndex++) {
 
-            const bucket = this.buckets[bucketIndex]
+            const bucket = buckets[bucketIndex]
 
             let legendGroup = []
 
@@ -182,11 +182,11 @@ export default class BarChart extends AbstractChart {
                     shortLabel:dataset.shortLabel,
                     color: color_main.toHexString()
                 }
+                
+                legendGroup.push(legendItem)
 
-                //this.legendData.push(legendItem)
                 //#endregion Add legend item
 
-                legendGroup.push(legendItem)
                 for (const p of dataset.points) {
 
                     if (result[p.x] == undefined) {
@@ -224,14 +224,13 @@ export default class BarChart extends AbstractChart {
 
                         this.displayMax.y = Math.max(this.displayMax.y, stack.positive)
                     }
-                }
-
-                
+                }                
             }
 
             this.legendData.push(legendGroup)
         }
 
+        
         return result
     }
 }
