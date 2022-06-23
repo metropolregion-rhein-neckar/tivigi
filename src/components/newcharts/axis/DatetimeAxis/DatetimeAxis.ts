@@ -190,8 +190,9 @@ export default class DatetimeAxis extends AbstractAxis {
                     break
             }
 
-            const tooltip = d.toLocaleDateString() + ", " + d.toLocaleTimeString()
+            let tooltip = d.toLocaleDateString() + ", " + d.toLocaleTimeString()
 
+            tooltip = `${zeroPad(d.getUTCDate(),2)}.${zeroPad(d.getUTCMonth() + 1,2)}.${d.getUTCFullYear()}, ${zeroPad(d.getUTCHours(),2)}:${zeroPad(d.getUTCMinutes(),2)}:${zeroPad(d.getUTCSeconds(),2)}` 
 
             if (text != "") {
 
