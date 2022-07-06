@@ -1,4 +1,3 @@
-import { Color } from "ol/color";
 
 export class ColorRGBA {
 
@@ -60,7 +59,7 @@ export class ColorRGBA {
 
         let result = new ColorRGBA()
 
-        for (let ii = 0; ii < 5; ii++) {
+        for (let ii = 0; ii < 4; ii++) {
             result.values[ii] = this.values[ii] + other.values[ii]
         }
 
@@ -131,10 +130,12 @@ export class ColorRGBA {
     toHexString(alpha: boolean = true) {
         // NOTE: We need the option to disable the alpha channel for Microsoft Edge Legacy
 
-        let result = "#" + this.decimalToHex(this.r) + this.decimalToHex(this.g) + this.decimalToHex(this.b)
+        let rounded = this.round()
+
+        let result = "#" + this.decimalToHex(rounded.r) + this.decimalToHex(rounded.g) + this.decimalToHex(rounded.b)
 
         if (alpha) {
-            result += this.decimalToHex(this.a)
+            result += this.decimalToHex(rounded.a)
         }
 
         return result
