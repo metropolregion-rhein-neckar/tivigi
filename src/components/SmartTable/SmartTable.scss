@@ -1,0 +1,70 @@
+div.SmartTable {
+    table {
+        //border-collapse: collapse;
+        td,th {
+        
+            padding:8px;
+        }
+        width:100%;
+    }
+
+    thead {
+        user-select: none;
+
+        th {
+            background-color: #e0e0e0;
+            &:hover {
+                background-color: #bbb;
+                cursor:pointer;
+            }
+
+
+              //height: 100%;
+              
+              font-size: 14px;
+
+              font-weight: bold;
+              color: #444;
+              margin: 0;
+
+              padding: 6px;                
+              // Space for the sort icon:
+              padding-right: 22px;
+              
+              //   border:1px solid #000;
+
+              user-select: none;
+
+              text-align: left;
+              //white-space: nowrap;
+
+              border: none;
+              border-right: 1px solid #bbb;
+
+              background-color: #ddd;
+              background-position: right 6px center;                
+              background-size: 0.8em;
+              background-repeat: no-repeat;
+            
+
+              &:hover {
+                  background-color: #c0c0c0;
+               //   cursor: pointer;
+              }
+
+              &:last-child {
+                  border-right: none;
+              }
+        }
+    }
+}
+
+
+.SmartTable__HeaderCell--ascending {
+    background-image:url('arrow_up.svg');
+}
+
+
+.SmartTable__HeaderCell--descending {
+    background-image:url('arrow_down.svg');
+}
