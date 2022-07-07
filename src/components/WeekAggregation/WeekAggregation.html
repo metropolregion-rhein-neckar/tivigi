@@ -1,0 +1,42 @@
+<div class="WeekAggregation">
+  <!--
+  <h3>
+    {{startDateString}} - {{endDateString}}
+  </h3>
+-->
+  <!-- Hours X-Axis, Weekdays y-axis -->
+  <div>
+    <table>
+      <tr>
+        <th></th>
+        <th v-for="ts of timestrings">{{ts}}</th>
+
+      </tr>
+      <tr v-for="(weekday,wdindex) of weekdays">
+        <th class="WeekAggregation__Weekdays">{{weekday}}</th>
+        <td v-for="ts of timestrings" :style="getTdStyle(wdindex,ts)" :data-tooltip="getTooltip(wdindex,ts)">
+          <span>{{getLabel(wdindex,ts)}}</span>
+
+        </td>
+      </tr>
+    </table>
+
+
+    <!-- Weekdays X-Axis, Hours y-axis -->
+    <!--
+   <table>
+    <tr>
+      <th></th>
+        <th v-for="(weekday,wdindex) of weekdays">{{weekday}}</th>
+      
+    </tr>
+    <tr v-for="ts of timestrings">
+      <th>{{ts}}</th>
+      <td v-for="(weekday,wdindex) of weekdays" :style="getTdStyle(wdindex,ts)">
+        <span>{{getLabel(wdindex,ts)}}</span>
+    </td>
+    </tr>
+  </table>
+  -->
+  </div>
+</div>

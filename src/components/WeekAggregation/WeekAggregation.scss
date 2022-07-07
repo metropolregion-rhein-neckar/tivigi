@@ -1,0 +1,37 @@
+div.WeekAggregation {
+    width:100%;
+    h3 {
+        text-align: center;
+    }
+
+    div {
+        width:100%;
+        overflow: auto;
+        table {
+            width: 100%;
+            font-size: 13px;
+
+            border-spacing: 1px;
+            border-collapse: collapse;
+
+            th {
+                //font-weight: normal;
+                padding: 4px 2px;
+            }
+
+            th.WeekAggregation__Weekdays {
+                text-align: left;
+             
+            }
+
+            td {
+                padding: 6px;
+                text-align: center;
+                font-weight: bold;
+                span {
+                    //  display:none;
+                }
+            }
+        }
+    }
+}
