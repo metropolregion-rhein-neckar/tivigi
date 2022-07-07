@@ -20,9 +20,12 @@ div.ChartCanvas {
   }
 
   svg {
-    // ATTENTION: We MUST specify a height for the <svg> element! Otherwise, an endless
+    // ATTENTION: We must set position:absolute for the <svg>! Otherwise, an endless
     // recursion, powered by the v-onresize event handler, will be triggered and make the
-    // <svg> grow infinitely!
+    // <svg> grow infinitely. This is because if position is not "absolute" (or fixed),
+    // the <svg> is emebedded into the layout flow of the page, and in that case, a change of 
+    // the <svg>'s size changes the size of the wrapper <div>, which, in turn,
+    // will again cause a change of the size of the <svg>, and so on ...
     
     position:absolute;
     font-size: 13px;
