@@ -59,13 +59,14 @@ div.DashboardPanel__Header {
 }
 
 div.DashboardPanel__Main {
-    // Note that we can't use CSS transform/translate for vertical centering here 
+    // Note that we can't use CSS transform/translate for vertical centering here
     // because this will under some circumstances break "position:fixed" of nested elements.
-    
+    // For now, we give up vertical centering in exchange for the possibility to set the height
+    // of e.g. an embedded ChartCanvas by setting the height of the DashboardPanel.
+
     flex: 1;
+    
     display: flex;
     flex-direction: column;
-    > div {
-        flex: 1;
-    }
+  
 }

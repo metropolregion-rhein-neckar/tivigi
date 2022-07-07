@@ -15,7 +15,7 @@
 
         <template v-if="displayMode_internal == 0">
             <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" :scaleX="scaleX" scaleY="auto"
-                :legend.sync="legend_internal">
+                :legend.sync="legend_internal" style="flex:1">
 
                 <template v-slot:charts>
                     <BarChart :buckets="barsBuckets" />
@@ -31,7 +31,7 @@
 
             </ChartCanvas>
 
-            <ChartLegend :data="legend_internal" />
+            <ChartLegend :data="legend_internal" style="margin-top:6px;"/>
         </template>
         <template v-else>
             <TableView :data="tableData" />

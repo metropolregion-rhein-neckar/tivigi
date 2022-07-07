@@ -27,15 +27,8 @@
     </div>
   </div>
 
-  <div class="DashboardPanel__Main">
-    <!-- ATTENTION: The empty <div>s above and below the actual slot <div> are 
-      required for vertical centering! Note that we can't use CSS transform/translate for vertical
-      centering because this will under some circumstances break "position:fixed" of nested elements. -->
-    <div></div>
-    <div>
-      <slot name="main" />
-    </div>
-    <div></div>
+  <div class="DashboardPanel__Main">    
+      <slot name="main" />    
   </div>
 
   <!--############## BEGIN Info sidebar panel ##############-->

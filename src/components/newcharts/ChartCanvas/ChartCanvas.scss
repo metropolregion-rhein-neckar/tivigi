@@ -1,10 +1,9 @@
 div.ChartCanvas {
-  user-select: none;
-  //border: 2px solid #0f0;
-  height: 300px;
+  user-select: none;    
 
   div {
     height:100%;
+    min-height:150px;
   }
   rect.ChartCanvas__ViewBoxBorder {
     fill: none;
@@ -24,10 +23,10 @@ div.ChartCanvas {
     // ATTENTION: We MUST specify a height for the <svg> element! Otherwise, an endless
     // recursion, powered by the v-onresize event handler, will be triggered and make the
     // <svg> grow infinitely!
-    //height: 100%;
-    //border: 2px solid #00f;
-    font-size: 13px;
     
-   // width:100%;
+    position:absolute;
+    font-size: 13px;
+   
+    
   }
 }

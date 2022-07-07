@@ -28,7 +28,7 @@ export default class ChartCanvas extends Vue {
     @Prop({ default: false })
     debug!: boolean
 
-    @Prop({ default: 60 })
+    @Prop({ default: 35 })
     xLabelsSpace!: number
 
     @Prop({ default: 60 })
@@ -239,6 +239,10 @@ export default class ChartCanvas extends Vue {
             }
 
         }
+
+        // Not needed:
+        //result["width"] = this.viewBoxSize.x + "px"
+        //result["height"] = this.viewBoxSize.y + "px"
 
         return result
     }
