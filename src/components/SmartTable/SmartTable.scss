@@ -70,3 +70,8 @@ div.SmartTable {
 .SmartTable__HeaderCell--descending {
     background-image: url("arrow_down.svg");
 }
+
+
+.SmartTable__Row--selected {
+    background-color: #ccc;
+}
