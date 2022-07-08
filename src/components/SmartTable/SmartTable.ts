@@ -113,7 +113,13 @@ export default class SmartTable extends Vue {
         }        
 
         this.selectedRowIndex = this.getElementIndex(target)
+        
+        if (this.selectedRowIndex >= 0) {
+            
+            const rowData = target.getAttribute("data-row-value")
 
+            this.$emit("update:selected", rowData)
+        }
 
         this.updateRowStyles()        
     }
