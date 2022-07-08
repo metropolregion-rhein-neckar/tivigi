@@ -17,7 +17,7 @@ import { TableData } from 'tivigi/src/components/TableView/TableData';
 import { FieldConfig, FieldTextAlign } from 'tivigi/src/components/TableView/FieldConfig';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import DashboardPanel from 'tivigi/src/components/DashboardPanel/DashboardPanel';
-
+import SmartTable from 'tivigi/src/components/SmartTable/SmartTable';
 import WithRender from './AndromedaTimeSeriesMultiPanel.html';
 
 @WithRender
@@ -37,7 +37,9 @@ import WithRender from './AndromedaTimeSeriesMultiPanel.html';
         DatetimeAxis,
         BarChart,
         SmartButton,
+        SmartTable,
         TableView
+
         //#### END Tivigi Components #####
 
 
@@ -110,6 +112,8 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
 
     tableData!: TableData
+
+    
 
     async created() {
         this.extent = this.initialExtent

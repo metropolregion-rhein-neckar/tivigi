@@ -23,7 +23,7 @@
                 </template>
 
                 <template v-slot:under>
-                    <DatetimeAxis dimension="x" :showLines="false" :forceLabelScale="forceXLabelScale"/>
+                    <DatetimeAxis dimension="x" :showLines="false" :forceLabelScale="forceXLabelScale" />
 
                     <NumericalAxis dimension="y" />
 
@@ -31,10 +31,11 @@
 
             </ChartCanvas>
 
-            <ChartLegend :data="legend_internal" style="margin-top:6px;"/>
+            <ChartLegend :data="legend_internal" style="margin-top:6px;" />
         </template>
         <template v-else>
             <TableView :data="tableData" />
+
         </template>
     </template>
 
@@ -42,7 +43,7 @@
     <template v-slot:infoPanel>
 
         <slot name="infoPanelText"></slot>
-       
-  
-      </template>
+
+
+    </template>
 </DashboardPanel>

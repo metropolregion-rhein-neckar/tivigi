@@ -1,11 +1,9 @@
+// TODO: Implement keyboard control
+
 import { Component, Vue } from 'vue-property-decorator';
-
-
 
 import "./SmartTable.scss"
 import WithRender from './SmartTable.html';
-
-
 
 
 @WithRender
@@ -16,38 +14,37 @@ import WithRender from './SmartTable.html';
 export default class SmartTable extends Vue {
 
 
-
     currentSortFieldIndex = -1
     sortDir = 1
 
 
-    mounted() {
-
+    mounted() {        
 
         this.prepare()
 
         // create a new instance of 'MutationObserver' named 'observer', 
         // passing it a callback function
 
-        /*
-        // identify an element to observe
 
-        let el = this.$refs.backstage as HTMLDivElement
- 
+        // identify an element to observe
+        /*
+        let el = this.$refs.table as HTMLTableElement
+
         if (el != undefined) {
-            this.content = el.innerHTML
+
 
             let observer = new MutationObserver((mutationsList, observer) => {
 
-            //   this.sort()
+                //    console.log("data changed")
+                //  this.prepare()
             });
 
             // call 'observe' on that MutationObserver instance, 
             // passing it the element to observe, and the options object
             observer.observe(el, { characterData: true, childList: true, attributes: true, subtree: true })
-         }
-         */
-        //console.log(content)
+        }
+        */
+
     }
 
 
@@ -56,6 +53,7 @@ export default class SmartTable extends Vue {
         const bs = this.$refs.table as HTMLTableElement
 
         if (bs == undefined) {
+            console.log("table not found")
             return null
         }
 
@@ -72,10 +70,11 @@ export default class SmartTable extends Vue {
 
 
     prepare() {
-      
+
         const headrow = this.getHeaderRow()
-        
+
         if (headrow == null) {
+            console.log("SmartTable: <thead> not found. No sorting function is added.")
             return
         }
 
@@ -90,7 +89,7 @@ export default class SmartTable extends Vue {
     onHeaderCellClick(evt: Event) {
 
         const headrow = this.getHeaderRow()
-        
+
         if (headrow == null) {
             return
         }
@@ -99,6 +98,7 @@ export default class SmartTable extends Vue {
             const cell = headrow.children.item(ii) as Element
 
             if (cell == evt.currentTarget) {
+
                 this.sort(ii)
                 return
             }
@@ -117,7 +117,7 @@ export default class SmartTable extends Vue {
         }
 
         const headrow = this.getHeaderRow()
-        
+
         if (headrow == null) {
             return
         }
@@ -154,7 +154,7 @@ export default class SmartTable extends Vue {
             return
         }
 
-    
+
 
         let tbody = bs.getElementsByTagName("tbody").item(0) as HTMLElement
 
@@ -165,8 +165,6 @@ export default class SmartTable extends Vue {
         const children = Array<Element>()
 
         children.push(...tbody.children)
-
-
 
 
         children.sort((a, b) => {
@@ -180,17 +178,28 @@ export default class SmartTable extends Vue {
                 return 0
             }
 
-            let v1 = cellA.getAttribute("data-value")
+            let v1 : any = cellA.getAttribute("data-value")
 
             if (v1 == null) {
                 v1 = cellA.innerHTML
             }
 
-            let v2 = cellB.getAttribute("data-value")
+            let v2 : any = cellB.getAttribute("data-value")
 
             if (v2 == null) {
                 v2 = cellB.innerHTML
             }
+
+            try {
+                v1 = parseFloat(v1)
+            }
+            catch {}
+
+            try {
+                v2 = parseFloat(v2)
+            }
+            catch {}
+
 
             if (v1 < v2) {
                 return -1 * this.sortDir
