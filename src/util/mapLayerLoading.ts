@@ -14,7 +14,8 @@ import Projection from 'ol/proj/Projection'
 import WMSCapabilities from 'ol/format/WMSCapabilities';
 import { Geometry } from 'ol/geom'
 import { Feature } from 'ol'
-
+import * as ol_proj from 'ol/proj'
+import {bbox} from 'ol/loadingstrategy';
 
 //################## END OpenLayers imports #################
 
@@ -25,6 +26,8 @@ import AnimatedCluster from 'ol-ext/layer/AnimatedCluster'
 import * as proxyfetch from 'tivigi/src/util/proxyfetch'
 
 import { tryToRead } from 'tivigi/src/util/tryToRead'
+import {createAndromedaUrlFromConfig} from 'tivigi/src/util/createAndromedaUrlFromConfig'
+import {geoJsonIconSetter} from 'tivigi/src/util/geoJsonIconSetter'
 import { vectorPointStyleFactory } from 'tivigi/src/olVectorLayerStyling/miscStyleFunctions'
 import { multiStyleFunctionFactory, addStyleFunctionToLayer } from 'tivigi/src/olVectorLayerStyling/styleUtils'
 import { quantilesStyleFactory } from 'tivigi/src/olVectorLayerStyling/quantilesStyle'
@@ -216,7 +219,51 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
 
         })
     }
+    else if( sourceType == "andromeda"){
 
+        let url = createAndromedaUrlFromConfig(layerConfig)
+
+        backendSource = new FilterableVectorSource({
+
+            format: new ol_format.GeoJSON({ dataProjection: 'EPSG:4326', featureProjection: projection }),
+            strategy: bbox,
+
+            loader: function (extent, resolution, projection) {
+
+                let options: RequestInit = {
+                    headers: layerConfig.http_headers
+                }
+
+
+            let extent_4326 = ol_proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326')
+        
+            let corner_sw: any = [extent_4326[0],extent_4326[1]]
+            let corner_nw: any = [extent_4326[0], extent_4326[3]]
+            let corner_ne: any = [extent_4326[2],extent_4326[3]]
+            let corner_se: any = [extent_4326[2],extent_4326[1]]
+
+            let coordinates: string = JSON.stringify([[corner_sw, corner_nw, corner_ne, corner_se, corner_sw]])
+            let georel: string = "intersects"
+            let geometry: string = "Polygon"
+
+            let spatial_query: string = `&georel=${georel}&geometry=${geometry}&coordinates=${coordinates}`
+
+            fetch(url+spatial_query, options).then(response => response.json()).then((geojson) => {
+
+                    let that = this as VectorSource
+
+                    let sourceFormat = that.getFormat()
+
+                    if (sourceFormat != undefined) {
+                        let features = sourceFormat.readFeatures(geojson) as Feature<Geometry>[]
+
+                        that.addFeatures(features)
+                    }
+                })
+
+            }
+        });
+    }
     // for "geojson":
     else {
 
@@ -313,6 +360,61 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
 }
 
 
+export function createAndromedaLayerFromConfig(layerConfig: any, projection: Projection): ol_layer.Vector {
+
+
+    let url = createAndromedaUrlFromConfig(layerConfig)
+
+    //####################### BEGIN Define GeoJSON vector source ########################
+    let source = new ol_source.Vector({
+
+        format: new ol_format.GeoJSON({ dataProjection: 'EPSG:4326', featureProjection: projection }),
+
+        attributions: layerConfig.attribution,
+        strategy: bbox,
+        loader: function (extent, resolution, projection) {
+
+            let options: RequestInit = {
+                headers: layerConfig.http_headers
+            }
+
+        let extent_4326 = ol_proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326')
+    
+        let corner_sw: any = [extent_4326[0],extent_4326[1]]
+        let corner_nw: any = [extent_4326[0], extent_4326[3]]
+        let corner_ne: any = [extent_4326[2],extent_4326[3]]
+        let corner_se: any = [extent_4326[2],extent_4326[1]]
+
+        let coordinates: string = JSON.stringify([[corner_sw, corner_nw, corner_ne, corner_se, corner_sw]])
+        let georel: string = "intersects"
+        let geometry: string = "Polygon"
+
+        let spatial_query: string = `&georel=${georel}&geometry=${geometry}&coordinates=${coordinates}`
+
+        fetch(url+spatial_query, options).then(response => response.json()).then((geojson) => {
+
+                let that = this as VectorSource
+
+                let sourceFormat = that.getFormat()
+
+                if (sourceFormat != undefined) {
+                    let features = sourceFormat.readFeatures(geojson) as Feature<Geometry>[]
+
+                    that.addFeatures(features)
+                }
+            })
+
+        }
+    });
+    //####################### END Define GeoJSON vector source ########################
+    let layer = new ol_layer.Vector({ source });
+
+    layer = geoJsonIconSetter(layerConfig, layer)
+
+    return layer
+}
+
+
 export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Projection): ol_layer.Vector {
 
     //####################### BEGIN Define GeoJSON vector source ########################
@@ -344,83 +446,8 @@ export function createGeoJsonLayerFromConfig(layerConfig: any, projection: Proje
 
     let layer = new ol_layer.Vector({ source });
 
-
-    let iconUrl = tryToRead(layerConfig, "style.iconUrl", null)
-    let iconScale = tryToRead(layerConfig, "style.iconScale", 1)
-
-
-    if (iconUrl != null) {
-        //##################### BEGIN Style function ########################
-        let styleFunc: StyleFunction = function getStyle(feature: any) {
-
-            let isHover = false
-
-            if (feature.get("hover")) {
-                isHover = true
-            }
-
-            if (iconUrl == null) {
-                return []
-            }
-
-            //################## BEGIN Icon ###################
-            let style1 = new ol_style.Style({
-
-                image: new ol_style.Icon({
-                    anchor: [0.5, 0.5],
-                    anchorXUnits: IconAnchorUnits.FRACTION,
-                    anchorYUnits: IconAnchorUnits.FRACTION,
-                    src: iconUrl,
-                    scale: iconScale,
-                    crossOrigin: 'anonymous',
-                })
-            });
-            //################## END Icon ###################
-
-            return [style1];
-
-        }
-        //##################### END Style function ########################
-
-        layer.setStyle(styleFunc)
-
-        let legend = {
-            "Legend": [
-                {
-                    //"layerName": layerConfig.id,
-                    "title": layerConfig.title,
-                    "rules": [
-                        {
-                            "name": "rule1",
-                            "title": layerConfig.title,
-                            "abstract": "",
-                            "symbolizers": [
-                                {
-                                    "Point": {
-                                        "title": layerConfig.title,
-                                        "abstract": "",
-                                        "url": iconUrl,
-                                        "size": "30",
-                                        "opacity": "1.0",
-                                        "rotation": "0.0",
-                                        "graphics": [
-                                            {
-                                                "external-graphic-url": iconUrl
-                                                //"external-graphic-type": "image/png"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
+    layer = geoJsonIconSetter(layerConfig, layer)
     
-        layer.set('legend', legend);
-    }
-
     return layer
 }
 
@@ -456,6 +483,13 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
     switch (layerConfig.type) {
 
+        case "andromeda-geojson":
+            layer = createAndromedaLayerFromConfig(layerConfig, projection)
+            break
+
+        case "andromeda-cluster":
+            layer = createClusterLayerFromConfig(layerConfig, projection, "andromeda")
+            break
 
         case "geojson": {
             layer = createGeoJsonLayerFromConfig(layerConfig, projection)
@@ -490,7 +524,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
         }
 
         case "geojson-statistics": {
-
+            // this is a mix of quantiles and jenks
             // ATTENTION: 
             // For the statistics layers, we MUST load all features at once! NO partial loading based on map extent!
             // This means, no WFS, at least not with the bounding box loading strategy!
@@ -952,9 +986,6 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 }
 
 
-
-
-
 export function createWmsLayerFromCapabilities(capabilitiesXml: string): ol_layer.Tile | null {
 
     let capabilities = undefined
@@ -1016,3 +1047,6 @@ export function createWmsLayerFromCapabilities(capabilitiesXml: string): ol_laye
 
     return result
 }
+
+
+
