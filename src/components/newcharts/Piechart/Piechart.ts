@@ -149,7 +149,7 @@ export default class Piechart extends Vue {
 
         let result = renderData.label + ':<br/><strong>' + formatNumberString(renderData.percent) + ' %</strong>'
 
-        result += ' (' + formatNumberString(renderData.percent) + ')'
+        result += ' (' + formatNumberString(renderData.value) + ')'
 
         return result
     }
