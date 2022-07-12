@@ -85,7 +85,7 @@ export default class WeekAggregation extends Vue {
                 this.timestrings.push(timeString)
 
             // Shift day indices so that Monday has index 0 and Sunday has index 6:
-            let weekday = date.getDay() - 1
+            let weekday = date.getUTCDay() - 1
 
             if (weekday == -1) {
                 weekday = 6
