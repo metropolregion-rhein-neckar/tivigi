@@ -275,6 +275,9 @@ export default class ChartCanvas extends Vue {
         if (this.extent != undefined && this.extent.maxx != undefined) {
 
                this.scale.x = this.chartAreaSize.x / (this.extent.maxx - this.extent.minx) 
+               
+               this.scale.y =  this.chartAreaSize.y / (this.extent.maxy - this.extent.miny)
+               
 
 
               this.bottomLeftWorld.x = this.extent.maxx - this.chartAreaSize.x / this.scale.x
@@ -617,6 +620,7 @@ export default class ChartCanvas extends Vue {
 
 
     updateChartAreaSize() {
+        
 
         const el = this.$refs.wrapper as HTMLDivElement
 
@@ -629,6 +633,8 @@ export default class ChartCanvas extends Vue {
         this.chartAreaSize.y = sy - this.xLabelsSpace
 
         this.updateChildElements()
+
+        
     }
 
 
