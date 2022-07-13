@@ -3,8 +3,11 @@ div.Piechart {
   // they must be defined for the wrapper <div> to allow developers to overwrite the defaults with inline CSS
   // in the template:
   
-  stroke:#000;
-  stroke-width:1.5px;
+  //stroke:#000;
+  //stroke-width:1.5px;
+stroke:#fff;
+stroke-width: 0px;
+  
 
   svg {
     width: 100%;
@@ -34,4 +37,9 @@ div.Piechart__Inner {
   top: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+}
+
+path.Piechart__Background {
+  fill:#eee;
+  stroke:none;
 }

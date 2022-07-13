@@ -67,6 +67,15 @@ export default class Piechart extends Vue {
         this.renderData = this.prepareRenderData()
     }
 
+
+    getBackgroundPath(): string {
+
+
+        let arcPath = this.makeArcPath(0, 360, this.outerRadius, this.innerRadius)
+
+        return arcPath
+    }
+
     prepareRenderData() {
 
 
@@ -133,13 +142,14 @@ export default class Piechart extends Vue {
         }
 
         // Add "background" circle segment if sum of pieces is smaller than degreesEnd:
+        /*
         if (increment < this.degreesEnd) {
             result.push({
                 path: this.makeArcPath(increment, this.degreesEnd, this.outerRadius, this.innerRadius),
                 style: { fill: "#eee" }
             })
         }
-
+*/
         this.$emit("update:legend", legend)
 
         return result
