@@ -211,4 +211,17 @@ export default class DatetimeAxis extends AbstractAxis {
         return result
     }
 
+    
+    beforeDestroy() {
+        this.canvas.$el.removeEventListener("mousemove", this.onMouseMove)        
+    }
+
+
+    mounted() {
+        this.canvas.$el.addEventListener("mousemove", this.onMouseMove)        
+    }
+
+    onMouseMove(evt : Event) {
+      //  console.log("foobar")
+    }
 }

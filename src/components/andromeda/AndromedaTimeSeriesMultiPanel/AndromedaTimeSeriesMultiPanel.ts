@@ -51,6 +51,14 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Prop({ default: true })
     allowPanX!: boolean
 
+
+    @Prop({ default: true })
+    autoscaleX!:boolean
+
+    @Prop({ default: true })
+    autoscaleY!:boolean
+
+    
     @Prop()
     bars: any
 
@@ -64,13 +72,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     legend: any
 
     @Prop({ default: "https://contextbroker.digitale-mrn.de" })
-    brokerBaseUrl!: string
-
-    @Prop({ default: 50 })
-    scaleX!: number | string
-
-    @Prop({ default: 50 })
-    scaleY!: number | string
+    brokerBaseUrl!: string    
 
     @Prop({ default: false })
     snapToYear!: boolean

@@ -34,17 +34,12 @@ export default class ChartCanvas extends Vue {
     @Prop({ default: 60 })
     yLabelsSpace!: number
 
-    //@Prop()
-    //left!: number | undefined
+    @Prop({ default: true })
+    autoscaleX!: boolean
 
-    @Prop()
-    right!: number | undefined
+    @Prop({ default: true })
+    autoscaleY!: boolean
 
-    @Prop({ default: 50 })
-    scaleX!: number | string
-
-    @Prop({ default: 50 })
-    scaleY!: number | string
 
     @Prop()
     extent!: BoundingBox
@@ -113,20 +108,20 @@ export default class ChartCanvas extends Vue {
     prevExtent = ""
 
 
-    autoScale(doX: boolean, doY: boolean) {
+    autoScale() {
 
         let min = this.getDisplayMin()
         let max = this.getDisplayMax()
 
         for (const child of this.$children) {
 
-            if (child instanceof AbstractAxis && child.dimension == "x" && doX) {
+            if (child instanceof AbstractAxis && child.dimension == "x") {
 
                 //  max.x = Math.max(child.getNextAxisStep(max.x, false), max.x)
                 //  min.x = Math.min(child.getNextAxisStep(min.x, true), min.x)
             }
 
-            if (child instanceof AbstractAxis && child.dimension == "y" && doY) {
+            if (child instanceof AbstractAxis && child.dimension == "y") {
                 max.y = Math.max(child.getNextAxisStep(max.y, false), max.y)
                 min.y = Math.min(child.getNextAxisStep(min.y, true), min.y)
             }
@@ -136,12 +131,12 @@ export default class ChartCanvas extends Vue {
 
 
 
-        if (doX) {
+        if (this.autoscaleX) {
             this.bottomLeftWorld.x = min.x
             this.scale.x = this.chartAreaSize.x / range.x
         }
 
-        if (doY) {
+        if (this.autoscaleY) {
             this.bottomLeftWorld.y = min.y
             this.scale.y = this.chartAreaSize.y / range.y
         }
@@ -229,7 +224,7 @@ export default class ChartCanvas extends Vue {
     getStyle() {
         let result: any = {}
 
-        if ((this.allowPanX || this.allowPanY) && (this.scaleX != "auto" || this.scaleY != "auto")) {
+        if (this.allowPanX || this.allowPanY) {
 
             if (this.panGrabPos1_screen.x == -1) {
                 result["cursor"] = "grab"
@@ -264,23 +259,29 @@ export default class ChartCanvas extends Vue {
     }
 
 
+
+
     mounted() {
 
-        if (typeof this.scaleX == "number") {
-            this.scale.x = this.scaleX
-
-        }
-
-        if (typeof this.scaleY == "number") {
-            this.scale.y = this.scaleY
-        }
 
         this.updateChartAreaSize()
 
+
+        
+        // NOTE: The following is not the same as autoScale(). "autoscale()" is based on the loaded data.
+        // However, here, at this moment, we may have no data loaded yet, so the extent provided as a prop
+        // is set:
+        
         if (this.extent != undefined && this.extent.maxx != undefined) {
-            this.bottomLeftWorld.x = this.extent.maxx - this.chartAreaSize.x / this.scale.x
+
+               this.scale.x = this.chartAreaSize.x / (this.extent.maxx - this.extent.minx) 
+
+
+              this.bottomLeftWorld.x = this.extent.maxx - this.chartAreaSize.x / this.scale.x
 
         }
+        
+
 
         this.onExtentPropChange()
 
@@ -343,8 +344,8 @@ export default class ChartCanvas extends Vue {
 
 
     onDataChange() {
-        
-        this.autoScale(this.scaleX == "auto", this.scaleY == "auto")
+
+        this.autoScale()
 
         let legend = Array<Array<ChartLegendItem>>()
 
@@ -412,16 +413,16 @@ export default class ChartCanvas extends Vue {
             miny: this.bottomLeftWorld.y,
             maxy: max.y
         }
-        
+
 
         let newExtent = JSON.stringify(this.extent)
 
-        if (newExtent == JSON.stringify(bbox_extent)) {            
+        if (newExtent == JSON.stringify(bbox_extent)) {
             return
         }
         //#endregion Check whether new extent is same as old. If yes, do nothing
 
-        
+
         // TODO: Apply extent.minx?
 
         this.updateChildElements()
@@ -442,7 +443,7 @@ export default class ChartCanvas extends Vue {
 
         this.updateChartAreaSize()
 
-        this.autoScale(this.scaleX == "auto", this.scaleY == "auto")
+        this.autoScale()
     }
 
 
@@ -508,7 +509,9 @@ export default class ChartCanvas extends Vue {
 
         this.targetScale = this.scale.clone()
 
-        if (this.allowZoomX && this.scaleX != "auto") {
+
+        if (this.allowZoomX && !this.autoscaleX) {
+
             if (evt.deltaY < 0) {
                 this.scale.x *= this.cfg_zoomSpeed
                 this.targetScale.x *= this.cfg_zoomSpeed
@@ -517,15 +520,20 @@ export default class ChartCanvas extends Vue {
                 this.scale.x /= this.cfg_zoomSpeed
                 this.targetScale.x /= this.cfg_zoomSpeed
             }
+
+            // TODO: What about Y axis zoom??
+
+
+            // NOTE: The result of s2w is different after scale was changed, 
+            // so mousePos_world_now is not the same as this.mousePos_world_at_pan_start       
+
+            this.pan(this.s2w(mousePos_screen))
+
+
+            this.emitExtentChangeEvent()
         }
 
-        // NOTE: The result of s2w is different after scale was changed, 
-        // so mousePos_world_now is not the same as this.mousePos_world_at_pan_start       
 
-        this.pan(this.s2w(mousePos_screen))
-
-
-        this.emitExtentChangeEvent()
     }
 
 
@@ -533,17 +541,17 @@ export default class ChartCanvas extends Vue {
 
         const diff = mousePos_world_now.sub(this.mousePos_world_at_pan_start)
 
-        if (!this.allowPanX || this.scaleX == "auto") {
+        if (!this.allowPanX || this.autoscaleX) {
             diff.x = 0
         }
-        if (!this.allowPanY || this.scaleY == "auto") {
+        if (!this.allowPanY || this.autoscaleY) {
             diff.y = 0
         }
 
         if (diff.x == 0 && diff.y == 0) {
             return
         }
-        
+
         this.bottomLeftWorld = this.bottomLeftWorld.sub(diff)
 
         this.viewportChanged = true
@@ -583,14 +591,14 @@ export default class ChartCanvas extends Vue {
 
         let diff_test = this.diff_original
 
-        
+
         if (Math.abs(diff_test.x) > Math.abs(diff_test.y) || override) {
-            if (this.allowZoomX && this.scaleX != "auto") {
+            if (this.allowZoomX && !this.autoscaleX) {
                 this.scale.x = this.scaleAtPinchStart.x * d.x
             }
         }
         if (Math.abs(diff_test.x) < Math.abs(diff_test.y) || override) {
-            if (this.allowZoomY && this.scaleY != "auto") {
+            if (this.allowZoomY && !this.autoscaleY) {
                 this.scale.y = this.scaleAtPinchStart.y * d.y
             }
         }

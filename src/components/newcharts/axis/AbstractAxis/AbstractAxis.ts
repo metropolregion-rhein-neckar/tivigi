@@ -6,7 +6,6 @@ import AbstractChartElement from '../../AbstractChartElement/AbstractChartElemen
 
 import "./AbstractAxis.scss"
 import WithRender from './AbstractAxis.html';
-import { Vector2 } from 'tivigi/src/util/Vector2';
 
 
 @WithRender
@@ -29,6 +28,10 @@ export default class AbstractAxis extends AbstractChartElement {
 
     displayLabels = Array<AxisLabel>()
 
+
+    beforeDestroy() {
+
+    }
 
     getDisplayLabels(): Array<AxisLabel> {
         return []
@@ -71,18 +74,11 @@ export default class AbstractAxis extends AbstractChartElement {
         return 0
     }
 
+
+
     onCanvasExtentChange() {
         this.displayLabels = this.getDisplayLabels()
     }
 
-    /*
-        getLabelMax() : number {
-            return 0
-        }
-       
-        getLabelMin() : number {
-            return 0
-        }
-        */
 }
 

@@ -14,8 +14,8 @@
     <template v-slot:main>
 
         <template v-if="displayMode_internal == 0">
-            <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" :scaleX="scaleX" scaleY="auto"
-                :legend.sync="legend_internal" style="flex:1">
+            <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" 
+            :legend.sync="legend_internal" style="flex:1" :autoscaleX="autoscaleX" :autoscaleY="autoscaleY">
 
                 <template v-slot:charts>
                     <BarChart :buckets="barsBuckets" />
