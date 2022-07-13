@@ -2,8 +2,9 @@ div.Piechart {
   // ATTENTION: Even though the defaults for 'stroke-width' and 'stroke' are SVG-related properties,
   // they must be defined for the wrapper <div> to allow developers to overwrite the defaults with inline CSS
   // in the template:
-  stroke-width: 3px;
-  stroke: #fff;
+  
+  stroke:#000;
+  stroke-width:1.5px;
 
   svg {
     width: 100%;
@@ -17,7 +18,10 @@ div.Piechart {
       
       }
 
-      transition: 0.25s;        
+      transition: 0.25s;       
+      
+      
+      
     }
   }
 

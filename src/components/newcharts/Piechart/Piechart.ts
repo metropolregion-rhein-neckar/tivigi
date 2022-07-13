@@ -93,9 +93,11 @@ export default class Piechart extends Vue {
 
         const range_deg = this.degreesEnd - this.degreesStart
 
+        
+
         for (let index = 0; index < this.data.length; index++) {
 
-            const value_deg = (this.data[index].value / total) * range_deg
+            let value_deg = (this.data[index].value / total) * range_deg
 
             let step = 0
 
@@ -106,9 +108,13 @@ export default class Piechart extends Vue {
 
             const color_main = this.colStart.add(colorDiff.mult(step)).round()
 
+            
 
+
+            let arcPath = this.makeArcPath(increment, increment + value_deg, this.outerRadius, this.innerRadius)
+             
             result.push({
-                path: this.makeArcPath(increment, increment + value_deg, this.outerRadius, this.innerRadius),
+                path: arcPath,
                 style: { fill: color_main.toHexString() },
                 percent: (this.data[index].value / total) * 100,
                 value: this.data[index].value,
@@ -126,6 +132,7 @@ export default class Piechart extends Vue {
 
         }
 
+        // Add "background" circle segment if sum of pieces is smaller than degreesEnd:
         if (increment < this.degreesEnd) {
             result.push({
                 path: this.makeArcPath(increment, this.degreesEnd, this.outerRadius, this.innerRadius),
@@ -168,23 +175,40 @@ export default class Piechart extends Vue {
 
     makeArcPath(start_deg: number, end_deg: number, radius_outer: number, radius_inner: number) {
 
-        let start_outer_px = this.polarToCartesian(radius_outer, start_deg + this.degreesRotate)
-        let end_outer_px = this.polarToCartesian(radius_outer, end_deg + this.degreesRotate)
+        // ATTENTION: 
+        // A circle arc must be defined through two *distinct* points, start and end,
+        // and they MUST NOT BE IDENTICAL. Now, if we want to draw a full circle of 360 degrees,
+        // start and end point *are* identical, which causes the rendering of the arc to fail
+        // at least in Chromium-based browsers. To solve this, we split the arc paths into two
+        // segments (from "start" to "halfway" and from "halfway" to "end"). 
+        // This way, distinct start and end points for each path segment are guaranteed.
+        
+        // As a side effect, this also slightly simplifies the calculation of the path string 
+        // in another aspect, since with this solution, the "large arc flag" (the 4th parameter of 
+        // the "A" command in the SVG path string) is always "0" (we always take the short route
+        // around the circle).
 
-        let start_inner_px = this.polarToCartesian(radius_inner, start_deg + this.degreesRotate)
-        let end_inner_px = this.polarToCartesian(radius_inner, end_deg + this.degreesRotate)
+        const halfway_deg = start_deg + (end_deg - start_deg) / 2
+
+        const start_outer_px = this.polarToCartesian(radius_outer, start_deg + this.degreesRotate)
+        const start_inner_px = this.polarToCartesian(radius_inner, start_deg + this.degreesRotate)
+        
+        const halfway_outer_px = this.polarToCartesian(radius_outer, halfway_deg + this.degreesRotate)
+        const halfway_inner_px = this.polarToCartesian(radius_inner, halfway_deg + this.degreesRotate)
+        
+        const end_outer_px = this.polarToCartesian(radius_outer, end_deg + this.degreesRotate)        
+        const end_inner_px = this.polarToCartesian(radius_inner, end_deg + this.degreesRotate)
 
 
-        let largeArcFlag = end_deg - start_deg > 180 ? 1 : 0
-
-
-
-        let path = `M ${start_inner_px.x} ${start_inner_px.y} A ${radius_inner} ${radius_inner} 0 ${largeArcFlag} 1 ${end_inner_px.x} ${end_inner_px.y}`
-
-        path += `L ${end_outer_px.x} ${end_outer_px.y} A ${radius_outer} ${radius_outer} 0 ${largeArcFlag} 0 ${start_outer_px.x} ${start_outer_px.y}`
-
-        path += `L ${start_inner_px.x} ${start_inner_px.y}`
-
+       
+        let path = `M ${start_inner_px.x} ${start_inner_px.y} `
+        
+        path += ` A ${radius_inner} ${radius_inner} 0 0 1 ${halfway_inner_px.x} ${halfway_inner_px.y}`
+        path += ` A ${radius_inner} ${radius_inner} 0 0 1 ${end_inner_px.x} ${end_inner_px.y}`
+        path += ` L ${end_outer_px.x} ${end_outer_px.y}`
+        path += ` A ${radius_outer} ${radius_outer} 0 0 0 ${halfway_outer_px.x} ${halfway_outer_px.y}`
+        path += ` A ${radius_outer} ${radius_outer} 0 0 0 ${start_outer_px.x} ${start_outer_px.y}`
+        path += ` L ${start_inner_px.x} ${start_inner_px.y}`
 
         return path
     }
