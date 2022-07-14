@@ -20,6 +20,9 @@ export default class AbstractAxis extends AbstractChartElement {
     @Prop({ default: true })
     showLines!: boolean
 
+    @Prop({default:false})
+    showMovingLabel!:boolean
+
     @Prop({default:0})
     labelAngle!:number
     //#endregion Props
@@ -28,29 +31,20 @@ export default class AbstractAxis extends AbstractChartElement {
     movingLabelText = ""
     movingLabelPos = 0
 
-    showMovingLabel = false
+    mShowMovingLabel = false
 
     displayLabels = Array<AxisLabel>()
 
 
-    beforeDestroy() {
-
-    }
+   
 
     getDisplayLabels(): Array<AxisLabel> {
         return []
     }
 
 
-    getYAxisLabelStyle(label:AxisLabel) : any {
-        return {
-          //  "transform": "rotate(10deg)"
-        }
-    }
 
     getXAxisLabelStyle(label:AxisLabel) : any {
-
-   
 
         let transform = `translate(${this.w2sx(label.pos)}px, ${this.canvas.chartAreaSize.y + 20}px) `
 

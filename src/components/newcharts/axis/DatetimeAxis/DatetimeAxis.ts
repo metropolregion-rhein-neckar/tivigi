@@ -230,11 +230,11 @@ export default class DatetimeAxis extends AbstractAxis {
         const pos = (evt as MouseEvent).offsetX - this.canvas.chartAreaPos.x
 
         if (pos > 0) {
-        this.showMovingLabel = true
+        this.mShowMovingLabel = true
 
     }
     else {
-        this.showMovingLabel = false
+        this.mShowMovingLabel = false
         return
     }
 
@@ -251,6 +251,6 @@ export default class DatetimeAxis extends AbstractAxis {
     }
 
     onMouseOut() {
-        this.showMovingLabel = false
+        this.mShowMovingLabel = false
     }
 }

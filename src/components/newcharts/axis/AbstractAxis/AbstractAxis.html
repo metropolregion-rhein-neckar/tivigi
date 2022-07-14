@@ -13,7 +13,7 @@
 
         </template>
 
-        <template v-if="showMovingLabel">
+        <template v-if="showMovingLabel && mShowMovingLabel">
             <rect :x="movingLabelPos - 55" :y="canvas.chartAreaSize.y + 11" width="110" height="20" style="fill:#000">
 
             </rect>
@@ -29,8 +29,7 @@
 
     <g v-if="dimension=='y'" class="ChartCanvas__Axis ChartCanvas__YAxis">
         <template v-for="label in displayLabels">
-            <text :x="-7" :y="w2sy(label.pos)" :style="getYAxisLabelStyle(label)"
-                :data-tooltip="label.tooltip">{{label.text}}</text>
+            <text :x="-7" :y="w2sy(label.pos)" :data-tooltip="label.tooltip">{{label.text}}</text>
             <line v-if="showLines" :x1="0" :y1="w2sy(label.pos)" :x2="canvas.chartAreaSize.x" :y2="w2sy(label.pos)"
                 :class="getLineClass(label.pos)" />
         </template>

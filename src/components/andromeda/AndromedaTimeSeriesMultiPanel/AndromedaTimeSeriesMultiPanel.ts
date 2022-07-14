@@ -74,6 +74,9 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Prop({ default: "https://contextbroker.digitale-mrn.de" })
     brokerBaseUrl!: string    
 
+    @Prop({default:false})
+    showMovingLabel!:boolean
+
     @Prop({ default: false })
     snapToYear!: boolean
 

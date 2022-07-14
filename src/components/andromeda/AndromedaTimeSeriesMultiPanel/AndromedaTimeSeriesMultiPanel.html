@@ -23,10 +23,8 @@
                 </template>
 
                 <template v-slot:under>
-                    <DatetimeAxis dimension="x" :showLines="false" :forceLabelScale="forceXLabelScale" />
-
+                    <DatetimeAxis dimension="x" :showLines="false" :showMovingLabel="showMovingLabel" :forceLabelScale="forceXLabelScale" />
                     <NumericalAxis dimension="y" />
-
                 </template>
 
             </ChartCanvas>
