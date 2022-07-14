@@ -2,28 +2,38 @@
     <g v-if="dimension=='x'" class="ChartCanvas__Axis ChartCanvas__XAxis">
 
         <template v-for="label in displayLabels">
-            <text :style="getXAxisLabelStyle(label)" :data-tooltip="label.tooltip">{{label.text}}</text>
-            
-            <line :x1="w2sx(label.pos)" :y1="canvas.chartAreaSize.y + 10" :x2="w2sx(label.pos)" 
-            :y2="canvas.chartAreaSize.y + 5" style="stroke-dasharray: none;"/>
-            
+            <text :style="getXAxisLabelStyle(label)" :adata-tooltip="label.tooltip">{{label.text}}</text>
+
+            <line :x1="w2sx(label.pos)" :y1="canvas.chartAreaSize.y + 10" :x2="w2sx(label.pos)"
+                :y2="canvas.chartAreaSize.y + 5" style="stroke-dasharray: none;" />
+
             <line v-if="showLines" :x1="w2sx(label.pos)" :y1="0" :x2="w2sx(label.pos)" :y2="canvas.chartAreaSize.y"
-            
-            :class="getLineClass(label.pos)" />
+                :class="getLineClass(label.pos)" />
 
 
         </template>
+
+        <template v-if="showMovingLabel">
+            <rect :x="movingLabelPos - 55" :y="canvas.chartAreaSize.y + 11" width="110" height="20" style="fill:#000">
+
+            </rect>
+
+            <!--
+            <line class="AbstractAxis__MovingLabelLine" :x1="movingLabelPos" :y1="canvas.chartAreaSize.y" :x2="movingLabelPos" :y2="0" />
+            -->
+            <text :x="movingLabelPos" :y="canvas.chartAreaSize.y + 20"
+                style="fill:#fff;text-anchor: middle; font-weight:bold;">{{movingLabelText}}</text>
+        </template>
     </g>
 
-    
+
     <g v-if="dimension=='y'" class="ChartCanvas__Axis ChartCanvas__YAxis">
         <template v-for="label in displayLabels">
             <text :x="-7" :y="w2sy(label.pos)" :style="getYAxisLabelStyle(label)"
-            :data-tooltip="label.tooltip">{{label.text}}</text>
-            <line  v-if="showLines" :x1="0" :y1="w2sy(label.pos)" 
-            :x2="canvas.chartAreaSize.x" :y2="w2sy(label.pos)"
-            :class="getLineClass(label.pos)" />
+                :data-tooltip="label.tooltip">{{label.text}}</text>
+            <line v-if="showLines" :x1="0" :y1="w2sy(label.pos)" :x2="canvas.chartAreaSize.x" :y2="w2sy(label.pos)"
+                :class="getLineClass(label.pos)" />
         </template>
     </g>
-    
+
 </g>

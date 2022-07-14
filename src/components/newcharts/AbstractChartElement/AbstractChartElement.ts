@@ -36,6 +36,16 @@ export default class AbstractChartElement extends Vue {
     }
 
 
+    s2wx(value: number) {
+        return this.canvas.s2wx(value)
+    }
+
+
+    s2wy(value: number) {
+        return this.canvas.s2wy(value)
+    }
+
+
     w2sx(value: number) {
         return this.canvas.w2sx(value)
     }

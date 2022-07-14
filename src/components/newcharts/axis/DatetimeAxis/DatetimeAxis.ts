@@ -213,15 +213,44 @@ export default class DatetimeAxis extends AbstractAxis {
 
     
     beforeDestroy() {
-        this.canvas.$el.removeEventListener("mousemove", this.onMouseMove)        
+        this.canvas.$el.removeEventListener("mousemove", this.onMouseMove)  
+        this.canvas.$el.removeEventListener("mouseout", this.onMouseOut)       
     }
 
 
     mounted() {
-        this.canvas.$el.addEventListener("mousemove", this.onMouseMove)        
+        this.canvas.$el.addEventListener("mousemove", this.onMouseMove)       
+        this.canvas.$el.addEventListener("mouseout", this.onMouseOut) 
     }
 
     onMouseMove(evt : Event) {
-      //  console.log("foobar")
+
+        
+        // TODO: Implement x vs y axis difference
+        const pos = (evt as MouseEvent).offsetX - this.canvas.chartAreaPos.x
+
+        if (pos > 0) {
+        this.showMovingLabel = true
+
+    }
+    else {
+        this.showMovingLabel = false
+        return
+    }
+
+        let wx = this.s2wx(pos)
+
+        
+
+        let d = new Date(wx)
+
+       
+
+        this.movingLabelText =  `${zeroPad(d.getUTCDate(), 2)}.${zeroPad(d.getUTCMonth() + 1, 2)}.${d.getUTCFullYear()}` + ", " + `${zeroPad(d.getUTCHours(), 2)}:${zeroPad(d.getUTCMinutes(), 2)}`
+        this.movingLabelPos = pos
+    }
+
+    onMouseOut() {
+        this.showMovingLabel = false
     }
 }

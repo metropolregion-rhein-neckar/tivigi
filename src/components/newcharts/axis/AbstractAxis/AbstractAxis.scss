@@ -5,14 +5,18 @@ g.ChartCanvas__Axis {
         stroke-dasharray: 3;
     }
 
-    
     line.AxisZeroLine {
         stroke-dasharray: none;
         //stroke: #000;
     }
-    
+
     text {
         dominant-baseline: middle;
+    }
+
+    line.AbstractAxis__MovingLabelLine {
+        stroke-dasharray: none;
+        
     }
 }
 
@@ -20,13 +24,11 @@ g.ChartCanvas__XAxis {
     text {
         text-anchor: middle;
         text-anchor: start;
-      
     }
 }
 
 g.ChartCanvas__YAxis {
     text {
         text-anchor: end;
-       
     }
 }

@@ -25,6 +25,10 @@ export default class AbstractAxis extends AbstractChartElement {
     //#endregion Props
 
 
+    movingLabelText = ""
+    movingLabelPos = 0
+
+    showMovingLabel = false
 
     displayLabels = Array<AxisLabel>()
 
