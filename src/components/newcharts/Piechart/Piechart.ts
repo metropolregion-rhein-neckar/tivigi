@@ -1,5 +1,5 @@
 import { Vector2 } from 'tivigi/src/util/Vector2';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { ColorRGBA } from 'tivigi/src/util/ColorRGBA';
 import { formatNumberString } from 'tivigi/src/util/formatters';
 import { ChartLegendItem } from '../ChartLegend/ChartLegendItem';
@@ -22,6 +22,7 @@ interface PiechartDataItem {
 })
 export default class Piechart extends Vue {
 
+    //#region Props
     @Prop({ default: () => "8888ffff" })
     color1!: string
 
@@ -31,27 +32,27 @@ export default class Piechart extends Vue {
     @Prop({ default: () => [] })
     data!: Array<PiechartDataItem>
 
-    @Prop({ default: 90 })
-    outerRadius!: number
-
-    @Prop({ default: 75 })
-    innerRadius!: number
-
-    @Prop({ default: 0 })
-    degreesStart!: number
-
     @Prop({ default: 360 })
     degreesEnd!: number
 
     @Prop({ default: 0 })
+    degreesStart!: number
+
+    @Prop({ default: 0 })
     degreesRotate!: number
+
+    @Prop({ default: 75 })
+    innerRadius!: number
+
+    @Prop({ default: 90 })
+    outerRadius!: number
 
     @Prop()
     legend!: Array<Array<ChartLegendItem>>
 
     @Prop()
     total!: number | undefined
-
+    //#endregion Props
 
 
     colStart = new ColorRGBA(this.color1)
@@ -61,21 +62,21 @@ export default class Piechart extends Vue {
 
 
 
-    renderData:any=undefined
+    renderData: any = undefined
+
 
     created() {
-        this.renderData = this.prepareRenderData()
+        this.prepareRenderData()
     }
 
 
     getBackgroundPath(): string {
 
-
-        let arcPath = this.makeArcPath(0, 360, this.outerRadius, this.innerRadius)
-
-        return arcPath
+        return this.makeArcPath(0, 360, this.outerRadius, this.innerRadius)
     }
 
+
+    @Watch("data")
     prepareRenderData() {
 
 
@@ -102,7 +103,7 @@ export default class Piechart extends Vue {
 
         const range_deg = this.degreesEnd - this.degreesStart
 
-        
+
 
         for (let index = 0; index < this.data.length; index++) {
 
@@ -117,11 +118,9 @@ export default class Piechart extends Vue {
 
             const color_main = this.colStart.add(colorDiff.mult(step)).round()
 
-            
 
+            const arcPath = this.makeArcPath(increment, increment + value_deg, this.outerRadius, this.innerRadius)
 
-            let arcPath = this.makeArcPath(increment, increment + value_deg, this.outerRadius, this.innerRadius)
-             
             result.push({
                 path: arcPath,
                 style: { fill: color_main.toHexString() },
@@ -133,7 +132,7 @@ export default class Piechart extends Vue {
 
 
             legend[0].push({
-                label:this.data[index].label,
+                label: this.data[index].label,
                 color: color_main.toHexString()
             })
 
@@ -141,18 +140,11 @@ export default class Piechart extends Vue {
 
         }
 
-        // Add "background" circle segment if sum of pieces is smaller than degreesEnd:
-        /*
-        if (increment < this.degreesEnd) {
-            result.push({
-                path: this.makeArcPath(increment, this.degreesEnd, this.outerRadius, this.innerRadius),
-                style: { fill: "#eee" }
-            })
-        }
-*/
+        this.renderData = this.prepareRenderData()
+
         this.$emit("update:legend", legend)
 
-        return result
+        this.$forceUpdate()
     }
 
 
@@ -192,7 +184,7 @@ export default class Piechart extends Vue {
         // at least in Chromium-based browsers. To solve this, we split the arc paths into two
         // segments (from "start" to "halfway" and from "halfway" to "end"). 
         // This way, distinct start and end points for each path segment are guaranteed.
-        
+
         // As a side effect, this also slightly simplifies the calculation of the path string 
         // in another aspect, since with this solution, the "large arc flag" (the 4th parameter of 
         // the "A" command in the SVG path string) is always "0" (we always take the short route
@@ -202,17 +194,17 @@ export default class Piechart extends Vue {
 
         const start_outer_px = this.polarToCartesian(radius_outer, start_deg + this.degreesRotate)
         const start_inner_px = this.polarToCartesian(radius_inner, start_deg + this.degreesRotate)
-        
+
         const halfway_outer_px = this.polarToCartesian(radius_outer, halfway_deg + this.degreesRotate)
         const halfway_inner_px = this.polarToCartesian(radius_inner, halfway_deg + this.degreesRotate)
-        
-        const end_outer_px = this.polarToCartesian(radius_outer, end_deg + this.degreesRotate)        
+
+        const end_outer_px = this.polarToCartesian(radius_outer, end_deg + this.degreesRotate)
         const end_inner_px = this.polarToCartesian(radius_inner, end_deg + this.degreesRotate)
 
 
-       
+
         let path = `M ${start_inner_px.x} ${start_inner_px.y} `
-        
+
         path += ` A ${radius_inner} ${radius_inner} 0 0 1 ${halfway_inner_px.x} ${halfway_inner_px.y}`
         path += ` A ${radius_inner} ${radius_inner} 0 0 1 ${end_inner_px.x} ${end_inner_px.y}`
         path += ` L ${end_outer_px.x} ${end_outer_px.y}`
