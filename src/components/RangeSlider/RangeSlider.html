@@ -1,6 +1,7 @@
 <div class="RangeSlider">
 
     <div>{{min}} {{unit}}</div>
-    <input type="range" :value="value" :min="min" :max="max" @input="onInput" :step="step"/>
+    <input type="range" :value="value" :min="min" :max="max" @input="onInput" :step="step"
+    :data-tooltip="value"/>
     <div>{{max}} {{unit}}</div>
 </div>
