@@ -1,14 +1,26 @@
 <div class="Piechart">
-    
-    <div class="Piechart__Inner"><slot /></div>
-    
+
+    <div class="Piechart__Inner">
+        <slot />
+    </div>
+
     <svg ref="svg" :viewBox="getViewBoxString()">
         <g :style="getTranslation()">
-            <path :d="getBackgroundPath()" class="Piechart__Background"/>
+            <path :d="getBackgroundPath()" class="Piechart__Background" />
+
             
-            <path v-for="entry of renderData" :style="entry.style" 
-            :d="entry.path" :data-tooltip="getTooltipText(entry)" :class="entry.class" />           
+            <path v-for="entry of renderData" :style="entry.style" :d="entry.path" :data-tooltip="getTooltipText(entry)"
+                :class="entry.class">
+                
+            </path>
+
+            <text v-for="entry of renderData" :data-tooltip="getTooltipText(entry)"
             
+            :x="entry.textPos.x" :y="entry.textPos.y"
+                :class="entry.class">
+                {{entry.displayValue}}
+            </text>
+
         </g>
     </svg>
 

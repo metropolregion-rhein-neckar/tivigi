@@ -121,13 +121,20 @@ export default class Piechart extends Vue {
 
             const arcPath = this.makeArcPath(increment, increment + value_deg, this.outerRadius, this.innerRadius)
 
+
+            const textLabelRadius = this.innerRadius + (this.outerRadius - this.innerRadius) / 2
+
+            const percent = (this.data[index].value / total) * 100
+
             result.push({
                 path: arcPath,
                 style: { fill: color_main.toHexString() },
-                percent: (this.data[index].value / total) * 100,
+                percent: percent,
                 value: this.data[index].value,
+                displayValue : formatNumberString(percent,1) + " %",
                 label: this.data[index].label,
-                class: "Piechart__DataItem"
+                class: "Piechart__DataItem",
+                textPos : this.polarToCartesian(textLabelRadius, increment + value_deg / 2)
             })
 
 
@@ -140,7 +147,7 @@ export default class Piechart extends Vue {
 
         }
 
-        this.renderData = this.prepareRenderData()
+        this.renderData = result
 
         this.$emit("update:legend", legend)
 
