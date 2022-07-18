@@ -12,8 +12,9 @@
     </template>
 
     <template v-slot:main>
-
+        
         <template v-if="displayMode_internal == 0">
+            {{_uid}}
             <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" 
             :legend.sync="legend_internal" style="flex:1" :autoscaleX="autoscaleX" :autoscaleY="autoscaleY">
 

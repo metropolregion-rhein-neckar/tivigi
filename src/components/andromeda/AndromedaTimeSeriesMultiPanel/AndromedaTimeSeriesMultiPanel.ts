@@ -123,6 +123,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     async created() {
         this.extent = this.initialExtent
 
+        
         await this.loadData()
     }
 
