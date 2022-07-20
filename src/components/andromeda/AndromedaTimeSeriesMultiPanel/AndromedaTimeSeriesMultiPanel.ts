@@ -7,7 +7,7 @@ import NumericalAxis from '../../newcharts/axis/NumericalAxis/NumericalAxis';
 import DatetimeAxis from '../../newcharts/axis/DatetimeAxis/DatetimeAxis';
 import SmartButton from 'tivigi/src/components/SmartButton/SmartButton';
 import { BoundingBox } from '../../newcharts/chartDataClasses';
-import { loadTimeSeries } from 'tivigi/src/andromedaUtil/andromedaTimeSeriesFunctions';
+import { loadTimeSeries, TimeSeriesLoaderTask } from 'tivigi/src/andromedaUtil/andromedaTimeSeriesFunctions';
 import { Vector2 } from 'tivigi/src/util/Vector2';
 import { Dataset } from '../../newcharts/Dataset';
 import ChartLegend from '../../newcharts/ChartLegend/ChartLegend';
@@ -53,12 +53,12 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
 
     @Prop({ default: true })
-    autoscaleX!:boolean
+    autoscaleX!: boolean
 
     @Prop({ default: true })
-    autoscaleY!:boolean
+    autoscaleY!: boolean
 
-    
+
     @Prop()
     bars: any
 
@@ -72,10 +72,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     legend: any
 
     @Prop({ default: "https://contextbroker.digitale-mrn.de" })
-    brokerBaseUrl!: string    
+    brokerBaseUrl!: string
 
-    @Prop({default:false})
-    showMovingLabel!:boolean
+    @Prop({ default: false })
+    showMovingLabel!: boolean
 
     @Prop({ default: false })
     snapToYear!: boolean
@@ -97,8 +97,8 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     //#endregion Props
 
     @Prop()
-    forceXLabelScale! : string
-    
+    forceXLabelScale!: string
+
     extent: BoundingBox = this.initialExtent
 
 
@@ -118,19 +118,19 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
     tableData!: TableData
 
-    
+
 
     async created() {
         this.extent = this.initialExtent
 
-        
+
         await this.loadData()
     }
 
-    @Watch("initialExtent", {deep:true})
+    @Watch("initialExtent", { deep: true })
     async onInitialExtentChange() {
         this.extent = this.initialExtent
-       
+
     }
 
     @Watch("displayMode")
@@ -186,7 +186,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         }
 
 
-       
+
         let min = new Vector2(this.extent.minx, this.extent.miny)
         let max = new Vector2(this.extent.maxx, this.extent.maxy)
 
@@ -203,10 +203,12 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
                     continue
                 }
 
-                const task2 = {
+                const task2: TimeSeriesLoaderTask = {
                     entityId: seriesCfg.entityId,
                     attrs: [seriesCfg.attrName],
 
+                    aggrMethod: seriesCfg.aggrMethod,
+                    aggrPeriodDuration: seriesCfg.aggrPeriodDuration
                 }
 
                 tasks.push(task2)

@@ -41,7 +41,7 @@ export default class Piechart extends Vue {
     @Prop({ default: 0 })
     degreesRotate!: number
 
-    @Prop({ default: 75 })
+    @Prop({ default: 0 })
     innerRadius!: number
 
     @Prop({ default: 90 })
