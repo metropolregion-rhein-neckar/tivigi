@@ -1,4 +1,5 @@
 div.RangeSlider {
+    
     display:inline-flex;
     flex-direction: row;
     align-items: center;
@@ -8,10 +9,12 @@ div.RangeSlider {
         white-space: nowrap;
     }
     
+    
     > input {
         flex:1;
         margin:0 8px;
         outline: none;
-        padding-right:0;
+        padding:0;
     }
+    
 }
