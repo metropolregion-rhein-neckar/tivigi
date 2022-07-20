@@ -1,4 +1,4 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 
 import "./ChartLegend.scss"
@@ -34,6 +34,7 @@ export default class ChartLegend extends Vue {
             "backgroundColor" : entry.color
         }
     }
+
 }
 
 

@@ -47,7 +47,7 @@ export default class Piechart extends Vue {
     @Prop({ default: 90 })
     outerRadius!: number
 
-    @Prop()
+    @Prop({ default: () => [] })
     legend!: Array<Array<ChartLegendItem>>
 
     @Prop()
@@ -65,6 +65,8 @@ export default class Piechart extends Vue {
     renderData: any = undefined
 
 
+    prevData  = ""
+
     created() {
         this.prepareRenderData()
     }
@@ -79,7 +81,20 @@ export default class Piechart extends Vue {
     @Watch("data")
     prepareRenderData() {
 
+        // Only run the code below if data has really changed:
+        
+        // ATTENTION: For some reason, this is required to prevent an infinite recursion
+        // loop that is somehow caused in combination with a parent component's behavior through 
+        // the emitting of the legend object.
 
+        const jsonified = JSON.stringify(this.data)
+        if (jsonified == this.prevData) {
+            return
+        }
+
+        this.prevData = jsonified
+
+       
         const legend = Array<Array<ChartLegendItem>>()
 
         const result = []
@@ -131,10 +146,10 @@ export default class Piechart extends Vue {
                 style: { fill: color_main.toHexString() },
                 percent: percent,
                 value: this.data[index].value,
-                displayValue : formatNumberString(percent,1) + " %",
+                displayValue: formatNumberString(percent, 1) + " %",
                 label: this.data[index].label,
                 class: "Piechart__DataItem",
-                textPos : this.polarToCartesian(textLabelRadius, increment + value_deg / 2)
+                textPos: this.polarToCartesian(textLabelRadius, increment + value_deg / 2)
             })
 
 
@@ -149,9 +164,12 @@ export default class Piechart extends Vue {
 
         this.renderData = result
 
-        this.$emit("update:legend", legend)
+
+
 
         this.$forceUpdate()
+        this.$emit("update:legend", legend)
+
     }
 
 
