@@ -123,9 +123,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     async created() {
         this.extent = this.initialExtent
 
-
+      
         await this.loadData()
     }
+
 
     @Watch("initialExtent", { deep: true })
     async onInitialExtentChange() {
@@ -152,11 +153,24 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Watch("extent")
     async loadData() {
 
+        let p1 = getAttributeMetadata(this.brokerBaseUrl)
+        let p2 = this.loadData2(this.bars)
+        let p3 = this.loadData2(this.lines)
+        
+
+
+        let pres = await Promise.all([p1,p2,p3])
+
+       
+        this.attrMeta = pres[0]
+      
+        this.barsBuckets = this.prepareData(this.bars,pres[1]) 
+        this.linesBuckets = this.prepareData(this.lines, pres[2])
+        /*
         this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
-
-
         this.barsBuckets = await this.loadData2(this.bars)
         this.linesBuckets = await this.loadData2(this.lines)
+        */
 
         this.tableData = new TableData()
 
@@ -177,59 +191,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     }
 
 
-
-
-    async loadData2(source: Array<any>) {
-
-        if (source == undefined) {
-            return
-        }
-
-
-
-        let min = new Vector2(this.extent.minx, this.extent.miny)
-        let max = new Vector2(this.extent.maxx, this.extent.maxy)
-
-        let size = max.sub(min)
-
-
-        let tasks: any = []
-
-        for (const bucket of source) {
-
-            for (const seriesCfg of bucket) {
-
-                if (seriesCfg.entityId == undefined) {
-                    continue
-                }
-
-                const task2: TimeSeriesLoaderTask = {
-                    entityId: seriesCfg.entityId,
-                    attrs: [seriesCfg.attrName],
-
-                    aggrMethod: seriesCfg.aggrMethod,
-                    aggrPeriodDuration: seriesCfg.aggrPeriodDuration
-                }
-
-                tasks.push(task2)
-
-            }
-        }
-
-        let preloadWidth = 0
-
-        if (this.preload) {
-            preloadWidth = size.x
-        }
-
-        let dateStart = new Date(this.extent.minx - preloadWidth)
-        let dateEnd = new Date(this.extent.maxx + preloadWidth)
-
-
-
-        const response = await loadTimeSeries(this.brokerBaseUrl, tasks, dateStart, dateEnd)
-
-
+    prepareData(source : any, response : any) {
 
         // ATTENTION: This only works as expected if there is only one entity ID and only one attribute
         // name in the task!
@@ -337,6 +299,57 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         }
 
         return newBarBuckets
+    }
+
+
+
+    async loadData2(source: Array<any>) {
+
+        if (source == undefined) {
+            return
+        }
+
+
+
+        let min = new Vector2(this.extent.minx, this.extent.miny)
+        let max = new Vector2(this.extent.maxx, this.extent.maxy)
+
+        let size = max.sub(min)
+
+
+        let tasks: any = []
+
+        for (const bucket of source) {
+
+            for (const seriesCfg of bucket) {
+
+                if (seriesCfg.entityId == undefined) {
+                    continue
+                }
+
+                const task2: TimeSeriesLoaderTask = {
+                    entityId: seriesCfg.entityId,
+                    attrs: [seriesCfg.attrName],
+
+                    aggrMethod: seriesCfg.aggrMethod,
+                    aggrPeriodDuration: seriesCfg.aggrPeriodDuration
+                }
+
+                tasks.push(task2)
+
+            }
+        }
+
+        let preloadWidth = 0
+
+        if (this.preload) {
+            preloadWidth = size.x
+        }
+
+        const dateStart = new Date(this.extent.minx - preloadWidth)
+        const dateEnd = new Date(this.extent.maxx + preloadWidth)
+
+        return loadTimeSeries(this.brokerBaseUrl, tasks, dateStart, dateEnd)
     }
 
 
