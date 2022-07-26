@@ -225,7 +225,7 @@ export default class ChartCanvas extends Vue {
     getStyle() {
         let result: any = {}
 
-        if (this.allowPanX || this.allowPanY) {
+        if ((this.allowPanX && !this.autoscaleX) || (this.allowPanY && this.autoscaleY)) {
 
             if (this.panGrabPos1_screen.x == -1) {
                 result["cursor"] = "grab"
@@ -234,7 +234,7 @@ export default class ChartCanvas extends Vue {
                 result["cursor"] = "grabbing"
             }
 
-        }
+        }      
 
         return result
     }
