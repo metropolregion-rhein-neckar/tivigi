@@ -258,6 +258,11 @@ export default class ChartCanvas extends Vue {
 
     mounted() {
 
+        // ATTENTION: We must observe size changes of the wrapper <div> element.
+        // Watching the SVG element directly does not detect all size change events.
+
+        // Implemented with v-onresize:
+        /*
         const resizeObserver = new ResizeObserver((entries) => {
 
             for (let entry of entries) {
@@ -269,12 +274,10 @@ export default class ChartCanvas extends Vue {
 
         );
 
-        // ATTENTION: We must observe size changes of the wrapper <div> element.
-        // Watching the SVG element directly does not detect all size change events.
-        
+    
         resizeObserver.observe(this.$el as HTMLDivElement);
         //resizeObserver.observe(this.$refs["svg"] as SVGElement);
-
+        */
 
 
         this.updateChartAreaSize()
@@ -635,8 +638,6 @@ export default class ChartCanvas extends Vue {
 
     updateChartAreaSize() {
 
-
-
         const el = this.$refs.svg as SVGElement
 
         const sx = el.clientWidth
@@ -647,7 +648,6 @@ export default class ChartCanvas extends Vue {
         this.chartAreaSize.x = sx - this.yLabelsSpace
         this.chartAreaSize.y = sy - this.xLabelsSpace
 
-        this.$forceUpdate()
         this.updateChildElements()
 
 
@@ -673,8 +673,7 @@ export default class ChartCanvas extends Vue {
 
         return new Vector2(x, y)
     }
-
-    // TODO: w2s()?
+    
 
     s2wx(pixels: number): number {
         return (pixels / this.scale.x) + this.bottomLeftWorld.x

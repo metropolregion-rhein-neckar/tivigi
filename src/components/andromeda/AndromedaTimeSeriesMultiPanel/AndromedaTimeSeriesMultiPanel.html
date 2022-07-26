@@ -16,7 +16,7 @@
         <template v-if="displayMode_internal == 0">
             <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" 
             :legend.sync="legend_internal"
-                 :autoscaleX="autoscaleX" :autoscaleY="autoscaleY">
+                 :autoscaleX="autoscaleX" :autoscaleY="autoscaleY" style="height:200px;">
 
                 <template v-slot:charts>
                     <BarChart :buckets="barsBuckets" />

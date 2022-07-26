@@ -1,17 +1,6 @@
-<div class="ChartCanvas">
+<div class="ChartCanvas" v-onresize="onResize">
 
-    <!-- ATTENTION: The inner wrapper div is required to be able to apply a CSS padding to the outer div
-    (i.e. the component root element) without messing up the automatic adaption of the SVG's viewBox size to the
-    surrounding <div>'s size. The size of the <svg> is set to match the size of the surrounding <div> whenever
-    the surrounding <div> is resized. However, if a padding is set for the surrounding <div>, 
-    the SVG will become too large.
-        
-    The reason why the resize listener must be attached to a wrapper <div> at all (instead of attaching it to the
-    <svg> element itself) is because the resize listener does not work on <svg> elements. -->
-
-
-
-    <svg ref="svg" :viewBox="getViewBoxString()"  @mousedown="onMouseDown" @wheel="onWheel" :style="getStyle()">
+    <svg ref="svg" :viewBox="getViewBoxString()" @mousedown="onMouseDown" @wheel="onWheel" :style="getStyle()">
 
         <defs>
             <clipPath :id="clipPathId">
