@@ -1,10 +1,6 @@
 div.ChartCanvas {
   user-select: none;
 
-  div {
-    height: 100%;
-    min-height: 150px;
-  }
   rect.ChartCanvas__ViewBoxBorder {
     fill: none;
     //stroke: #000;
@@ -20,51 +16,10 @@ div.ChartCanvas {
   }
 
   svg {
-    // ATTENTION: We must set position:absolute for the <svg>! Otherwise, an endless
-    // recursion, powered by the v-onresize event handler, will be triggered and make the
-    // <svg> grow infinitely. This is because if position is not "absolute" (or fixed),
-    // the <svg> is emebedded into the layout flow of the page, and in that case, a change of
-    // the <svg>'s size changes the size of the wrapper <div>, which, in turn,
-    // will again cause a change of the size of the <svg>, and so on ...
-
-    position: absolute;
+  //  border:1px solid #000;
+    height: 100%;
+    width: 100%;
     font-size: 13px;
   }
 }
 
-
-.ChartCanvasHeight150 {
-  div.ChartCanvas {
-    height: 150px;
-  }
-}
-.ChartCanvasHeight200 {
-  div.ChartCanvas {
-    height: 200px;
-  }
-}
-
-
-.ChartCanvasHeight250 {
-  div.ChartCanvas {
-    height: 250px;
-  }
-}
-
-.ChartCanvasHeight300 {
-  div.ChartCanvas {
-    height: 300px;
-  }
-}
-
-.ChartCanvasHeight350 {
-  div.ChartCanvas {
-    height: 350px;
-  }
-}
-
-.ChartCanvasHeight400 {
-  div.ChartCanvas {
-    height: 400px;
-  }
-}

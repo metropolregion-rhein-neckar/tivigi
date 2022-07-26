@@ -9,40 +9,42 @@
     The reason why the resize listener must be attached to a wrapper <div> at all (instead of attaching it to the
     <svg> element itself) is because the resize listener does not work on <svg> elements. -->
 
-    <div ref="wrapper" v-onresize="onResize">
-
-        <svg ref="svg" :viewBox="getViewBoxString()" @mousedown="onMouseDown" @wheel="onWheel" :style="getStyle()">
-
-            <defs>
-                <clipPath :id="clipPathId">
-                    <rect :x="0" :y="0" :width="chartAreaSize.x" :height="chartAreaSize.y" />
-                </clipPath>
-            </defs>
 
 
-            <!-- This is a frame around the entire viewBox: -->
-            <rect class="ChartCanvas__ViewBoxBorder" v-if="debug" :x="0" :y="0" :width="viewBoxSize.x" :height="viewBoxSize.y" />
+    <svg ref="svg" :viewBox="getViewBoxString()"  @mousedown="onMouseDown" @wheel="onWheel" :style="getStyle()">
+
+        <defs>
+            <clipPath :id="clipPathId">
+                <rect :x="0" :y="0" :width="chartAreaSize.x" :height="chartAreaSize.y" />
+            </clipPath>
+        </defs>
 
 
-            <!-- This is a frame around the chart area: -->
-            <rect class="ChartCanvas__ChartAreaBorder" v-if="debug" :x="chartAreaPos.x" :y="chartAreaPos.y" :width="chartAreaSize.x" :height="chartAreaSize.y" />
+        <!-- This is a frame around the entire viewBox: -->
+        <rect class="ChartCanvas__ViewBoxBorder" v-if="debug" :x="0" :y="0" :width="viewBoxSize.x"
+            :height="viewBoxSize.y" />
+
+
+        <!-- This is a frame around the chart area: -->
+        <rect class="ChartCanvas__ChartAreaBorder" v-if="debug" :x="chartAreaPos.x" :y="chartAreaPos.y"
+            :width="chartAreaSize.x" :height="chartAreaSize.y" />
 
 
 
-            <g :transform="'translate(' + chartAreaPos.x + ',' + chartAreaPos.y + ')'">
+        <g :transform="'translate(' + chartAreaPos.x + ',' + chartAreaPos.y + ')'">
 
-                <slot name="under"></slot>
+            <slot name="under"></slot>
 
-                <g :clip-path="'url(#' + clipPathId + ')'">
-                    <slot name="charts"></slot>
-                </g>
-
-                <slot name="over"></slot>
-
+            <g :clip-path="'url(#' + clipPathId + ')'">
+                <slot name="charts"></slot>
             </g>
-       
-        <circle v-if="debug" :cx="tp1.x" :cy="tp1.y" r="60"/>
-        <circle v-if="debug" :cx="tp2.x" :cy="tp2.y" r="60"/>
+
+            <slot name="over"></slot>
+
+        </g>
+
+        <circle v-if="debug" :cx="tp1.x" :cy="tp1.y" r="60" />
+        <circle v-if="debug" :cx="tp2.x" :cy="tp2.y" r="60" />
     </svg>
-    </div>
+
 </div>

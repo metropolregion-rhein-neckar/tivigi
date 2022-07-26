@@ -78,7 +78,8 @@ export default class ChartCanvas extends Vue {
 
     chartAreaPos = new Vector2(this.yLabelsSpace, 10)
 
-    chartAreaSize = new Vector2(100, 100)
+    chartAreaSize = new Vector2()
+    svgSize = new Vector2()
 
     // bottomLeftWorld is the coordinates of the lower left corner of the chart area in world coordinates:
     bottomLeftWorld = new Vector2(0, 0)
@@ -235,10 +236,6 @@ export default class ChartCanvas extends Vue {
 
         }
 
-        // Not needed:
-        //result["width"] = this.viewBoxSize.x + "px"
-        //result["height"] = this.viewBoxSize.y + "px"
-
         return result
     }
 
@@ -259,31 +256,47 @@ export default class ChartCanvas extends Vue {
     }
 
 
-
-
     mounted() {
+
+        const resizeObserver = new ResizeObserver((entries) => {
+
+            for (let entry of entries) {
+                if (entry.contentBoxSize) {
+                    this.onResize(entry)
+                }
+            }
+        }
+
+        );
+
+        // ATTENTION: We must observe size changes of the wrapper <div> element.
+        // Watching the SVG element directly does not detect all size change events.
+        
+        resizeObserver.observe(this.$el as HTMLDivElement);
+        //resizeObserver.observe(this.$refs["svg"] as SVGElement);
+
 
 
         this.updateChartAreaSize()
 
 
-        
+
         // NOTE: The following is not the same as autoScale(). "autoscale()" is based on the loaded data.
         // However, here, at this moment, we may have no data loaded yet, so the extent provided as a prop
         // is set:
-        
+
         if (this.extent != undefined && this.extent.maxx != undefined) {
 
-               this.scale.x = this.chartAreaSize.x / (this.extent.maxx - this.extent.minx) 
-               
-               this.scale.y =  this.chartAreaSize.y / (this.extent.maxy - this.extent.miny)
-               
+            this.scale.x = this.chartAreaSize.x / (this.extent.maxx - this.extent.minx)
+
+            this.scale.y = this.chartAreaSize.y / (this.extent.maxy - this.extent.miny)
 
 
-              this.bottomLeftWorld.x = this.extent.maxx - this.chartAreaSize.x / this.scale.x
+
+            this.bottomLeftWorld.x = this.extent.maxx - this.chartAreaSize.x / this.scale.x
 
         }
-        
+
 
 
         this.onExtentPropChange()
@@ -442,8 +455,9 @@ export default class ChartCanvas extends Vue {
     }
 
 
-    onResize(resizeEntry: ResizeObserverEntry) {
+    onResize(entry: ResizeObserverEntry) {
 
+        console.log("resize")
         this.updateChartAreaSize()
 
         this.autoScale()
@@ -620,21 +634,23 @@ export default class ChartCanvas extends Vue {
 
 
     updateChartAreaSize() {
-        
 
-        const el = this.$refs.wrapper as HTMLDivElement
 
-        const sx = el.offsetWidth
-        const sy = el.offsetHeight
+
+        const el = this.$refs.svg as SVGElement
+
+        const sx = el.clientWidth
+        const sy = el.clientHeight
 
         this.viewBoxSize = new Vector2(sx, sy)
 
         this.chartAreaSize.x = sx - this.yLabelsSpace
         this.chartAreaSize.y = sy - this.xLabelsSpace
 
+        this.$forceUpdate()
         this.updateChildElements()
 
-        
+
     }
 
 

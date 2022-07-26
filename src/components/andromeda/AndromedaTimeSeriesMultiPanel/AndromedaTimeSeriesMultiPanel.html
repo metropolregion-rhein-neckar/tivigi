@@ -12,10 +12,11 @@
     </template>
 
     <template v-slot:main>
-        
-        <template v-if="displayMode_internal == 0">            
+
+        <template v-if="displayMode_internal == 0">
             <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" 
-            :legend.sync="legend_internal" style="flex:1" :autoscaleX="autoscaleX" :autoscaleY="autoscaleY">
+            :legend.sync="legend_internal"
+                 :autoscaleX="autoscaleX" :autoscaleY="autoscaleY">
 
                 <template v-slot:charts>
                     <BarChart :buckets="barsBuckets" />
@@ -23,13 +24,14 @@
                 </template>
 
                 <template v-slot:under>
-                    <DatetimeAxis dimension="x" :showLines="false" :showMovingLabel="showMovingLabel" :forceLabelScale="forceXLabelScale" />
+                    <DatetimeAxis dimension="x" :showLines="false" :showMovingLabel="showMovingLabel"
+                        :forceLabelScale="forceXLabelScale" />
                     <NumericalAxis dimension="y" />
                 </template>
 
             </ChartCanvas>
 
-            <ChartLegend :data="legend_internal" style="margin-top:6px;" />
+            <ChartLegend :data="legend_internal" style="margin-top:20px;" />
         </template>
         <template v-else>
             <TableView :data="tableData" />
