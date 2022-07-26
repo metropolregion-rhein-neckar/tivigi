@@ -459,8 +459,7 @@ export default class ChartCanvas extends Vue {
 
 
     onResize(entry: ResizeObserverEntry) {
-
-        console.log("resize")
+        
         this.updateChartAreaSize()
 
         this.autoScale()

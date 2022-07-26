@@ -58,7 +58,6 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Prop({ default: true })
     autoscaleY!: boolean
 
-
     @Prop()
     bars: any
 
@@ -146,26 +145,25 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
     @Watch("bars", { deep: true })
     @Watch("lines", { deep: true })
-    onDataChange() {
-        this.loadData()
-    }
-
-    @Watch("extent")
+    @Watch("extent")    
     async loadData() {
 
+        let blubb = this.bars.concat(this.lines)
+
+
         let p1 = getAttributeMetadata(this.brokerBaseUrl)
-        let p2 = this.loadData2(this.bars)
-        let p3 = this.loadData2(this.lines)
+        let p2 = this.loadData2(blubb)
+       
+      
+
         
-
-
-        let pres = await Promise.all([p1,p2,p3])
+        let pres = await Promise.all([p1,p2])
 
        
         this.attrMeta = pres[0]
       
         this.barsBuckets = this.prepareData(this.bars,pres[1]) 
-        this.linesBuckets = this.prepareData(this.lines, pres[2])
+        this.linesBuckets = this.prepareData(this.lines, pres[1])
         /*
         this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
         this.barsBuckets = await this.loadData2(this.bars)
@@ -195,6 +193,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
         // ATTENTION: This only works as expected if there is only one entity ID and only one attribute
         // name in the task!
+
+        if (source == undefined) {
+            return
+        }
 
         let newBarBuckets = []
 
@@ -305,7 +307,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
     async loadData2(source: Array<any>) {
 
-        if (source == undefined) {
+        if (source == undefined) {            
             return
         }
 
@@ -315,12 +317,15 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         let max = new Vector2(this.extent.maxx, this.extent.maxy)
 
         let size = max.sub(min)
-
-
+        
         let tasks: any = []
 
         for (const bucket of source) {
+          
 
+            if (bucket == undefined) {
+                continue
+            }
             for (const seriesCfg of bucket) {
 
                 if (seriesCfg.entityId == undefined) {
