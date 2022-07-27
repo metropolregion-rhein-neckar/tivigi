@@ -34,9 +34,13 @@ export default class Collapsible extends Vue {
 
         if (!this.pCollapsed && this.exclusive) {
 
-            for (let sibling of this.$parent.$children) {
-                if (sibling instanceof Collapsible && sibling != this) {
-                    sibling.pCollapsed = true
+            let parent = this.$parent
+
+            if (parent != null) {
+                for (let sibling of parent.$children) {
+                    if (sibling instanceof Collapsible && sibling != this) {
+                        sibling.pCollapsed = true
+                    }
                 }
             }
         }
@@ -44,17 +48,17 @@ export default class Collapsible extends Vue {
         this.$emit('update:collapsed', this.pCollapsed)
     }
 
-    
+
     get dynamicClass(): any {
 
         return {
-            "Collapsible" : true,        
-            "Collapsible--uncollapsed" : !this.pCollapsed         
+            "Collapsible": true,
+            "Collapsible--uncollapsed": !this.pCollapsed
         }
     }
 
 
-    getCollapseButtonTitle() : string {
+    getCollapseButtonTitle(): string {
         if (this.pCollapsed) {
             return "Aufklappen"
         }
