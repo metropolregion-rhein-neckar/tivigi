@@ -1,5 +1,4 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { sortKeysAlphabetically } from 'tivigi/src/andromedaUtil/andromedaUtil';
 import { ColorRGBA } from 'tivigi/src/util/ColorRGBA';
 import { formatNumberString, zeroPad } from 'tivigi/src/util/formatters';
 
@@ -34,9 +33,7 @@ export default class WeekAggregation extends Vue {
 
     timestrings = Array<string>()
 
-    created() {
-        this.onTimeSeriesChange()
-    }
+
 
     weekdays = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 
@@ -46,30 +43,40 @@ export default class WeekAggregation extends Vue {
     startDateString = ""
     endDateString = ""
 
+
+    created() {
+        this.onTimeSeriesChange()
+    }
+
+
     @Watch("timeSeries")
     onTimeSeriesChange() {
 
         let ts = Object.keys(this.timeSeries)
-        
-        
+
+
 
         let startDate = new Date(parseInt(ts[0]))
         let endDate = new Date(parseInt(ts[ts.length - 1]))
-        
-        this.startDateString = `${zeroPad(startDate.getUTCDate(),2)}.${zeroPad(startDate.getUTCMonth() + 1,2)}.${startDate.getUTCFullYear()}`
-        this.endDateString = `${zeroPad(endDate.getUTCDate(),2)}.${zeroPad(endDate.getUTCMonth() + 1,2)}.${endDate.getUTCFullYear()}`
-        
 
-        this.buckets = this.getBucketsByWeekday()
+        this.startDateString = `${zeroPad(startDate.getUTCDate(), 2)}.${zeroPad(startDate.getUTCMonth() + 1, 2)}.${startDate.getUTCFullYear()}`
+        this.endDateString = `${zeroPad(endDate.getUTCDate(), 2)}.${zeroPad(endDate.getUTCMonth() + 1, 2)}.${endDate.getUTCFullYear()}`
+
+
+        this.updateBuckets()
     }
 
 
-    getBucketsByWeekday() {
+    updateBuckets() {
+
+
         const buckets: any = {}
         const sums: any = {}
 
-        let min = Number.MAX_VALUE
-        let max = Number.MIN_VALUE
+        this.min = Number.MAX_VALUE
+        this.max = Number.MIN_VALUE
+
+        this.timestrings = []
 
         for (const ts in this.timeSeries) {
 
@@ -81,8 +88,9 @@ export default class WeekAggregation extends Vue {
             const pieces = dateString.split("T")
             const timeString = pieces[1].substring(0, 5)
 
-            if (!this.timestrings.includes(timeString))
+            if (!this.timestrings.includes(timeString)) {
                 this.timestrings.push(timeString)
+            }
 
             // Shift day indices so that Monday has index 0 and Sunday has index 6:
             let weekday = date.getUTCDay() - 1
@@ -91,7 +99,7 @@ export default class WeekAggregation extends Vue {
                 weekday = 6
             }
 
-      
+
             if (buckets[weekday] == undefined) {
                 buckets[weekday] = {}
                 sums[weekday] = {}
@@ -111,24 +119,37 @@ export default class WeekAggregation extends Vue {
 
         }
 
+        //#region calculate arithmetic mean
         for (const weekday in buckets) {
-           
+
             for (const ts in buckets[weekday]) {
                 buckets[weekday][ts] /= sums[weekday][ts]
-
-                min = Math.min(min, buckets[weekday][ts])
-                max = Math.max(max, buckets[weekday][ts])
             }
         }
+        //#endregion calculate arithmetic mean
+
+
+        //#region Determine min/max
+        for (const weekday in buckets) {
+
+            for (const ts in buckets[weekday]) {
+
+                this.min = Math.min(this.min, buckets[weekday][ts])
+                this.max = Math.max(this.max, buckets[weekday][ts])
+            }
+        }
+        //#endregion Determine min/max
+
+
+
+
 
         this.timestrings = this.timestrings.sort()
 
-        // TODO: It's not clean to do this here
-        this.min = min
-        this.max = max
+        this.buckets = buckets
 
-        return buckets
     }
+
 
 
 
@@ -144,33 +165,44 @@ export default class WeekAggregation extends Vue {
     }
 
 
-    getTooltip(wdindex:any, ts:any) {
+    getTooltip(wdindex: any, ts: any) {
         if (this.buckets[wdindex] == undefined || this.buckets[wdindex][ts] == undefined) {
             return "Keine Daten verfügbar"
         }
- 
-        return ""
+
+        return this.buckets[wdindex][ts]
     }
 
 
     getTdStyle(wdindex: any, ts: any) {
 
+        let result = {
+            backgroundColor: "#fff",
+            color: "rgba(0,0,0,0.7)"
+        }
 
         if (this.buckets[wdindex] == undefined) {
-            return ""
+            return result
         }
 
         let value = this.buckets[wdindex][ts]
 
         if (value == undefined) {
-            return {}
+            return result
         }
 
         let range = this.max - this.min
 
+        if (range < 0.000001) {
+            return result
+        }
+
+
         let distance = value - this.min
 
         let factor = distance / range
+
+
 
         let startColor, endColor
 
@@ -191,14 +223,12 @@ export default class WeekAggregation extends Vue {
 
         backgroundColor = backgroundColor.round()
 
-        let textColor = new ColorRGBA([255, 255, 255, 255]).sub(backgroundColor)
-        textColor.a = 180
 
-        textColor = new ColorRGBA([0, 0, 0, 180])
-        return {
-            backgroundColor: backgroundColor.toHexString(),
-            color: textColor.toHexString()
-        }
+
+        result.backgroundColor = backgroundColor.toHexString()
+
+        return result
+
     }
 
 

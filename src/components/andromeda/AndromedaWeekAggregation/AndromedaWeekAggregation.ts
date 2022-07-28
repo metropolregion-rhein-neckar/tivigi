@@ -50,9 +50,11 @@ export default class AndromedaWeekAggregation extends Vue {
         await this.init()
     }
 
-
+    @Watch("dateStart")
+    @Watch("dateEnd")
     @Watch("entityId")
     @Watch("attrName")
+    @Watch("numDaysBack")
     async init() {
 
         let tasks: Array<TimeSeriesLoaderTask> = [{
@@ -100,18 +102,9 @@ export default class AndromedaWeekAggregation extends Vue {
         this.endDateString = `${zeroPad(endDate.getUTCDate(),2)}.${zeroPad(endDate.getUTCMonth() + 1,2)}.${endDate.getUTCFullYear()}`
       
       
+      
     }
 
-    @Watch("dateStart")
-    @Watch("dateEnd")
-    async onTimeFrameChange() {
-        await this.init()
-    }
-
-    @Watch("numDaysBack")
-    async onNumDaysBackChange() {
-        
-        await this.init()
-    }
+  
 }
 
