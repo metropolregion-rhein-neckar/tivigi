@@ -3,7 +3,7 @@ import * as ol from 'ol'
 import * as ol_interaction from 'ol/interaction'
 import { getUrlState, setUrlState } from 'tivigi/src/util/urlStateKeeping';
 import { DragPan, MouseWheelZoom, defaults } from 'ol/interaction';
-import { platformModifierKeyOnly } from 'ol/events/condition';
+import { altKeyOnly, platformModifierKeyOnly } from 'ol/events/condition';
 import { Attribution, defaults as defaultControls } from 'ol/control';
 import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
 
@@ -23,6 +23,9 @@ export default class DataMap extends AbstractData {
 
     @Prop({ default: false })
     touchScreenMode!: boolean
+
+    @Prop({default: false})
+    altZoomMode!:boolean
     //############## END Props ###############
 
 
@@ -97,8 +100,28 @@ export default class DataMap extends AbstractData {
         // This is required for URL status synchronization:
         this.map.set("name", this.name);
 
+
+        if(this.altZoomMode){
+
+            // remove standard interaction
+            this.map.getInteractions().forEach(function(interaction:any) {
+                if (interaction instanceof ol_interaction.MouseWheelZoom) {
+                  interaction.setActive(false);
+                }
+            });
+
+            
+            let mouseWheelInt = new ol_interaction.MouseWheelZoom();
+            this.map.addInteraction(mouseWheelInt);
+
+            this.map.on('wheel', function(evt:any) {
+                mouseWheelInt.setActive(altKeyOnly(evt));
+            });
+        }
+
+        
         // This is required to have the MapPanel component dispay a respective notification message:
-        this.map.set("touchScreenMode", true)
+        this.map.set("touchScreenMode", this.touchScreenMode)
         this.map.set("setUrlState", this.setUrlState)
 
 

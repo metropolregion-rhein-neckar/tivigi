@@ -7,7 +7,9 @@ import { Coordinate } from 'ol/coordinate';
 import { Extent } from 'ol/extent';
 import * as ol_interaction from 'ol/interaction'
 import { DragPan, MouseWheelZoom } from 'ol/interaction';
-import { platformModifierKeyOnly } from 'ol/events/condition';
+import { platformModifierKeyOnly, altKeyOnly } from 'ol/events/condition';
+
+
 
 import './ol.css'
 import './ol-ext.css'
@@ -93,13 +95,14 @@ export default class OlMap extends Vue {
 
     lastMouseMoveCoordinate: Coordinate = [0, 0]
 
-    touchscreenMode: Boolean | null = null
+    touchScreenMode: Boolean | null = null
 
    
 
     @Watch("extent")
-    onHomeExtentChange(newExt : Extent, oldExt : Extent) {
-        this.setMapExtent(newExt)
+    onHomeExtentChange() {
+        console.log(this.extent)
+        this.setMapExtent(this.extent)
     }
 
 
@@ -132,7 +135,8 @@ export default class OlMap extends Vue {
         
         this.setMapExtent(this.extent)
 
-        this.touchscreenMode = this.map.get("touchscreenMode")
+
+        this.touchScreenMode = this.map.get("touchScreenMode")
 
 
         // Remove old interval timer and event handlers before creating new ones:
@@ -143,14 +147,18 @@ export default class OlMap extends Vue {
 
         this.map.setTarget(this.mapTargetElem);
 
-
-
+        
         // Fire "map mounted" event_
         // NOTE: Currently, only the "FileDropTool" component listens to this event
         this.map.dispatchEvent("mounted")
 
-
         //this.map.on('moveend', this.onMapMoveEnd)
+        
+        
+        // ToDo: implement this corrrectly
+        //this.map.on('change:size', this.onSizeChange)
+
+        
 
 
         // Add event listeners for accessibility features (toggle keyboard control):
@@ -166,6 +174,13 @@ export default class OlMap extends Vue {
     }
 
 
+    // otherwise extent not stable for map fullscreen mode
+    // onSizeChange(){
+    //     
+    //     window.setTimeout(()=>{
+    //         this.map.getView().fit(this.map.getView().calculateExtent(this.map.getSize()), {size:this.map.getSize()})
+    //     }, 0)
+    // }
 
     onFocus(evt: FocusEvent) {
         this.hasFocus = true
@@ -365,8 +380,8 @@ export default class OlMap extends Vue {
 
     switchControlMode() {
 
-        this.touchscreenMode = !this.touchscreenMode
-        this.map.set("touchscreenMode", this.touchscreenMode)
+        this.touchScreenMode = !this.touchScreenMode
+        this.map.set("touchScreenMode", this.touchScreenMode)
 
 
         // See https://openlayers.org/en/latest/examples/two-finger-pan-scroll.html
@@ -384,7 +399,7 @@ export default class OlMap extends Vue {
             })])
 
 
-        let interactions = this.touchscreenMode ? interactions_touchscreen : interactions_default
+        let interactions = this.touchScreenMode ? interactions_touchscreen : interactions_default
 
 
         for (let ia of this.map.getInteractions().getArray()) {
