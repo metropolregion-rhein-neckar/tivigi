@@ -10,6 +10,8 @@
        <span style="display:inline-block;margin-bottom:8px;">Dargestellter Zeitraum: {{startDateString}} - {{endDateString}}
        </span>
     
-    <WeekAggregation v-if="data != null" :timeSeries="data" :invertColorRamp="invertColorRamp" />
+    <WeekAggregation v-if="data != null" 
+    :color1="color1" :color2="color2"
+    :timeSeries="data" :invertColorRamp="invertColorRamp" />
 
 </div>

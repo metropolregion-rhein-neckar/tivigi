@@ -23,9 +23,19 @@ export default class WeekAggregation extends Vue {
     @Prop({ default: false })
     invertColorRamp!: boolean
 
+    @Prop({default: [100, 100, 255, 255]})
+    color1! : Array<number>
+
+    @Prop({default: [255, 255, 255, 255]})
+    color2! :  Array<number>
+
+  
     //#endregion Props
-    color2 = new ColorRGBA([255, 255, 255, 255])
-    color1 = new ColorRGBA([100, 100, 255, 255])
+  
+  
+    color1_internal = new ColorRGBA([100, 100, 255, 255])
+    color2_internal = new ColorRGBA([255, 255, 255, 255])
+    
 
 
 
@@ -45,6 +55,12 @@ export default class WeekAggregation extends Vue {
 
 
     created() {
+
+  
+        this.color1_internal = new ColorRGBA(this.color1)
+        this.color2_internal = new ColorRGBA(this.color2)
+        
+
         this.onTimeSeriesChange()
     }
 
@@ -207,12 +223,12 @@ export default class WeekAggregation extends Vue {
         let startColor, endColor
 
         if (this.invertColorRamp) {
-            startColor = this.color1
-            endColor = this.color2
+            startColor = this.color1_internal
+            endColor = this.color2_internal
         }
         else {
-            startColor = this.color2
-            endColor = this.color1
+            startColor = this.color2_internal
+            endColor = this.color1_internal
         }
 
 
