@@ -13,17 +13,17 @@
 
         </template>
 
-        <template v-if="showMovingLabel && mShowMovingLabel">
-            <rect :x="movingLabelPos - 55" :y="canvas.chartAreaSize.y + 11" width="110" height="20" style="fill:#000">
+        <g v-if="showMovingLabel && mShowMovingLabel" class="ChartCanvas__XAxis__MovingLabel">
+            <rect :x="movingLabelPos - 56" :y="canvas.chartAreaSize.y + 10" width="112" height="22">
 
             </rect>
 
-            <!--
+            
             <line class="AbstractAxis__MovingLabelLine" :x1="movingLabelPos" :y1="canvas.chartAreaSize.y" :x2="movingLabelPos" :y2="0" />
-            -->
+            
             <text :x="movingLabelPos" :y="canvas.chartAreaSize.y + 20"
-                style="fill:#fff;text-anchor: middle; font-weight:bold;">{{movingLabelText}}</text>
-        </template>
+                style="text-anchor: middle;">{{movingLabelText}}</text>
+        </g>
     </g>
 
 

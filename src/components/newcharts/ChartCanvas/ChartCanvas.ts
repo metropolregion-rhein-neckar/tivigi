@@ -28,7 +28,7 @@ export default class ChartCanvas extends Vue {
     @Prop({ default: false })
     debug!: boolean
 
-    @Prop({ default: 35 })
+    @Prop({ default: 38 })
     xLabelsSpace!: number
 
     @Prop({ default: 60 })

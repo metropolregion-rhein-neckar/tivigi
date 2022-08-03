@@ -14,10 +14,7 @@ g.ChartCanvas__Axis {
         dominant-baseline: middle;
     }
 
-    line.AbstractAxis__MovingLabelLine {
-        stroke-dasharray: none;
-        
-    }
+  
 }
 
 g.ChartCanvas__XAxis {
@@ -30,5 +27,17 @@ g.ChartCanvas__XAxis {
 g.ChartCanvas__YAxis {
     text {
         text-anchor: end;
+    }
+}
+
+g.ChartCanvas__XAxis__MovingLabel {
+    fill: #444;
+    text {
+        font-weight: bold;
+        fill: #fff;
+    }
+
+    line {
+        stroke-dasharray: none;
     }
 }
