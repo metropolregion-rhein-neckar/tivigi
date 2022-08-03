@@ -8,7 +8,7 @@ import './Superinput.scss';
 @Component({})
 export default class Superinput extends Vue {
 
-
+    //#region Props
     @Prop()
     cssClass : string|undefined
 
@@ -18,9 +18,9 @@ export default class Superinput extends Vue {
     @Prop()
     placeholder : string|undefined
 
-    
     @Prop()
     value!: any    
+    //#endregion Props
 
     
 
@@ -36,11 +36,6 @@ export default class Superinput extends Vue {
     @Watch('pValue')
     onPvalueChange() {        
         this.$emit('input',  this.pValue)
-    }
-
-
-    mounted() {
-        //(this.$refs.input as HTMLInputElement).style.pa
     }
   
     onBlur(evt : Event) {    

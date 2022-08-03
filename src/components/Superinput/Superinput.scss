@@ -1,22 +1,18 @@
 div.Superinput {    
-    display: inline-flex;
-    align-items: center;
-    
+    position:relative;
 
-    input[type=text] {
-               
-        background-color: transparent;
-        border: none;     
-        flex:1;   
+    input[type=text] {       
+       padding-right:26px !important;
+       width:100%;
     }
 
     input[type=image] {
-        background-color: transparent;
-        padding:4px;
-        padding-right:6px;
-        
-        
-        width:24px;
+        background-color: transparent;    
+        position:absolute;        
+        right:0;        
+        top:50%;
+        transform: translate(0,-50%);
+        height:26px;       
 
         &:hover {
             cursor: pointer;
