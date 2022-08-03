@@ -18,6 +18,10 @@ export default class Carousel extends Vue {
     @Prop()
     selectedIndex! : number
 
+    @Prop({default:false})
+    showNavDots!: boolean
+
+
     activeItemIndex = -1;
 
     animationHandle = 0
@@ -68,7 +72,31 @@ export default class Carousel extends Vue {
         inner.style.left = this.innerPosX + "px"
     }
 
+    getNumDots() {
+        
+        if (this.$children.length == 0) {
+            return 0
+        }
 
+        let count = 0
+        for(const child of this.$children) {
+            if (!(child instanceof CarouselItem)) {
+                continue
+            }
+
+            count++
+        }
+
+
+
+        return count - 1
+    }
+
+    getDotClass(index : number) {
+        return {
+            "Carousel__Dot--selected" : index == this.activeItemIndex
+        }
+    }
 
     mounted() {
         let el = this.$refs.outer as HTMLDivElement
@@ -81,6 +109,10 @@ export default class Carousel extends Vue {
         el.addEventListener("touchstart", this.onTouchStart)
         el.addEventListener("touchmove", this.onTouchMove)
         el.addEventListener("touchend", this.onTouchEnd)
+
+        // Required to display the navigation dots, because apparently, the children array is still empty
+        // when getChildrenCount() is called to render the template for the first time:
+        this.$forceUpdate()
     }
 
 
@@ -189,8 +221,6 @@ export default class Carousel extends Vue {
 
 
 
-
-
     getTouchPos(touch: Touch) {
         const svg = this.$refs.outer as HTMLDivElement
         const rect = svg.getBoundingClientRect();
@@ -199,9 +229,6 @@ export default class Carousel extends Vue {
         const y1 = touch.pageY - rect.top;
 
         return x1
-
-
-        //return new Vector2(x1, y1).sub(this.chartAreaPos)
     }
 
 

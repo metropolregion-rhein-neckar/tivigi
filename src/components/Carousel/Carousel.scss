@@ -1,8 +1,6 @@
 div.Carousel {
-   
     user-select: none;
     //border: 1px solid #000;
-    
 
     // ATTENTION: position:relative is required for
     // correct vertical centering of the left/right buttons!
@@ -24,7 +22,7 @@ div.Carousel {
         transform: translate(0, -50%);
         background-repeat: no-repeat;
         background-position: center;
-        
+
         &:hover {
             transform: translate(0, -50%) scale(1.2);
             opacity: 1;
@@ -42,6 +40,44 @@ div.Carousel {
     }
 }
 
+div.Carousel__Dots {
+    //   position:absolute;
+    bottom: 4px;
+    z-index: 100;
+    // width:100%;
+
+    text-align: center;
+
+    > div {
+        display: inline-block;
+        //border:1px solid #000;
+        padding: 3px;
+        opacity: 0.5;
+        > div {
+            border: 3px solid #000;
+            border-radius: 50%;
+
+            background-color: transparent;
+            width: 12px;
+            height: 12px;
+        }
+
+        &:hover {
+            div {
+                background-color: #000 !important;
+            }
+            cursor: pointer;
+        }
+    }
+}
+
+div.Carousel__Dot--selected {
+    opacity: 1 !important;
+    div {
+        background-color: #000 !important;
+    }
+}
+
 div.Carousel__Inner {
     display: flex;
     position: relative;
@@ -51,10 +87,9 @@ div.Carousel__Inner {
     width: fit-content; // IMPORTANT!
 }
 
-
 div.Carousel__Outer {
     //border:1px solid #000;
-   // margin:0 18px;
+    // margin:0 18px;
     overflow: hidden;
-    padding:25px 0px;
+    padding: 20px 0px;    
 }

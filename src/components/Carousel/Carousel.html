@@ -6,8 +6,17 @@
         </div>
     </div>
     
+   
+    <div v-if="showNavDots" class="Carousel__Dots">
+        
+        <div v-for="index in getNumDots()" @click="setActiveItemIndex(index)"  :class="getDotClass(index)">
+            <div></div>
+        </div>
+        
+    </div>
+
     <button class="Carousel__ScrollButton Carousel__LeftButton" @click="onLeftButtonClick"></button>
     <button class="Carousel__ScrollButton Carousel__RightButton" @click="onRightButtonClick"></button>
-    
+   
 </div>
 
