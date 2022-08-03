@@ -11,7 +11,7 @@ export class ColorRGBA {
             }
         }
         else if (typeof values == "string") {
-            if (values.at(0) == '#') {
+            if (values.charAt(0) == '#') {
                 values = values.substring(1)
             }
             
