@@ -16,15 +16,15 @@ export default class Carousel extends Vue {
 
 
     @Prop()
-    selectedIndex! : number
+    selectedIndex!: number
 
-    @Prop({default:false})
+    @Prop({ default: false })
     showNavDots!: boolean
 
 
     activeItemIndex = -1;
 
-    animationHandle = 0
+    animationHandle = -1
 
     innerPosX = 0
 
@@ -55,15 +55,16 @@ export default class Carousel extends Vue {
         if (Math.abs(diff) > tolerance) {
 
             let speed = Math.sqrt(Math.abs(diff))
-            
+
             this.innerPosX += Math.sign(diff) * speed
 
             this.startAnimation()
-            
+
         }
         else {
             this.innerPosX += diff
             window.cancelAnimationFrame(this.animationHandle)
+
         }
 
         this.innerPosX = Math.round(this.innerPosX)
@@ -73,13 +74,13 @@ export default class Carousel extends Vue {
     }
 
     getNumDots() {
-        
+
         if (this.$children.length == 0) {
             return 0
         }
 
         let count = 0
-        for(const child of this.$children) {
+        for (const child of this.$children) {
             if (!(child instanceof CarouselItem)) {
                 continue
             }
@@ -92,9 +93,9 @@ export default class Carousel extends Vue {
         return count - 1
     }
 
-    getDotClass(index : number) {
+    getDotClass(index: number) {
         return {
-            "Carousel__Dot--selected" : index == this.activeItemIndex
+            "Carousel__Dot--selected": index == this.activeItemIndex
         }
     }
 
@@ -118,7 +119,7 @@ export default class Carousel extends Vue {
 
     onLeftButtonClick(evt: MouseEvent) {
         let outer = this.$refs.outer as HTMLDivElement
-        this.setTargetPosX(this.targetInnerPosX - outer.offsetWidth / 2) 
+        this.setTargetPosX(this.targetInnerPosX - outer.offsetWidth / 2)
     }
 
 
@@ -185,7 +186,7 @@ export default class Carousel extends Vue {
         let diff = this.prevTouchX - this.touchStartX
 
         if (Math.abs(diff) > 0.5) {
-            
+
             this.setTargetPosX(this.targetInnerPosX + diff * this.inertia)
         }
     }
@@ -266,7 +267,6 @@ export default class Carousel extends Vue {
 
 
     startAnimation() {
-
         window.cancelAnimationFrame(this.animationHandle)
         this.animationHandle = window.requestAnimationFrame(this.animationStep)
     }
