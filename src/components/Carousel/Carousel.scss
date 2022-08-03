@@ -1,0 +1,60 @@
+div.Carousel {
+   
+    user-select: none;
+    //border: 1px solid #000;
+    
+
+    // ATTENTION: position:relative is required for
+    // correct vertical centering of the left/right buttons!
+    position: relative;
+
+    button.Carousel__ScrollButton {
+        position: absolute;
+        top: 50%;
+
+        border: none;
+        // border: 1px solid #000;
+        background-color: transparent;
+        background-size: 100% auto;
+        z-index: 100;
+        height: 36px;
+        width: 36px;
+        padding: 0;
+        opacity: 0.75;
+        transform: translate(0, -50%);
+        background-repeat: no-repeat;
+        background-position: center;
+        
+        &:hover {
+            transform: translate(0, -50%) scale(1.2);
+            opacity: 1;
+        }
+    }
+
+    button.Carousel__LeftButton {
+        left: 6px;
+        background-image: url(./assets/left.svg);
+    }
+
+    button.Carousel__RightButton {
+        right: 6px;
+        background-image: url(./assets/right.svg);
+    }
+}
+
+div.Carousel__Inner {
+    display: flex;
+    position: relative;
+    align-items: center;
+    //border: 1px solid #000;
+
+    width: fit-content; // IMPORTANT!
+}
+
+
+div.Carousel__Outer {
+    //border:1px solid #000;
+   // margin:0 18px;
+    overflow: hidden;
+    padding:25px 0px;
+}

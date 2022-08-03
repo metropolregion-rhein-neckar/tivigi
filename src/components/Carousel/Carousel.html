@@ -1,0 +1,13 @@
+<div class="Carousel">
+  
+    <div ref="outer" class="Carousel__Outer">
+        <div ref="inner" class="Carousel__Inner">
+            <slot/>
+        </div>
+    </div>
+    
+    <button class="Carousel__ScrollButton Carousel__LeftButton" @click="onLeftButtonClick"></button>
+    <button class="Carousel__ScrollButton Carousel__RightButton" @click="onRightButtonClick"></button>
+    
+</div>
+
