@@ -31,6 +31,7 @@ g.ChartCanvas__YAxis {
 }
 
 g.ChartCanvas__XAxis__MovingLabel {
+    pointer-events: none;
     fill: #444;
     text {
         font-weight: bold;

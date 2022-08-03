@@ -84,12 +84,12 @@ export default class DatetimeAxis extends AbstractAxis {
 
         if (typeof this.forceLabelScale == 'string') {
 
-            switch(this.forceLabelScale) {
-                case "year" :
+            switch (this.forceLabelScale) {
+                case "year":
                     return AXIS_LABEL_MODE._1_YEAR
             }
         }
-        
+
         let mode = AXIS_LABEL_MODE._1_MIN
 
         if (scale > 40000000) {
@@ -192,7 +192,7 @@ export default class DatetimeAxis extends AbstractAxis {
 
             let tooltip = d.toLocaleDateString() + ", " + d.toLocaleTimeString()
 
-            tooltip = `${zeroPad(d.getUTCDate(),2)}.${zeroPad(d.getUTCMonth() + 1,2)}.${d.getUTCFullYear()}, ${zeroPad(d.getUTCHours(),2)}:${zeroPad(d.getUTCMinutes(),2)}:${zeroPad(d.getUTCSeconds(),2)}` 
+            tooltip = `${zeroPad(d.getUTCDate(), 2)}.${zeroPad(d.getUTCMonth() + 1, 2)}.${d.getUTCFullYear()}, ${zeroPad(d.getUTCHours(), 2)}:${zeroPad(d.getUTCMinutes(), 2)}:${zeroPad(d.getUTCSeconds(), 2)}`
 
             if (text != "") {
 
@@ -211,46 +211,55 @@ export default class DatetimeAxis extends AbstractAxis {
         return result
     }
 
-    
+
     beforeDestroy() {
-        this.canvas.$el.removeEventListener("mousemove", this.onMouseMove)  
-        this.canvas.$el.removeEventListener("mouseout", this.onMouseOut)       
+        this.canvas.$el.removeEventListener("mousemove", this.onMouseMove)
+        this.canvas.$el.removeEventListener("mouseout", this.onMouseOut)
+        this.canvas.$el.removeEventListener("mouseover", this.onMouseOver)
     }
 
 
     mounted() {
-        this.canvas.$el.addEventListener("mousemove", this.onMouseMove)       
-        this.canvas.$el.addEventListener("mouseout", this.onMouseOut) 
+        this.canvas.$el.addEventListener("mousemove", this.onMouseMove)        
+        this.canvas.$el.addEventListener("mouseout", this.onMouseOut)
+        this.canvas.$el.addEventListener("mouseover", this.onMouseOver)
     }
 
-    onMouseMove(evt : Event) {
 
-        
+    onMouseMove(evt: Event) {
+
+
         // TODO: Implement x vs y axis difference
         const pos = (evt as MouseEvent).offsetX - this.canvas.chartAreaPos.x
 
+        /*
+       
         if (pos > 0) {
-        this.mShowMovingLabel = true
+            this.mShowMovingLabel = true
 
-    }
-    else {
-        this.mShowMovingLabel = false
-        return
-    }
-
+        }
+        else {
+            this.mShowMovingLabel = false
+            return
+        }
+*/
         let wx = this.s2wx(pos)
 
-        
+
 
         let d = new Date(wx)
 
-       
 
-        this.movingLabelText =  `${zeroPad(d.getUTCDate(), 2)}.${zeroPad(d.getUTCMonth() + 1, 2)}.${d.getUTCFullYear()}` + ", " + `${zeroPad(d.getUTCHours(), 2)}:${zeroPad(d.getUTCMinutes(), 2)}`
+
+        this.movingLabelText = `${zeroPad(d.getUTCDate(), 2)}.${zeroPad(d.getUTCMonth() + 1, 2)}.${d.getUTCFullYear()}` + ", " + `${zeroPad(d.getUTCHours(), 2)}:${zeroPad(d.getUTCMinutes(), 2)}`
         this.movingLabelPos = pos
     }
 
     onMouseOut() {
         this.mShowMovingLabel = false
+    }
+
+    onMouseOver() {
+        this.mShowMovingLabel = true
     }
 }
