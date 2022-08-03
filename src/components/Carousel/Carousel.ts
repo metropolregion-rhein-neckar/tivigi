@@ -1,8 +1,7 @@
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import CarouselItem from './CarouselItem';
 import WithRender from './Carousel.html';
 import "./Carousel.scss"
-import { Vector2 } from 'tivigi/src/util/Vector2';
 
 
 @WithRender
@@ -32,13 +31,15 @@ export default class Carousel extends Vue {
 
     prevTouchX = -1
 
+    inertia = 23
+
     animationStep() {
 
 
 
         let tolerance = 1
 
-        let outer = this.$el as HTMLDivElement
+        let outer = this.$refs.outer as HTMLDivElement
 
         let cx = outer.offsetWidth / 2
 
@@ -50,23 +51,21 @@ export default class Carousel extends Vue {
         if (Math.abs(diff) > tolerance) {
 
             let speed = Math.sqrt(Math.abs(diff))
-            //speed = Math.max(speed, 1)
+            
             this.innerPosX += Math.sign(diff) * speed
 
-            //window.requestAnimationFrame(this.animationStep)
+            this.startAnimation()
+            
         }
         else {
             this.innerPosX += diff
-            window.clearInterval(this.animationHandle)
+            window.cancelAnimationFrame(this.animationHandle)
         }
 
         this.innerPosX = Math.round(this.innerPosX)
 
 
         inner.style.left = this.innerPosX + "px"
-
-
-
     }
 
 
@@ -86,23 +85,15 @@ export default class Carousel extends Vue {
 
 
     onLeftButtonClick(evt: MouseEvent) {
-        let outer = this.$el as HTMLDivElement
-        this.setTargetPosX(this.targetInnerPosX - outer.offsetWidth / 2)
-
-        evt.stopImmediatePropagation()
-        evt.stopPropagation()
-
+        let outer = this.$refs.outer as HTMLDivElement
+        this.setTargetPosX(this.targetInnerPosX - outer.offsetWidth / 2) 
     }
 
 
 
     onRightButtonClick(evt: MouseEvent) {
-        let outer = this.$el as HTMLDivElement
+        let outer = this.$refs.outer as HTMLDivElement
         this.setTargetPosX(this.targetInnerPosX + outer.offsetWidth / 2)
-
-        evt.stopImmediatePropagation()
-        evt.stopPropagation()
-
     }
 
     onResize() {
@@ -163,7 +154,7 @@ export default class Carousel extends Vue {
 
         if (Math.abs(diff) > 0.5) {
             
-            this.setTargetPosX(this.targetInnerPosX + Math.sign(diff) * Math.abs(Math.sqrt(Math.abs(diff))) * 50)
+            this.setTargetPosX(this.targetInnerPosX + diff * this.inertia)
         }
     }
 
@@ -215,11 +206,8 @@ export default class Carousel extends Vue {
 
 
     setTargetPosX(value: number) {
-        let outer = this.$el as HTMLDivElement
+        let outer = this.$refs.outer as HTMLDivElement
         let inner = this.$refs.inner as HTMLDivElement
-
-        //value = Math.max(value, outer.offsetWidth / 2 - 100)
-        //value = Math.min(value, inner.offsetWidth - (outer.offsetWidth / 2 - 100))
 
         value = Math.max(value, 0)
         value = Math.min(value, inner.offsetWidth)
@@ -252,9 +240,7 @@ export default class Carousel extends Vue {
 
     startAnimation() {
 
-        window.clearInterval(this.animationHandle)
-        this.animationHandle = window.setInterval(this.animationStep, 10)
-
-        //window.requestAnimationFrame(this.animationStep)
+        window.cancelAnimationFrame(this.animationHandle)
+        this.animationHandle = window.requestAnimationFrame(this.animationStep)
     }
 }
