@@ -29,6 +29,9 @@ export default class Piechart extends Vue {
     @Prop({ default: () => "dddd00ff" })
     color2!: string
 
+    @Prop()
+    colors!:Array<any>
+
     @Prop({ default: () => [] })
     data!: Array<PiechartDataItem>
 
@@ -65,7 +68,7 @@ export default class Piechart extends Vue {
     renderData: any = undefined
 
 
-    prevData  = ""
+    prevData = ""
 
     created() {
         this.prepareRenderData()
@@ -82,7 +85,7 @@ export default class Piechart extends Vue {
     prepareRenderData() {
 
         // Only run the code below if data has really changed:
-        
+
         // ATTENTION: For some reason, this is required to prevent an infinite recursion
         // loop that is somehow caused in combination with a parent component's behavior through 
         // the emitting of the legend object.
@@ -94,12 +97,39 @@ export default class Piechart extends Vue {
 
         this.prevData = jsonified
 
-       
+
         const legend = Array<Array<ChartLegendItem>>()
 
         const result = []
 
+
+        //#region Build colors array
         const colorDiff = this.colEnd.sub(this.colStart)
+
+
+        let colors = Array<ColorRGBA>()
+
+        if (this.colors instanceof Array) {
+            console.log("COLORS ARE THERE")
+            for(const colorData of this.colors) {
+                colors.push(new ColorRGBA(colorData))
+
+            }
+        }
+        else {
+            for (let index = 0; index < this.data.length; index++) {
+
+                let step = 0
+
+                if (this.data.length > 1) {
+                    step = index / (this.data.length - 1)
+                }
+
+                colors.push(this.colStart.add(colorDiff.mult(step)).round())
+            }
+        }
+        //#endregion
+
 
 
         let increment = this.degreesStart
@@ -131,7 +161,9 @@ export default class Piechart extends Vue {
             }
 
 
-            const color_main = this.colStart.add(colorDiff.mult(step)).round()
+            //const color_main = this.colStart.add(colorDiff.mult(step)).round()
+
+            const color_main = colors[index]
 
 
             const arcPath = this.makeArcPath(increment, increment + value_deg, this.outerRadius, this.innerRadius)

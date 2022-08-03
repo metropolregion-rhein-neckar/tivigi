@@ -19,8 +19,8 @@
                  :autoscaleX="autoscaleX" :autoscaleY="autoscaleY" style="height:200px;">
 
                 <template v-slot:charts>
-                    <BarChart :buckets="barsBuckets" />
-                    <LineChart :buckets="linesBuckets" />
+                    <BarChart :buckets="barsBuckets" :colors="colors"/>
+                    <LineChart :buckets="linesBuckets" :colors="colors"/>
                 </template>
 
                 <template v-slot:under>

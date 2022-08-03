@@ -37,6 +37,9 @@ export default class BarChart extends AbstractChart {
 
     @Prop({ default: "screen" })
     barWidthUnit!: string
+
+    @Prop()
+    colors!:Array<any>
     //#endregion
 
 
@@ -50,17 +53,25 @@ export default class BarChart extends AbstractChart {
 
     legendData = Array<Array<ChartLegendItem>>()
 
-    colors = Array<any>()
+    colors_internal = Array<any>()
 
 
     created() {
-      
-      
 
-        this.colors.push({ start: new ColorRGBA([100, 100, 250, 255]), end: new ColorRGBA([200, 200, 255, 255]) })
-        this.colors.push({ start: new ColorRGBA([30, 200, 30, 255]), end: new ColorRGBA([200, 255, 200, 255]) })
-        this.colors.push({ start: new ColorRGBA([150, 100, 100, 255]), end: new ColorRGBA([255, 200, 200, 255]) })
-        this.colors.push({ start: new ColorRGBA([50, 50, 50, 255]), end: new ColorRGBA([200, 200, 200, 255]) })
+    
+
+        if (this.colors != undefined) {
+            
+            this.colors_internal = this.colors
+        }
+        else {
+            this.colors_internal = [
+                { start: [100, 100, 250, 255], end: [200, 200, 255, 255] },
+                { start: [30, 200, 30, 255], end: [200, 255, 200, 255] },
+                { start: [150, 100, 100, 255], end: [255, 200, 200, 255] },
+                { start: [50, 50, 50, 255], end: [200, 200, 200, 255] }
+            ]
+        }
 
     }
 
@@ -153,8 +164,8 @@ export default class BarChart extends AbstractChart {
 
             let legendGroup = []
 
-            const colorEnd = this.colors[bucketIndex].end
-            const colorStart = this.colors[bucketIndex].start
+            const colorEnd = new ColorRGBA(this.colors_internal[bucketIndex].end)
+            const colorStart = new ColorRGBA(this.colors_internal[bucketIndex].start)
 
             const colorDiff = colorEnd.sub(colorStart)
 
@@ -179,10 +190,10 @@ export default class BarChart extends AbstractChart {
                 //#region Add legend item
                 let legendItem: ChartLegendItem = {
                     label: dataset.label,
-                    shortLabel:dataset.shortLabel,
+                    shortLabel: dataset.shortLabel,
                     color: color_main.toHexString()
                 }
-                
+
                 legendGroup.push(legendItem)
 
                 //#endregion Add legend item
@@ -224,13 +235,13 @@ export default class BarChart extends AbstractChart {
 
                         this.displayMax.y = Math.max(this.displayMax.y, stack.positive)
                     }
-                }                
+                }
             }
 
             this.legendData.push(legendGroup)
         }
 
-        
+
         return result
     }
 }

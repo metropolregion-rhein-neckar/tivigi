@@ -11,12 +11,20 @@ export class ColorRGBA {
             }
         }
         else if (typeof values == "string") {
-            const r = parseInt(values.substring(0,2),16)
-            const g = parseInt(values.substring(2,4),16)
-            const b = parseInt(values.substring(4,6),16)
-            const a = parseInt(values.substring(6,8),16)
+            if (values.at(0) == '#') {
+                values = values.substring(1)
+            }
+            
+            const r = parseInt(values.substring(0, 2), 16)
+            const g = parseInt(values.substring(2, 4), 16)
+            const b = parseInt(values.substring(4, 6), 16)
 
-            this.values = [r,g,b,a]
+            let a = 255
+            if (values.length == 8) {
+                a = parseInt(values.substring(6, 8), 16)
+            }
+
+            this.values = [r, g, b, a]
         }
     }
 
