@@ -180,7 +180,7 @@ export default class Piechart extends Vue {
                 value: this.data[index].value,
                 displayValue: formatNumberString(percent, 1) + " %",
                 label: this.data[index].label,
-                class: "Piechart__DataItem",
+                class: "Piechart__DataItem Piechart__DataItem" + index.toString(),
                 textPos: this.polarToCartesian(textLabelRadius, increment + value_deg / 2)
             })
 
