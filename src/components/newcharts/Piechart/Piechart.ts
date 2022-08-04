@@ -110,10 +110,9 @@ export default class Piechart extends Vue {
         let colors = Array<ColorRGBA>()
 
         if (this.colors instanceof Array) {
-            console.log("COLORS ARE THERE")
+            
             for(const colorData of this.colors) {
                 colors.push(new ColorRGBA(colorData))
-
             }
         }
         else {
