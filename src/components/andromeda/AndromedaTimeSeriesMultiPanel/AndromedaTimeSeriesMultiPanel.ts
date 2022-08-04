@@ -51,7 +51,6 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Prop({ default: true })
     allowPanX!: boolean
 
-
     @Prop({ default: true })
     autoscaleX!: boolean
 
@@ -64,7 +63,6 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Prop()
     colors: any
 
-    
     @Prop()
     lines: any
 
@@ -97,10 +95,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
     @Prop({ default: false })
     preload!: boolean
-    //#endregion Props
 
     @Prop()
     forceXLabelScale!: string
+    //#endregion Props
 
     extent: BoundingBox = this.initialExtent
 
@@ -126,7 +124,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     async created() {
         this.extent = this.initialExtent
 
-      
+
         await this.loadData()
     }
 
@@ -134,6 +132,8 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     @Watch("initialExtent", { deep: true })
     async onInitialExtentChange() {
         this.extent = this.initialExtent
+
+        await this.loadData()
 
     }
 
@@ -149,24 +149,28 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
     @Watch("bars", { deep: true })
     @Watch("lines", { deep: true })
-    @Watch("extent")    
+    @Watch("extent")
     async loadData() {
+
+        if (this.extent == undefined || this.extent == null) {
+            return
+        }
 
         let blubb = this.bars.concat(this.lines)
 
 
         let p1 = getAttributeMetadata(this.brokerBaseUrl)
         let p2 = this.loadData2(blubb)
-       
-      
 
-        
-        let pres = await Promise.all([p1,p2])
 
-       
+
+
+        let pres = await Promise.all([p1, p2])
+
+
         this.attrMeta = pres[0]
-      
-        this.barsBuckets = this.prepareData(this.bars,pres[1]) 
+
+        this.barsBuckets = this.prepareData(this.bars, pres[1])
         this.linesBuckets = this.prepareData(this.lines, pres[1])
         /*
         this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
@@ -193,7 +197,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     }
 
 
-    prepareData(source : any, response : any) {
+    prepareData(source: any, response: any) {
 
         // ATTENTION: This only works as expected if there is only one entity ID and only one attribute
         // name in the task!
@@ -311,7 +315,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
     async loadData2(source: Array<any>) {
 
-        if (source == undefined) {            
+        if (source == undefined) {
             return
         }
 
@@ -321,11 +325,11 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         let max = new Vector2(this.extent.maxx, this.extent.maxy)
 
         let size = max.sub(min)
-        
+
         let tasks: any = []
 
         for (const bucket of source) {
-          
+
 
             if (bucket == undefined) {
                 continue
@@ -336,15 +340,19 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
                     continue
                 }
 
-                const task2: TimeSeriesLoaderTask = {
-                    entityId: seriesCfg.entityId,
-                    attrs: [seriesCfg.attrName],
+                if (seriesCfg.entityId != undefined && seriesCfg.entityId != "") {
+                    const task2: TimeSeriesLoaderTask = {
+                        entityId: seriesCfg.entityId,
+                        attrs: [seriesCfg.attrName],
 
-                    aggrMethod: seriesCfg.aggrMethod,
-                    aggrPeriodDuration: seriesCfg.aggrPeriodDuration
+                        aggrMethod: seriesCfg.aggrMethod,
+                        aggrPeriodDuration: seriesCfg.aggrPeriodDuration
+                    }
+
+                    tasks.push(task2)
                 }
 
-                tasks.push(task2)
+
 
             }
         }
