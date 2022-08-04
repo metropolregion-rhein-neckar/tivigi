@@ -23,26 +23,16 @@ import WithRender from './AndromedaTimeSeriesMultiPanel.html';
 @WithRender
 @Component({
     components: {
-
-        //#### BEGIN Tivigi Components #####
-
         DashboardPanel,
-
         ChartCanvas,
         ChartLegend,
-
         LineChart,
         NumericalAxis,
-
         DatetimeAxis,
         BarChart,
         SmartButton,
         SmartTable,
         TableView
-
-        //#### END Tivigi Components #####
-
-
     }
 })
 export default class AndromedaTimeSeriesMultiPanel extends Vue {
@@ -106,8 +96,6 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     barsBuckets: any = []
     linesBuckets: any = []
 
-    local: any = {}
-
     displayMode_internal = 0
 
     legend_internal: any = null
@@ -120,10 +108,11 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     tableData!: TableData
 
 
+    comments = []
+    sourceInfo = []
 
     async created() {
         this.extent = this.initialExtent
-
 
         await this.loadData()
     }
@@ -172,11 +161,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
         this.barsBuckets = this.prepareData(this.bars, pres[1])
         this.linesBuckets = this.prepareData(this.lines, pres[1])
-        /*
-        this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
-        this.barsBuckets = await this.loadData2(this.bars)
-        this.linesBuckets = await this.loadData2(this.lines)
-        */
+
 
         this.tableData = new TableData()
 
@@ -192,6 +177,39 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
         this.prepareTableData(this.barsBuckets, this.tableData)
         this.prepareTableData(this.linesBuckets, this.tableData)
+
+
+
+        this.comments = []
+
+        this.sourceInfo = []
+
+        for (let task2 of blubb) {
+            if (!task2) {
+                continue
+            }
+            for (let task of task2) {
+
+                const bla = this.attrMeta[task.attrName]
+
+
+
+                if (bla.metadata.comments instanceof Array) {
+                    this.comments = this.comments.concat(bla.metadata.comments)
+                }
+
+
+                if (bla.metadata.sources instanceof Array) {
+                    this.sourceInfo = this.sourceInfo.concat(bla.metadata.sources)
+                }
+
+            }
+        }
+
+        this.comments = [...new Set(this.comments)];
+
+
+        this.sourceInfo = [...new Set(this.sourceInfo)];
 
         this.$forceUpdate()
     }
@@ -351,9 +369,6 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
                     tasks.push(task2)
                 }
-
-
-
             }
         }
 

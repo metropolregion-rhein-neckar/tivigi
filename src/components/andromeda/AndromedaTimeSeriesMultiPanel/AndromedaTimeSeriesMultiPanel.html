@@ -14,13 +14,12 @@
     <template v-slot:main>
 
         <template v-if="displayMode_internal == 0">
-            <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" 
-            :legend.sync="legend_internal"
-                 :autoscaleX="autoscaleX" :autoscaleY="autoscaleY" style="height:200px;">
+            <ChartCanvas :allowPanX="allowPanX" :allowPanY="false" :extent.sync="extent" :legend.sync="legend_internal"
+                :autoscaleX="autoscaleX" :autoscaleY="autoscaleY" style="height:200px;">
 
                 <template v-slot:charts>
-                    <BarChart :buckets="barsBuckets" :colors="colors"/>
-                    <LineChart :buckets="linesBuckets" :colors="colors"/>
+                    <BarChart :buckets="barsBuckets" :colors="colors" />
+                    <LineChart :buckets="linesBuckets" :colors="colors" />
                 </template>
 
                 <template v-slot:under>
@@ -44,6 +43,24 @@
 
         <slot name="infoPanelText"></slot>
 
+        <template v-if="comments.length > 0">
+            <h3>Anmerkungen:</h3>
+            <ul>
+                <li v-for="comment of comments" style="margin:16px 0px">
+                    {{comment}}
+                </li>
+            </ul>
+        </template>
+
+        <template v-if="sourceInfo.length > 0">
+            <h3>Quellen:</h3>
+
+            <ul>
+                <li v-for="source of sourceInfo" style="margin:16px 0px">
+                    {{source}}
+                </li>
+            </ul>
+        </template>
 
     </template>
 </DashboardPanel>
