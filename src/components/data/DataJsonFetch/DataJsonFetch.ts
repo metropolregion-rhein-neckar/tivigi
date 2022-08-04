@@ -77,9 +77,7 @@ export default class DataJsonFetch extends AbstractData {
 
         console.log("Data fetched from " + this.url)
 
-        // Old way:
-        //this.register(data)
-
+   
         // New way:
         this.$emit("update:data", data)
 

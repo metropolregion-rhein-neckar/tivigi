@@ -14,12 +14,7 @@ export default class Data extends AbstractData {
         this.setup()
     }
     
-    setup() {   
-        
-        // Old way:
-        //this.register(this.value)
-
-        // New way:
+    setup() {                   
         this.$emit("update:data", this.value)
     }
     
