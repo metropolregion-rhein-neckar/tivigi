@@ -1,4 +1,4 @@
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import CarouselItem from './CarouselItem';
 import WithRender from './Carousel.html';
 import "./Carousel.scss"
@@ -15,7 +15,7 @@ import "./Carousel.scss"
 export default class Carousel extends Vue {
 
 
-    @Prop()
+    @Prop({ default: 0 })
     selectedIndex!: number
 
     @Prop({ default: false })
@@ -38,8 +38,6 @@ export default class Carousel extends Vue {
     inertia = 23
 
     animationStep() {
-
-
 
         let tolerance = 1
 
@@ -73,6 +71,7 @@ export default class Carousel extends Vue {
         inner.style.left = this.innerPosX + "px"
     }
 
+
     getNumDots() {
 
         if (this.$children.length == 0) {
@@ -88,16 +87,16 @@ export default class Carousel extends Vue {
             count++
         }
 
-
-
         return count - 1
     }
+
 
     getDotClass(index: number) {
         return {
             "Carousel__Dot--selected": index == this.activeItemIndex
         }
     }
+
 
     mounted() {
         let el = this.$refs.outer as HTMLDivElement
@@ -110,6 +109,9 @@ export default class Carousel extends Vue {
         el.addEventListener("touchstart", this.onTouchStart)
         el.addEventListener("touchmove", this.onTouchMove)
         el.addEventListener("touchend", this.onTouchEnd)
+
+
+        this.onSelectedIndexChange()
 
         // Required to display the navigation dots, because apparently, the children array is still empty
         // when getChildrenCount() is called to render the template for the first time:
@@ -245,7 +247,18 @@ export default class Carousel extends Vue {
     }
 
 
-    setActiveItemIndex(index: number) {
+    @Watch("selectedIndex")
+    onSelectedIndexChange() {
+        if (this.selectedIndex == this.activeItemIndex) {
+            return
+        }
+
+        this.setActiveItemIndex(this.selectedIndex, false)      
+    }
+
+
+    setActiveItemIndex(index: number, emit: boolean = true) {
+
         this.activeItemIndex = index
 
 
@@ -255,13 +268,20 @@ export default class Carousel extends Vue {
 
         let activeChild = this.$children[this.activeItemIndex]
 
+        if (activeChild == undefined) {
+
+            return
+        }
+
         let activeItemElement = activeChild.$el as HTMLDivElement
 
         let activeItemCenterX = activeItemElement.offsetLeft + activeItemElement.offsetWidth / 2
 
         this.setTargetPosX(activeItemCenterX)
 
-        this.$emit("update:selectedIndex", this.activeItemIndex)
+        if (emit) {
+            this.$emit("update:selectedIndex", this.activeItemIndex)
+        }
 
     }
 
