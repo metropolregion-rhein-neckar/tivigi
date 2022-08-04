@@ -639,6 +639,10 @@ export default class ChartCanvas extends Vue {
 
         const el = this.$refs.svg as SVGElement
 
+        if (el == undefined) {
+            return
+        }
+        
         const sx = el.clientWidth
         const sy = el.clientHeight
 
