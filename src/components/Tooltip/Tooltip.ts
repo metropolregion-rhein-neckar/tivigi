@@ -64,6 +64,10 @@ export default class Tooltips extends Vue {
 
         let element : HTMLElement|null = evt.target as HTMLElement
 
+        if (element == undefined) {
+            return
+        }
+        
         let text = null
 
         while (text == null && element != null) {
