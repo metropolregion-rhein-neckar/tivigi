@@ -2,7 +2,7 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import CarouselItem from './CarouselItem';
 import WithRender from './Carousel.html';
 import "./Carousel.scss"
-
+import 'tivigi/src/directives/v-onresize'
 
 @WithRender
 
@@ -98,6 +98,23 @@ export default class Carousel extends Vue {
     }
 
 
+    getItemCenter(itemIndex: number) {
+
+        if (itemIndex < 0 || itemIndex > this.$children.length) {
+            return -1
+        }
+
+        let activeChild = this.$children[itemIndex]
+
+        if (activeChild == undefined) {
+            return -1
+        }
+
+        let activeItemElement = activeChild.$el as HTMLDivElement
+
+        return activeItemElement.offsetLeft + activeItemElement.offsetWidth / 2
+    }
+
 
     getTouchPos(touch: Touch) {
         const svg = this.$refs.outer as HTMLDivElement
@@ -122,9 +139,6 @@ export default class Carousel extends Vue {
         el.addEventListener("touchmove", this.onTouchMove)
         el.addEventListener("touchend", this.onTouchEnd)
 
-
-        this.onSelectedIndexChange()
-
         // Required to display the navigation dots, because apparently, the children array is still empty
         // when getChildrenCount() is called to render the template for the first time:
         this.$forceUpdate()
@@ -137,10 +151,49 @@ export default class Carousel extends Vue {
     }
 
 
+    onOuterResize() {
+
+        this.onResize()
+
+    }
+
+
+    onInnerResize() {
+
+        this.onResize()
+
+    }
+
+
+    onResize() {
+
+        if (this.selectedIndex != this.activeItemIndex) {
+            this.setActiveItemIndex(this.selectedIndex)
+        }
+        const activeItemCenterX = this.getItemCenter(this.activeItemIndex)
+
+
+        this.setTargetPosX(activeItemCenterX)
+    }
+
 
     onRightButtonClick(evt: MouseEvent) {
         let outer = this.$refs.outer as HTMLDivElement
         this.setTargetPosX(this.targetInnerPosX + outer.offsetWidth / 2)
+    }
+
+
+
+
+    @Watch("selectedIndex")
+    onSelectedIndexChange() {
+
+      
+      
+        this.setActiveItemIndex(this.selectedIndex, false)
+
+      
+
     }
 
 
@@ -189,15 +242,24 @@ export default class Carousel extends Vue {
     }
 
 
-    @Watch("selectedIndex")
-    onSelectedIndexChange() {
-        if (this.selectedIndex == this.activeItemIndex) {
+
+    setActiveItemIndex(index: number, emit: boolean = true) {
+
+        if (this.activeItemIndex == index) {
             return
         }
+        
+        this.activeItemIndex = index
 
-        window.setTimeout(() => { this.setActiveItemIndex(this.selectedIndex, false)}, 0)
+        const activeItemCenterX = this.getItemCenter(this.activeItemIndex)
+
+        this.setTargetPosX(activeItemCenterX)
+
+        if (emit) {
+            this.$emit("update:selectedIndex", this.activeItemIndex)
+        }
+
     }
-
 
 
     setTargetPosX(value: number) {
@@ -212,33 +274,7 @@ export default class Carousel extends Vue {
     }
 
 
-    setActiveItemIndex(index: number, emit: boolean = true) {
 
-        this.activeItemIndex = index
-
-
-        if (this.activeItemIndex < 0 || this.activeItemIndex > this.$children.length) {
-            return
-        }
-
-        let activeChild = this.$children[this.activeItemIndex]
-
-        if (activeChild == undefined) {
-
-            return
-        }
-
-        let activeItemElement = activeChild.$el as HTMLDivElement
-
-        let activeItemCenterX = activeItemElement.offsetLeft + activeItemElement.offsetWidth / 2
-
-        this.setTargetPosX(activeItemCenterX)
-
-        if (emit) {
-            this.$emit("update:selectedIndex", this.activeItemIndex)
-        }
-
-    }
 
 
     startAnimation() {

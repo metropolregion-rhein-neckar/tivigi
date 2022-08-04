@@ -1,7 +1,7 @@
-<div class="Carousel">
+<div class="Carousel" v-onresize="onResize">
   
     <div ref="outer" class="Carousel__Outer">
-        <div ref="inner" class="Carousel__Inner">
+        <div ref="inner" class="Carousel__Inner" v-onresize="onResize">
             <slot/>
         </div>
     </div>
