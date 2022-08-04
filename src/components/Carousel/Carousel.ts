@@ -98,6 +98,18 @@ export default class Carousel extends Vue {
     }
 
 
+
+    getTouchPos(touch: Touch) {
+        const svg = this.$refs.outer as HTMLDivElement
+        const rect = svg.getBoundingClientRect();
+
+        const x1 = touch.pageX - rect.left;
+        const y1 = touch.pageY - rect.top;
+
+        return x1
+    }
+
+
     mounted() {
         let el = this.$refs.outer as HTMLDivElement
 
@@ -131,53 +143,7 @@ export default class Carousel extends Vue {
         this.setTargetPosX(this.targetInnerPosX + outer.offsetWidth / 2)
     }
 
-    onResize() {
-        //  this.startAnimation()
-    }
 
-
-    /*
-    onMouseDown(evt:MouseEvent) {
-
-        this.touchStartX = evt.clientX
-
-        this.prevTouchX = -1
-    }
-
-    onMouseMove(evt:MouseEvent) {
-
-        if (this.touchStartX == -1) {
-            return
-        }
-
-
-        let diff = this.touchStartX - evt.clientX
-
-
-        this.setTargetPosX(this.targetInnerPosX + diff)
-
-        // NOTE: prevTouchX is required for inertia-based scrolling after the touch has ended
-        this.prevTouchX = this.touchStartX
-        this.touchStartX = evt.clientX
-    }
-
-    onMouseUp(evt:MouseEvent) {
-
-        this.touchStartX = -1
-        
-        return
-        if (this.prevTouchX == -1) {
-            return
-        }
-
-        let diff = this.prevTouchX - this.touchStartX
-
-        if (Math.abs(diff) > 0.5) {
-            
-            this.setTargetPosX(this.targetInnerPosX + Math.sign(diff) * Math.abs(Math.sqrt(Math.abs(diff))) * 50)
-        }
-    }
-    */
 
     onTouchEnd(evt: TouchEvent) {
 
@@ -223,16 +189,15 @@ export default class Carousel extends Vue {
     }
 
 
+    @Watch("selectedIndex")
+    onSelectedIndexChange() {
+        if (this.selectedIndex == this.activeItemIndex) {
+            return
+        }
 
-    getTouchPos(touch: Touch) {
-        const svg = this.$refs.outer as HTMLDivElement
-        const rect = svg.getBoundingClientRect();
-
-        const x1 = touch.pageX - rect.left;
-        const y1 = touch.pageY - rect.top;
-
-        return x1
+        window.setTimeout(() => { this.setActiveItemIndex(this.selectedIndex, false)}, 0)
     }
+
 
 
     setTargetPosX(value: number) {
@@ -244,16 +209,6 @@ export default class Carousel extends Vue {
 
         this.targetInnerPosX = value
         this.startAnimation()
-    }
-
-
-    @Watch("selectedIndex")
-    onSelectedIndexChange() {
-        if (this.selectedIndex == this.activeItemIndex) {
-            return
-        }
-
-        this.setActiveItemIndex(this.selectedIndex, false)      
     }
 
 
@@ -290,4 +245,5 @@ export default class Carousel extends Vue {
         window.cancelAnimationFrame(this.animationHandle)
         this.animationHandle = window.requestAnimationFrame(this.animationStep)
     }
+
 }
