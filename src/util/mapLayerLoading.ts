@@ -893,7 +893,8 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
             layer = new ol_layer.Tile({
                 source: new ol_source.XYZ({
-                    url: proxyfetch.getProxyUrl(layerConfig.url),
+                    //url: proxyfetch.getProxyUrl(layerConfig.url),
+                    url: layerConfig.url,
                     attributions: layerConfig.attribution
                 })
             })
