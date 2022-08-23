@@ -116,7 +116,7 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
     //################# BEGIN Read cluster settings from JSON ############
 
     //##################### BEGIN Style function ########################
-    function getStyle(feature: any) {
+    let styleFunction:any = function getStyle(feature: any) {
 
         let subfeatures = feature.get('features')
 
@@ -256,13 +256,14 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
 
                     if (sourceFormat != undefined) {
                         let features = sourceFormat.readFeatures(geojson) as Feature<Geometry>[]
-
                         that.addFeatures(features)
                     }
                 })
 
             }
+
         });
+
     }
     // for "geojson":
     else {
@@ -296,14 +297,12 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
     }
 
 
-
     // Cluster source:
     let source = new ol_source.Cluster({
         distance: distance,
         source: backendSource
 
     });
-
 
 
     // Cluster layer:
@@ -313,7 +312,7 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
         animate: true,
         animationDuration: 800,
 
-        style: getStyle as StyleFunction,
+        // style: getStyle as StyleFunction,
         title: layerConfig.treeLabel,
     });
 
@@ -353,8 +352,16 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
     }
 
     layer.set('legend', legend);
+    
+    let multiStyleFunction = multiStyleFunctionFactory(layer);
+    layer.setStyle(multiStyleFunction)
 
-    layer.setStyle(getStyle);
+
+    //############## BEGIN Set available styling attributes and initially active styling attribute #############
+
+    addStyleFunctionToLayer(layer, "clusterStyle", styleFunction)
+
+    // layer.setStyle(getStyle);
 
     return layer
 }
@@ -893,8 +900,7 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
             layer = new ol_layer.Tile({
                 source: new ol_source.XYZ({
-                    //url: proxyfetch.getProxyUrl(layerConfig.url),
-                    url: layerConfig.url,
+                    url: layerConfig.url,//proxyfetch.getProxyUrl(layerConfig.url), //layerConfig.url,
                     attributions: layerConfig.attribution
                 })
             })

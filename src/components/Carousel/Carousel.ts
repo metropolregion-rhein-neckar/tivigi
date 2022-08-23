@@ -43,7 +43,7 @@ export default class Carousel extends Vue {
 
         let outer = this.$refs.outer as HTMLDivElement
 
-        let cx = outer.offsetWidth / 2
+        let cx = outer.offsetWidth / 3
 
         let inner = this.$refs.inner as HTMLDivElement
 
@@ -147,7 +147,7 @@ export default class Carousel extends Vue {
 
     onLeftButtonClick(evt: MouseEvent) {
         let outer = this.$refs.outer as HTMLDivElement
-        this.setTargetPosX(this.targetInnerPosX - outer.offsetWidth / 2)
+        this.setTargetPosX(this.targetInnerPosX - outer.offsetWidth / 3)
     }
 
 
@@ -179,7 +179,7 @@ export default class Carousel extends Vue {
 
     onRightButtonClick(evt: MouseEvent) {
         let outer = this.$refs.outer as HTMLDivElement
-        this.setTargetPosX(this.targetInnerPosX + outer.offsetWidth / 2)
+        this.setTargetPosX(this.targetInnerPosX + outer.offsetWidth / 3)
     }
 
 
