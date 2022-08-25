@@ -37,10 +37,10 @@ export default class AndromedaWeekAggregation extends Vue {
     @Prop({default:false})
     invertColorRamp!: boolean
 
-    @Prop({default: [100, 100, 255, 255]})
+    @Prop({default: () => [100, 100, 255, 255]})
     color1! : Array<number>
 
-    @Prop({default: [255, 255, 255, 255]})
+    @Prop({default: () => [255, 255, 255, 255]})
     color2! :  Array<number>
 
   
