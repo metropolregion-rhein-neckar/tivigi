@@ -58,7 +58,18 @@ div.OlMap {
         // ATTENTION:
         // position:absolute is required for Safari (Mac OS & iOS) and Konqueror!!
         // Without it, the map is not visible in these browsers under some circumstances.
-        position: absolute;
+
+        // ATTENTION 2:
+        // HOWEVER, unfortunately, *with* "position:absolute", the size of the map panel is not correctly
+        // adjusted to the size of its parent element (e.g. a dashboard card) under some circumstances
+        // in current versions of very widely used browser like Chrome (and everything that uses
+        // the Chromium engine, like Microsoft Edge) and Firefox. 
+        
+        // This means that we have to decide between providing a workaround for a bug in Safari and a 
+        // few other exotic browers, or providing a workaround for a bug in the by far most widely used
+        // browsers. We pick the second option.
+
+        //position: absolute;
 
         border: 2px solid transparent;
 
