@@ -16,15 +16,15 @@ export default class AndromedaTemporalStats extends Vue {
 
     @Prop()
     attrName!: string
-  
+
     @Prop()
-    brokerBaseUrl!:string
+    brokerBaseUrl!: string
 
     @Prop()
     entityId!: string
-  
 
-    stats:any = {}
+
+
 
     lastModifiedAt = ""
 
@@ -38,12 +38,19 @@ export default class AndromedaTemporalStats extends Vue {
 
         let res = await fetch(url)
 
-        this.stats = await res.json()
+        let stats = await res.json()
 
-        const date = new Date(this.stats.lastModifiedAt)
-        
-        this.lastModifiedAt =  date.toLocaleDateString() + ", " + date.toLocaleTimeString()
+        if (stats.lastWrittenAt == null) {
+            this.lastModifiedAt = "Zeitpunkt unbekannt"
+        }
+        else {
+            const date = new Date(stats.lastWrittenAt)
+
+
+            this.lastModifiedAt = date.toLocaleDateString() + ", " + date.toLocaleTimeString()
+        }
+
     }
-  
+
 }
 
