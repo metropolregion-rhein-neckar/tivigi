@@ -1,37 +1,25 @@
 div.WeekAggregation {
-    width:100%;
-    h3 {
-        text-align: center;
-    }
+    overflow-x: auto !important;
 
-    div {
-        width:100%;
-        overflow: auto;
-        table {
-            width: 100%;
-            font-size: 13px;
+    table {
+        font-size: 13px;
+        width: 100%;
+        border-spacing: 1px;
+        border-collapse: collapse;
 
-            border-spacing: 1px;
-            border-collapse: collapse;
+        th {
+            //font-weight: normal;
+            padding: 4px 2px;
+        }
 
-            th {
-                //font-weight: normal;
-                padding: 4px 2px;
-            }
+        th.WeekAggregation__Weekdays {
+            text-align: left;
+        }
 
-            th.WeekAggregation__Weekdays {
-                text-align: left;
-             
-            }
-
-            td {
-                padding: 6px;
-                text-align: center;
-                font-weight: bold;
-                span {
-                    //  display:none;
-                }
-            }
+        td {
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
         }
     }
 }
