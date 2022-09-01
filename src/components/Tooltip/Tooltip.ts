@@ -76,7 +76,7 @@ export default class Tooltips extends Vue {
             element = element.parentElement
         }
 
-        if (text == null) {
+        if (text == null || text == "") {
             this.show = false
         }
         else {
