@@ -19,17 +19,21 @@ export default class Fullscreen extends Vue {
     @Prop({default:false})
     enabled!:boolean
    
+    mounted() {
+        this.toggle()
+    }
 
     @Watch("enabled")
     toggle() {
+        
         const allElems = document.getElementsByTagName("*")
 
         const fullscreenElem = this.$el as HTMLElement
 
         if (this.enabled) {
-
+            
             //#region Hide all other elements by applying a class that sets "display:none"
-
+/*
             for (let ii = 0; ii < allElems.length; ii++) {
 
                 const elem = allElems.item(ii)
@@ -45,7 +49,7 @@ export default class Fullscreen extends Vue {
                 elem.classList.add(hideClass)
             }
             //#endregion Hide all other elements by applying a class that sets "display:none"
-
+*/
             fullscreenElem.classList.add(fullscreenClass)
         }
         else {
@@ -53,7 +57,7 @@ export default class Fullscreen extends Vue {
             fullscreenElem.classList.remove(fullscreenClass)
 
             //#region Restore display mode of all other elements
-
+/*
             for (let ii = 0; ii < allElems.length; ii++) {
                 const elem = allElems.item(ii)
 
@@ -68,6 +72,7 @@ export default class Fullscreen extends Vue {
                 elem.classList.remove(hideClass)
             }
             //#endregion Restore display mode of all other elements
+            */
         }
     }
 
