@@ -1,6 +1,6 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import "./CssGridBox.scss"
 import "../../directives/v-onresize"
+
 import WithRender from './CssGridBox.html';
 
 @WithRender
@@ -10,6 +10,13 @@ export default class CssGridBox extends Vue {
     @Prop() 
     rowSpan : number|undefined
     
+    @Prop()
+    innerClass! : string
+
+    @Prop()
+    innerStyle! : string
+
+
 
     mounted() {
         if (this.rowSpan != undefined) {

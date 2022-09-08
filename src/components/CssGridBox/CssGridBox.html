@@ -4,7 +4,7 @@
         Applying padding to the outer div would break the automatic 
         grid box height (CSS grid-row) calculation.
     -->
-    <div class="CssGridBox__Inner" ref="inner" v-onresize="onResize">
+    <div :class="innerClass" :style="innerStyle" ref="inner" v-onresize="onResize">
         <slot/>
     </div>
 </div>
