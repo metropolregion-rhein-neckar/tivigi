@@ -175,7 +175,11 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
 
 
+        // Remove doubles:
+        this.comments = Array.from(new Set([...this.comments]))
 
+        // Remove doubles:
+        this.sourceInfo = Array.from(new Set([...this.sourceInfo]))
 
 
 
