@@ -121,6 +121,10 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
 
 
+    comments = []
+    sourceInfo = []
+
+
     async created() {
         this.extent = this.initialExtent
 
@@ -156,22 +160,29 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
             return
         }
 
+
+
+        this.comments = []
+        this.sourceInfo = []
+
+       
         let blubb = this.bars.concat(this.lines)
 
-
-        let p1 = getAttributeMetadata(this.brokerBaseUrl)
-        let p2 = this.loadData2(blubb)
+        this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
 
 
+        const data = await this.loadData2(blubb)
 
 
-        let pres = await Promise.all([p1, p2])
 
 
-        this.attrMeta = pres[0]
 
-        this.barsBuckets = this.prepareData(this.bars, pres[1])
-        this.linesBuckets = this.prepareData(this.lines, pres[1])
+
+
+
+
+        this.barsBuckets = this.prepareData(this.bars, data)
+        this.linesBuckets = this.prepareData(this.lines, data)
         /*
         this.attrMeta = await getAttributeMetadata(this.brokerBaseUrl)
         this.barsBuckets = await this.loadData2(this.bars)
@@ -350,10 +361,26 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
                     }
 
                     tasks.push(task2)
+
+
+                    const attrMeta = this.attrMeta[seriesCfg.attrName]
+
+                    if (attrMeta != undefined) {
+                        
+
+                        if (attrMeta.metadata.comments instanceof Array) {
+                           
+                            this.comments = this.comments.concat(attrMeta.metadata.comments)
+                        }
+
+
+                        if (attrMeta.metadata.sources instanceof Array) {
+                            this.sourceInfo = this.sourceInfo.concat(attrMeta.metadata.sources)
+                        }
+                    }
+
+            
                 }
-
-
-
             }
         }
 
@@ -362,6 +389,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
         if (this.preload) {
             preloadWidth = size.x
         }
+
 
         const dateStart = new Date(this.extent.minx - preloadWidth)
         const dateEnd = new Date(this.extent.maxx + preloadWidth)
