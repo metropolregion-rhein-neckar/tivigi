@@ -61,6 +61,9 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     bars: any
 
     @Prop()
+    barStyle: string
+
+    @Prop()
     colors: any
 
     @Prop()

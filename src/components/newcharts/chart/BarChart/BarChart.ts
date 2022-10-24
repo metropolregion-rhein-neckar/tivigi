@@ -39,6 +39,9 @@ export default class BarChart extends AbstractChart {
     barWidthUnit!: string
 
     @Prop()
+    barStyle!:string
+
+    @Prop()
     colors!:Array<any>
     //#endregion
 
@@ -58,8 +61,6 @@ export default class BarChart extends AbstractChart {
 
     created() {
 
-    
-
         if (this.colors != undefined) {
             
             this.colors_internal = this.colors
@@ -76,11 +77,10 @@ export default class BarChart extends AbstractChart {
     }
 
 
-    getStackItemStyle(stackItem: StackItem) {
+    getStackItemStyle(stackItem: StackItem) : string {
 
-        return {
-            fill: stackItem.color
-        }
+        return `fill: ${stackItem.color}; ${this.barStyle}`
+        
     }
 
 
