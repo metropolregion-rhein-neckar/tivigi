@@ -101,7 +101,7 @@ export default class OlMap extends Vue {
 
     @Watch("extent")
     onHomeExtentChange() {
-        console.log(this.extent)
+        //console.log(this.extent)
         this.setMapExtent(this.extent)
     }
 

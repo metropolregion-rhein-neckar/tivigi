@@ -1,5 +1,6 @@
 div.ChartCanvas {
   user-select: none;
+  position:relative;
 
   rect.ChartCanvas__ViewBoxBorder {
     fill: none;
@@ -20,6 +21,12 @@ div.ChartCanvas {
     height: 100%;
     width: 100%;
     font-size: 13px;
+  }
+
+  button {
+    height:20px;
+    padding:2px 6px;
+    line-height: 0;
   }
 }
 

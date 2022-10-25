@@ -61,7 +61,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
     bars: any
 
     @Prop()
-    barStyle: string
+    barStyle!: string
 
     @Prop()
     colors: any
@@ -101,6 +101,9 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
     @Prop()
     forceXLabelScale!: string
+
+    @Prop({default:false})
+    showPanButtons!:boolean
     //#endregion Props
 
     extent: BoundingBox = this.initialExtent

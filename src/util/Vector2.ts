@@ -44,6 +44,9 @@ export class Vector2 {
         return new Vector2(this.x * value, this.y * value)
     }
 
+    normalize() : Vector2 {
+        return this.scalarMult(1.0/this.len())
+    }
    
 }
 

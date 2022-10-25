@@ -10,13 +10,11 @@
 
 
         <!-- This is a frame around the entire viewBox: -->
-        <rect class="ChartCanvas__ViewBoxBorder" v-if="debug" :x="0" :y="0" :width="viewBoxSize.x"
-            :height="viewBoxSize.y" />
+        <rect class="ChartCanvas__ViewBoxBorder" v-if="debug" :x="0" :y="0" :width="viewBoxSize.x" :height="viewBoxSize.y" />
 
 
         <!-- This is a frame around the chart area: -->
-        <rect class="ChartCanvas__ChartAreaBorder" v-if="debug" :x="chartAreaPos.x" :y="chartAreaPos.y"
-            :width="chartAreaSize.x" :height="chartAreaSize.y" />
+        <rect class="ChartCanvas__ChartAreaBorder" v-if="debug" :x="chartAreaPos.x" :y="chartAreaPos.y" :width="chartAreaSize.x" :height="chartAreaSize.y" />
 
 
 
@@ -36,4 +34,8 @@
         <circle v-if="debug" :cx="tp2.x" :cy="tp2.y" r="60" />
     </svg>
 
+    <template v-if="allowPanX && showPanButtons">
+        <button @click="onLeftButtonClick" style="position:absolute;bottom:0;left:0;">⇦</button>
+        <button@ @click="onRightButtonClick" style="position:absolute;bottom:0;right:0">⇨</button>
+    </template>
 </div>

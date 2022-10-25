@@ -40,10 +40,8 @@ export default class ChartCanvas extends Vue {
     @Prop({ default: true })
     autoscaleY!: boolean
 
-
     @Prop()
     extent!: BoundingBox
-
 
     //BEGIN Control options
     @Prop({ default: true })
@@ -60,6 +58,9 @@ export default class ChartCanvas extends Vue {
 
     @Prop()
     legend!: Array<ChartLegendItem>
+
+    @Prop({default:false})
+    showPanButtons!: boolean
     //END Control options
 
     //endregion Props
@@ -92,7 +93,7 @@ export default class ChartCanvas extends Vue {
     touchPos1_debug = new Vector2()
     touchPos2_debug = new Vector2()
 
-
+    panTimeout = -1
 
     viewportChanged = false
 
@@ -234,7 +235,8 @@ export default class ChartCanvas extends Vue {
                 result["cursor"] = "grabbing"
             }
 
-        }      
+        }
+       
 
         return result
     }
@@ -355,6 +357,9 @@ export default class ChartCanvas extends Vue {
 
 
     mousePanStart(pos: Vector2) {
+        
+        window.clearTimeout(this.panTimeout)
+
         this.panGrabPos1_screen = pos
 
         this.mousePos_world_at_pan_start = this.s2w(pos)
@@ -451,6 +456,24 @@ export default class ChartCanvas extends Vue {
     }
 
 
+    onLeftButtonClick(evt: MouseEvent) {
+        
+        const extent_world = new Vector2(this.chartAreaSize.x / this.scale.x, this.chartAreaSize.y / this.scale.y)
+
+
+        this.panAnimated(this.bottomLeftWorld.sub(new Vector2(extent_world.x * 0.9, 0)))
+    }
+
+
+    onRightButtonClick(evt: MouseEvent) {
+        
+        const extent_world = new Vector2(this.chartAreaSize.x / this.scale.x, this.chartAreaSize.y / this.scale.y)
+
+
+        this.panAnimated(this.bottomLeftWorld.add(new Vector2(extent_world.x * 0.9, 0)))
+    }
+
+
     onMouseDown(evt: MouseEvent) {
         const pos = new Vector2(evt.clientX, evt.clientY)
 
@@ -459,7 +482,7 @@ export default class ChartCanvas extends Vue {
 
 
     onResize(entry: ResizeObserverEntry) {
-        
+
         this.updateChartAreaSize()
 
         this.autoScale()
@@ -556,6 +579,36 @@ export default class ChartCanvas extends Vue {
     }
 
 
+    panAnimated(target: Vector2) {
+
+      
+
+        const diff = this.bottomLeftWorld.sub(target)
+
+
+        let snapThreshold = 100
+
+        if (Math.abs(diff.x * this.scale.x) < this.chartAreaSize.x / snapThreshold && Math.abs(diff.y * this.scale.y) < this.chartAreaSize.y / snapThreshold) {
+            this.bottomLeftWorld = target.clone()
+            this.updateChildElements()
+            this.emitExtentChangeEvent()
+
+            return
+        }
+        let step = diff.scalarMult(0.2)
+
+      
+
+        this.bottomLeftWorld = this.bottomLeftWorld.sub(step)
+
+        this.updateChildElements()
+
+        window.clearTimeout(this.panTimeout)
+        this.panTimeout = window.setTimeout(() => { this.panAnimated(target) }, 50)
+
+    }
+
+
     pan(mousePos_world_now: Vector2) {
 
         const diff = mousePos_world_now.sub(this.mousePos_world_at_pan_start)
@@ -563,6 +616,7 @@ export default class ChartCanvas extends Vue {
         if (!this.allowPanX || this.autoscaleX) {
             diff.x = 0
         }
+
         if (!this.allowPanY || this.autoscaleY) {
             diff.y = 0
         }
@@ -642,7 +696,7 @@ export default class ChartCanvas extends Vue {
         if (el == undefined) {
             return
         }
-        
+
         const sx = el.clientWidth
         const sy = el.clientHeight
 
@@ -676,7 +730,7 @@ export default class ChartCanvas extends Vue {
 
         return new Vector2(x, y)
     }
-    
+
 
     s2wx(pixels: number): number {
         return (pixels / this.scale.x) + this.bottomLeftWorld.x
