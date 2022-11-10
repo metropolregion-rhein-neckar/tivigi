@@ -30,6 +30,9 @@ export default class WeekAggregation extends Vue {
     color2! :  Array<number>
 
   
+    @Prop({default:2})
+    numTooltipDecimals!:number
+
     //#endregion Props
   
   
@@ -186,7 +189,7 @@ export default class WeekAggregation extends Vue {
             return "Keine Daten verfügbar"
         }
 
-        return this.buckets[wdindex][ts]
+        return formatNumberString(this.buckets[wdindex][ts], this.numTooltipDecimals)
     }
 
 

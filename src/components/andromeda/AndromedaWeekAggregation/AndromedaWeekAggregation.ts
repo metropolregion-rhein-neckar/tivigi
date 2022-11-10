@@ -44,6 +44,8 @@ export default class AndromedaWeekAggregation extends Vue {
     color2! :  Array<number>
 
   
+    @Prop({default:2})
+    numTooltipDecimals!: number
 
     //#endregion Props
 
