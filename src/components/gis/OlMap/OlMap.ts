@@ -44,29 +44,9 @@ export class MapDropEvent {
 export default class OlMap extends Vue {
 
     //################## BEGIN Props ##################
-    @Prop(
-        /*
-        {
-        
-        default: () => {
-            return new ol.Map({
-
-                interactions: ol_interaction.defaults({ keyboard: false }),
-
-                view: new ol.View({
-                    center: [0, 0],
-                    zoom: 19
-
-                })
-            })
-        }
-        
-    }
-    */
-    )
+    @Prop()
     map!: ol.Map;
-
-    //@Prop({ default: () => { return [-180, -90, 180, 90] } })
+    
     @Prop()
     extent!: Extent
 

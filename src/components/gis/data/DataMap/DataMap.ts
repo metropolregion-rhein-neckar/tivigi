@@ -12,6 +12,13 @@ import AbstractData from 'tivigi/src/components/data/AbstractData/AbstractData';
 export default class DataMap extends AbstractData {
 
     //############## BEGIN Props ###############
+
+    @Prop({default:true})
+    allowPan! : boolean
+
+    @Prop({default:true})
+    allowZoom! : boolean
+
     @Prop({ default: 17 })
     resolution!: number
 
@@ -61,8 +68,10 @@ export default class DataMap extends AbstractData {
 
         // TODO: 3 Perhaps remove setting of interactions from here and do it in MapPanel only?
 
-        const interactions_default = ol_interaction.defaults({ keyboard: false })
+        const interactions_default = ol_interaction.defaults({ keyboard: false,dragPan: this.allowPan,
+        mouseWheelZoom:this.allowZoom })
 
+        /*
         const interactions_touchscreen = defaults({ dragPan: false, mouseWheelZoom: false }).extend([
             new DragPan({
                 condition: function (event) {
@@ -72,7 +81,7 @@ export default class DataMap extends AbstractData {
             new MouseWheelZoom({
                 condition: platformModifierKeyOnly,
             })])
-
+            */
 
         //let interactions = this.touchScreenMode ? interactions_touchscreen : interactions_default
 
