@@ -26,7 +26,7 @@ import AnimatedCluster from 'ol-ext/layer/AnimatedCluster'
 import * as proxyfetch from 'tivigi/src/util/proxyfetch'
 
 import { tryToRead } from 'tivigi/src/util/tryToRead'
-import {createAndromedaUrlFromConfig} from 'tivigi/src/util/createAndromedaUrlFromConfig'
+import {createAndromedaPayload} from 'tivigi/src/util/createAndromedaUrlFromConfig'
 import {geoJsonIconSetter} from 'tivigi/src/util/geoJsonIconSetter'
 import { vectorPointStyleFactory } from 'tivigi/src/olVectorLayerStyling/miscStyleFunctions'
 import { multiStyleFunctionFactory, addStyleFunctionToLayer } from 'tivigi/src/olVectorLayerStyling/styleUtils'
@@ -221,7 +221,7 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
     }
     else if( sourceType == "andromeda"){
 
-        let url = createAndromedaUrlFromConfig(layerConfig)
+        let url = layerConfig.baseUrl + '/entityOperations/query?format=geojson&options=keyValues'
 
         backendSource = new FilterableVectorSource({
 
@@ -230,25 +230,20 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
 
             loader: function (extent, resolution, projection) {
 
-                let options: RequestInit = {
-                    headers: layerConfig.http_headers
-                }
 
 
             let extent_4326 = ol_proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326')
-        
-            let corner_sw: any = [extent_4326[0],extent_4326[1]]
-            let corner_nw: any = [extent_4326[0], extent_4326[3]]
-            let corner_ne: any = [extent_4326[2],extent_4326[3]]
-            let corner_se: any = [extent_4326[2],extent_4326[1]]
+            
+            let payload: any = createAndromedaPayload(layerConfig.andromedaParams, extent_4326)
 
-            let coordinates: string = JSON.stringify([[corner_sw, corner_nw, corner_ne, corner_se, corner_sw]])
-            let georel: string = "intersects"
-            let geometry: string = "Polygon"
+            let options: RequestInit = {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(payload)
+            }
 
-            let spatial_query: string = `&georel=${georel}&geometry=${geometry}&coordinates=${coordinates}`
-
-            fetch(url+spatial_query, options).then(response => response.json()).then((geojson) => {
+            fetch(url, options).then(response => response.json()).then((geojson) => {
+                    
 
                     let that = this as VectorSource
 
@@ -370,7 +365,7 @@ function createClusterLayerFromConfig(layerConfig: any, projection: Projection, 
 export function createAndromedaLayerFromConfig(layerConfig: any, projection: Projection): ol_layer.Vector {
 
 
-    let url = createAndromedaUrlFromConfig(layerConfig)
+    let url = layerConfig.baseUrl + '/entityOperations/query?format=geojson&options=keyValues'
 
     //####################### BEGIN Define GeoJSON vector source ########################
     let source = new ol_source.Vector({
@@ -381,24 +376,19 @@ export function createAndromedaLayerFromConfig(layerConfig: any, projection: Pro
         strategy: bbox,
         loader: function (extent, resolution, projection) {
 
+
+
+            let extent_4326 = ol_proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326')
+            
+            let payload: any = createAndromedaPayload(layerConfig.andromedaParams, extent_4326)
+            
             let options: RequestInit = {
-                headers: layerConfig.http_headers
+                method: "POST",
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(payload)
             }
 
-        let extent_4326 = ol_proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326')
-    
-        let corner_sw: any = [extent_4326[0],extent_4326[1]]
-        let corner_nw: any = [extent_4326[0], extent_4326[3]]
-        let corner_ne: any = [extent_4326[2],extent_4326[3]]
-        let corner_se: any = [extent_4326[2],extent_4326[1]]
-
-        let coordinates: string = JSON.stringify([[corner_sw, corner_nw, corner_ne, corner_se, corner_sw]])
-        let georel: string = "intersects"
-        let geometry: string = "Polygon"
-
-        let spatial_query: string = `&georel=${georel}&geometry=${geometry}&coordinates=${coordinates}`
-
-        fetch(url+spatial_query, options).then(response => response.json()).then((geojson) => {
+            fetch(url, options).then(response => response.json()).then((geojson) => {
 
                 let that = this as VectorSource
 
@@ -756,7 +746,6 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
 
         case "wms-capabilities": {
 
-            console.log(layerConfig.capabilities)
 
             layer = createWmsLayerFromCapabilities(layerConfig.capabilities)
 
@@ -829,7 +818,6 @@ export function createLayerFromConfig(layerConfig: any, projection: Projection):
                 if (layerConfig.legend_url == undefined) {
                     async_loadWmsLegend(layer)
                 }
-                console.log(layer)
             }
 
 
