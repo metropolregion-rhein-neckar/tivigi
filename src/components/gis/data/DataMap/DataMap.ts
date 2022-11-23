@@ -94,7 +94,7 @@ export default class DataMap extends AbstractData {
         this.map = new ol.Map({
 
             interactions: interactions_default,
-            controls: defaultControls({ attribution: false }).extend([attribution]),
+            controls: defaultControls({ attribution: false, zoom: this.allowZoom }).extend([attribution]),
 
             view: new ol.View({
                 center: [0, 0],
