@@ -10,7 +10,9 @@ div.Piechart {
 
   svg {
     width: 100%;
-    max-height: 180px;
+    //max-height: 300px;
+
+   height:100%;
 
     path.Piechart__DataItem {
       &:hover {

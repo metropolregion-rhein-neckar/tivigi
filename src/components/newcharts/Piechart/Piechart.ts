@@ -50,6 +50,9 @@ export default class Piechart extends Vue {
     @Prop({ default: 90 })
     outerRadius!: number
 
+    @Prop()
+    labelRadius!:number
+
     @Prop({ default: () => [] })
     legend!: Array<Array<ChartLegendItem>>
 
@@ -168,7 +171,11 @@ export default class Piechart extends Vue {
             const arcPath = this.makeArcPath(increment, increment + value_deg, this.outerRadius, this.innerRadius)
 
 
-            const textLabelRadius = this.innerRadius + (this.outerRadius - this.innerRadius) / 2
+            let textLabelRadius = this.innerRadius + (this.outerRadius - this.innerRadius) / 2
+
+            if (typeof this.labelRadius == "number") {
+                textLabelRadius = this.labelRadius
+            }
 
             const percent = (this.data[index].value / total) * 100
 

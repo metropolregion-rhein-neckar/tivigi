@@ -14,7 +14,7 @@
                 
             </path>
 
-            <text v-for="entry of renderData" :x="entry.textPos.x" :y="entry.textPos.y">
+            <text v-if="showLabels" v-for="entry of renderData" :x="entry.textPos.x" :y="entry.textPos.y">
                 {{entry.displayValue}}
             </text>
 
