@@ -375,7 +375,7 @@ export default class AndromedaTimeSeriesMultiPanel extends Vue {
 
                     const attrMeta = this.attrMeta[seriesCfg.attrName]
 
-                    if (attrMeta != undefined) {
+                    if (attrMeta != undefined && attrMeta.metadata != undefined) {
                         
 
                         if (attrMeta.metadata.comments instanceof Array) {
