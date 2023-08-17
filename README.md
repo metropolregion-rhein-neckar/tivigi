@@ -1,3 +1,13 @@
+# IMPORTANT NOTE: 
+
+Tivigi is currently no longer unter active development. We keep this repository online, because we use it as a dependency in several projects.
+Also, we might perhaps still provide small bug fixes, and perhaps also small feature changes and additions, for Tivigi in the future.
+
+However, our focus of development regarding Web front-ends has moved to a yet unnamed and still to be published successor project based on Vue 3.
+This project follows a similar philosophy and goals as Tivigi, but it is designed and written from scratch (i.e. not a port of Tivigi to Vue 3).
+
+We will probably make this project available as open source at some point in the future, but we can't yet say when exactly.
+
 # Table of Contents
   - 1.) [Tivigi Release Announcement](#1-tivigi-release-announcement)
   - 2.) [What is Tivigi?](#2-what-is-tivigi)
